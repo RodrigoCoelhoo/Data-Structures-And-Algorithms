@@ -1,0 +1,79 @@
+import java.util.ArrayList;
+
+public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
+	
+	@Override
+    public T[] sort(T[] input) {
+
+		if (input == null || input.length <= 1) return input;
+		
+		boolean swapped = true;
+		int tailIndex= 1;
+		while(swapped)
+		{
+			swapped = false;
+
+			for(int i = 0; i < input.length - tailIndex ; i++)
+			{
+				if(input[i].compareTo(input[i+1]) > 0)
+				{
+					T temp = input[i];
+					input[i] = input[i+1];
+					input[i+1] = temp;
+					swapped = true;
+				}
+			}
+			tailIndex++;
+		}
+
+		return input;	
+	}
+
+	@Override
+	public ArrayList<T> sort(ArrayList<T> input) {
+
+		if (input == null || input.size() <= 1) return input;
+		
+		boolean swapped = true;
+		int tailIndex= 1;
+		while(swapped)
+		{
+			swapped = false;
+
+			for(int i = 0; i < input.size() - tailIndex ; i++)
+			{
+				if(input.get(i).compareTo(input.get(i+1)) > 0)
+				{
+					T temp = input.get(i);
+					input.set(i, input.get(i+1));
+					input.set(i+1, temp);
+					swapped = true;
+				}
+			}
+			tailIndex++;
+		}
+
+		return input;	
+	} 
+
+	@Override
+	public void info() {
+		System.out.println("==========================");
+		System.out.println("Bubble Sort Algorithm");
+		System.out.println("Time Complexity: O(n^2)");
+
+		System.out.println();
+
+		System.out.println("Description:");
+		System.out.println("Repeatedly steps through the list, compares");
+		System.out.println("adjacent elements and swaps them if they are");
+		System.out.println("in the wrong order.");
+		System.out.println("With each pass, the largest unsorted element");
+		System.out.println("moves to its correct position at the end.");
+
+		System.out.println("");
+
+		System.out.println("The sorted portion builds up from the end.");
+		System.out.println("==========================");
+	}
+}
