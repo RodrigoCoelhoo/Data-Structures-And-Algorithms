@@ -1,6 +1,7 @@
 # Data Structures And Algorithms
 
-JavaFX 
+JavaFX 24.0.1
+JDK 24.0.2
 
 Select Algorithm -> Select Number of elements -> Create randomized array -> Sort -> Save all states
 See all the states in a given time (Selected by user)
