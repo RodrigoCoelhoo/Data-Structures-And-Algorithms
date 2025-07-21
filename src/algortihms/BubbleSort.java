@@ -1,6 +1,7 @@
 package algortihms;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 
@@ -8,6 +9,10 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 
 	public ArrayList<State> getStates() {
 		return this.states;
+	}
+
+	public void clearStates() {
+		this.states.clear();
 	}
 	
 	@Override
@@ -50,6 +55,10 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 			swapped = false;
 			for (int i = 0; i < input.size() - tailIndex; i++) 
 			{
+				ArrayList<Integer> indexs = new ArrayList<>();
+				indexs.add(i);
+				indexs.add(i + 1);
+				
 				if (input.get(i).compareTo(input.get(i + 1)) > 0) 
 				{
 					T temp = input.get(i);
@@ -57,7 +66,8 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 					input.set(i + 1, temp);
 					swapped = true;
 				}
-				saveState(input, new int[]{i, i + 1});
+
+				saveState(input, indexs);
 			}
 			tailIndex++;
 		}
@@ -66,28 +76,15 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 
 
 	@Override
-	public void info() 
+	public String info() 
 	{
-		System.out.println("==========================");
-		System.out.println("Bubble Sort Algorithm");
-		System.out.println("Time Complexity: O(n^2)");
-
-		System.out.println();
-
-		System.out.println("Description:");
-		System.out.println("Repeatedly steps through the list, compares");
-		System.out.println("adjacent elements and swaps them if they are");
-		System.out.println("in the wrong order.");
-		System.out.println("With each pass, the largest unsorted element");
-		System.out.println("moves to its correct position at the end.");
-
-		System.out.println("");
-
-		System.out.println("The sorted portion builds up from the end.");
-		System.out.println("==========================");
+		String result = "Bubble Sort Algorithm\n";
+		result += "Time Complexity: O(n^2)\n\n";
+		result += "Repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order. With each pass, the largest unsorted element moves to its correct position at the end. The sorted portion builds up from the end.\n";
+		return result;
 	}
 
-	private void saveState(ArrayList<T> input, int[] indices) 
+	private void saveState(ArrayList<T> input, List<Integer> indexs) 
 	{
 		if (!input.isEmpty() && input.get(0) instanceof Integer) 
 		{
@@ -95,7 +92,7 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 			for (T element : input) {
 				copy.add((Integer) element);
 			}
-			states.add(new State(copy, indices));
+			states.add(new State(copy, indexs));
 		} else {
 			throw new UnsupportedOperationException("Only ArrayList<Integer> is supported by State.");
 		}

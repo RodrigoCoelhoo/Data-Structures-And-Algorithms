@@ -5,23 +5,18 @@ import java.util.List;
 
 public class State {
     private final List<Integer> list;
-    private final int[] indices;
+    private final List<Integer> indexs;
 
-    public State(List<Integer> list, int[] indices) {
-        this.list = new ArrayList<>(list);
-        this.indices = indices != null ? indices.clone() : null;
+    public State(List<Integer> list, List<Integer> indexs) {
+        this.list = list != null ? new ArrayList<>(list) : new ArrayList<>();
+        this.indexs = indexs != null ? new ArrayList<>(indexs) : new ArrayList<>();
     }
 
     public List<Integer> getList() {
         return new ArrayList<>(list);
     }
 
-    public int[] getIndices() {
-        return indices != null ? indices.clone() : null;
-    }
-
-    @Override
-    public String toString() {
-        return "List: " + list + "\n Active Indexs: " + (indices != null ? "[" + indices[0] + ", " + indices[1] + "]" : "null");
+    public List<Integer> getIndexs() {
+        return new ArrayList<>(indexs);
     }
 }
