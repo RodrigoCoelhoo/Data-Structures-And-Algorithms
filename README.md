@@ -3,9 +3,17 @@
 JavaFX 24.0.1
 JDK 24.0.2
 
-Select Algorithm -> Select Number of elements -> Create randomized array -> Sort -> Save all states
-See all the states in a given time (Selected by user)
-See all the states 1 by 1 (Arrow left, right, reset)
+
+DS?
+Select DS
+- Option to add nodes for example
+- Draw types? List, tree, ...
+- Search
 
 
-Select DS -> Option to add nodes for example
+
+Missing: 
+- Tooltips
+- 
+
+https://www.flaticon.com/

@@ -78,9 +78,8 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 	@Override
 	public String info() 
 	{
-		String result = "Bubble Sort Algorithm\n";
-		result += "Time Complexity: O(n^2)\n\n";
-		result += "Repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order. With each pass, the largest unsorted element moves to its correct position at the end. The sorted portion builds up from the end.\n";
+		String result = "Time Complexity: O(n^2)\n\n";
+		result += "Repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order. With each pass, the largest unsorted element moves to its correct position at the end. The sorted portion builds up from the end.";
 		return result;
 	}
 

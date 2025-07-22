@@ -1,5 +1,8 @@
 package gui;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,45 +18,143 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 public class Controller {
 
-    private final ArrayList<Integer> list = new ArrayList<>();
+    /**
+     * Variables declaration
+     */
+
+    private ArrayList<Integer> list = new ArrayList<>();
     private SortAlgorithm<Integer> algorithm = null;
+    private int currentState = -1;
+
+    private Timeline timeline;
     
+    @FXML private SplitPane splitPane;
     @FXML private TextField sizeField;
-    @FXML private Label sizeFieldWarning;
+    @FXML private Label arrayWarning;
     @FXML private Label algorithmInfo;
-    @FXML private Label sortWarning;
+    @FXML private Label animationWarning;
+    @FXML private Label stateLabel;
+    @FXML private Label arrayStatus, arraySize;
     @FXML private ComboBox<String> algorithmComboBox;
     @FXML private Pane visualContainer;
     @FXML private ProgressBar progressBar;
-    @FXML private Button sortButton;
+    @FXML private Button sortButton, lastButton, previousButton, nextButton, firstButton, clearButton, algorithmButton, dsButton, uploadButton, generateButton, skipAnimation;
+    @FXML private Circle arrayCircleStatus;
+    @FXML private TextField animationDuration;
 
     private final Color barColor = Color.STEELBLUE;
     private final Color activeColor = Color.LIGHTGREEN;
     private final Color warningColor = Color.RED;
 
+    /**
+     * 
+     */
+
     @FXML
     public void initialize() {
         algorithmComboBox.getItems().addAll("Bubble Sort", "Selection Sort", "Insertion Sort");
         algorithmComboBox.setOnAction(this::updateAlgorithm);
+        
+        // reset slider if user tries to drag it
+        splitPane.setDividerPositions(0.2);
+        splitPane.getDividers().get(0).positionProperty().addListener((_, _, _) -> {
+            splitPane.setDividerPositions(0.2); 
+        });
+        
+        stateLabelUpdate();
+        arrayCircleStatus.setStrokeWidth(0);
+        arraySize.setText("");
+        updateWarning("arrayStatus", "Array is empty.", warningColor);
+
+        skipAnimation.setDisable(true);
     }
 
-    public void createArray(ActionEvent e) {
+    private void updateAlgorithm(ActionEvent e)
+    {
+        switch (algorithmComboBox.getValue()) {
+            case "Bubble Sort":
+                this.algorithm = new BubbleSort<>();
+                algorithmInfo.setText(algorithm.info());
+                updateWarning("clear", null, null);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void buttonState(boolean state) {
+        sortButton.setDisable(!state);
+        lastButton.setDisable(!state);
+        previousButton.setDisable(!state);
+        nextButton.setDisable(!state);
+        firstButton.setDisable(!state);
+        clearButton.setDisable(!state);
+        algorithmButton.setDisable(!state);
+        dsButton.setDisable(!state);
+        uploadButton.setDisable(!state);
+        generateButton.setDisable(!state);
+        algorithmComboBox.setDisable(!state);
+        animationDuration.setDisable(!state);
+        sizeField.setDisable(!state);
+    }
+
+    public void updateWarning(String warning, String text, Color warningColor) {
+        switch (warning) {
+            case "arrayWarning":
+                arrayWarning.setText(text);
+                arrayWarning.setTextFill(warningColor);
+                break;
+            case "arrayStatus":
+                arrayCircleStatus.setFill(warningColor);
+                arrayStatus.setText(text);
+                arrayStatus.setTextFill(warningColor);
+                if(warningColor.equals(this.activeColor))
+                {
+                    arraySize.setText(this.list.size() + " elements");
+                    arraySize.setTextFill(this.activeColor);
+                } else {
+                    arraySize.setText("");
+                }
+
+                break;
+            case "animationWarning":
+                animationWarning.setText(text);
+                animationWarning.setTextFill(warningColor);
+                break;
+            case "clear":
+                arrayWarning.setText("");
+                animationWarning.setText("");
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    /**
+     * Array manipulation methods
+     */
+
+    public void createArray(ActionEvent e) 
+    {
         try {
             int size = Integer.parseInt(sizeField.getText());
             if (size < 10 || size > 300) {
-                sizeFieldWarning.setText("Size must be between 10 and 300");
-                sizeFieldWarning.setTextFill(warningColor);
+                updateWarning("arrayWarning", "Size must be between 10 and 300", warningColor);
                 return;
             }
-            sizeFieldWarning.setText("");
+            updateWarning("clear", null, null);
 
             this.list.clear();
             
@@ -68,55 +169,191 @@ public class Controller {
             sizeField.setText("");
 
             drawArray(this.list, null);
+            updateWarning("arrayStatus", "Array is ready!", activeColor);
+
         } catch (NumberFormatException ex) {
-            sizeFieldWarning.setText("Please enter a valid number");
-            sizeFieldWarning.setTextFill(warningColor);
+            updateWarning("arrayWarning", "Please enter a valid number", warningColor);
             return;
+        }
+    }
+
+    public void uploadArray(ActionEvent e) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select a File");
+        fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter(
+                "Text Files (*.txt)", "*.txt",
+                "Comma Separated Values (*.csv)", "*.csv",
+                "JSON Files (*.json)", "*.json"
+                )
+        );
+
+        File selectedFile = fileChooser.showOpenDialog(uploadButton.getScene().getWindow());
+        if (selectedFile != null) {
+            List<Integer> numbers = parseFile(selectedFile);
+
+            if (numbers == null) {
+                return;
+            }
+
+            int size = numbers.size();
+            if (size < 10 || size > 300) {
+                updateWarning("arrayWarning", "Size must be between 10 and 300", warningColor);
+                return;
+            }
+
+            this.list = new ArrayList<>(numbers);
+            updateWarning("arrayStatus", selectedFile.getName(), activeColor);
+            updateWarning("clear", null, null);
+
+            if (algorithm != null) {
+                algorithm.clearStates();
+            }
+
+            drawArray(this.list, null);
+        }
+    }
+
+    private List<Integer> parseFile(File file) {
+        try {
+            String content = Files.readString(file.toPath());
+            String[] parts = content.trim().split("[,\\s]+");
+            List<Integer> numbers = new ArrayList<>();
+
+            for (String part : parts) {
+                try {
+                    numbers.add(Integer.parseInt(part));
+                } catch (NumberFormatException e) {
+                    updateWarning("arrayStatus", "Wrong Format", warningColor);
+
+                    return null;
+                }
+            }
+            return numbers;
+        } catch (IOException e) {
+            updateWarning("arrayStatus", "Error reading file", warningColor);
+            return null;
         }
     }
 
     public void sortArray(ActionEvent e) {
         if (algorithm == null) {
-            sortWarning.setText("Please select a sorting algorithm.");
-            sortWarning.setTextFill(warningColor);
+            updateWarning("animationWarning", "Please select a sorting algorithm.", warningColor);
             return;
         }
 
         if (list.isEmpty()) {
-            sortWarning.setText("Array is empty. Please create an array first.");
-            sortWarning.setTextFill(warningColor);
+            updateWarning("animationWarning", "Array is empty. Please create an array first.", warningColor);
             return;
         }
 
-        if (isSorted(list)) {
-            sortWarning.setText("Array is already sorted.");
-            sortWarning.setTextFill(warningColor);
+        double duration = Double.parseDouble(animationDuration.getText());
+        if (duration <= 0) {
+            updateWarning("animationWarning", "Please enter a valid duration.", warningColor);
             return;
         }
 
-        algorithm.sort(list);
-        animate(10);
-    }
+        algorithm.clearStates();
+        algorithm.sort(new ArrayList<>(list));
+        this.currentState = 0;
 
-    private boolean isSorted(ArrayList<Integer> list) {
-        for(int i = 0; i < list.size() - 1; i++) {
-            if(list.get(i) > list.get(i + 1)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
-    public void printArray(ActionEvent e) {
-        System.out.println(algorithm.getStates().size());
-        System.out.println(list);
+        stateLabel.setText("Calculating states ...");
+        buttonState(false);
+        animate();
+
+        this.currentState = algorithm.getStates().size() - 1;
     }
 
     public void clearArray(ActionEvent e) {
         list.clear();
-        algorithm.clearStates();
+        if (algorithm != null)
+            algorithm.clearStates();
+        
         visualContainer.getChildren().clear();
+        this.currentState = -1;
+        stateLabelUpdate();
+        
+        updateWarning("arrayStatus", "Array is empty.", warningColor);
+        updateWarning("clear", null, null);
     }
+
+
+    /**
+     * Animation navigation methods
+     * These methods allow the user to navigate through the states of the algorithm
+     */
+
+    public void startState(ActionEvent e) {
+        if(algorithm == null || algorithm.getStates().size() == 0) return;
+
+        this.currentState = 0;
+        State s = algorithm.getStates().get(this.currentState);
+        drawArray(s.getList(), s.getIndexs());
+        stateLabelUpdate();
+    }
+
+    public void nextState(ActionEvent e) {
+        if(algorithm == null || algorithm.getStates().size() == 0) return;
+
+        if (this.currentState < algorithm.getStates().size() - 1)
+            this.currentState++;
+
+        State s = algorithm.getStates().get(this.currentState);
+        drawArray(s.getList(), s.getIndexs());
+        stateLabelUpdate();
+    }
+
+    public void previousState(ActionEvent e) {
+        if(algorithm == null || algorithm.getStates().size() == 0) return;
+
+        if (this.currentState > 0)
+            this.currentState--;
+        
+        State s = algorithm.getStates().get(this.currentState);
+        drawArray(s.getList(), s.getIndexs());
+        stateLabelUpdate();
+    }
+
+    public void endState(ActionEvent e) {
+        if(algorithm == null || algorithm.getStates().size() == 0) return;
+
+        this.currentState = algorithm.getStates().size() - 1;
+        State s = algorithm.getStates().get(this.currentState);
+        drawArray(s.getList(), s.getIndexs());
+        stateLabelUpdate();
+    }
+
+    public void stateLabelUpdate() {
+        if (this.currentState == - 1) {
+            stateLabel.setText("State 0 of 0");
+            return;
+        }
+
+        String text = "State " + (this.currentState + 1) + " of " + algorithm.getStates().size();
+        stateLabel.setText(text);
+    }
+
+    public void skipAnimation(ActionEvent e) 
+    {
+        if(timeline != null && timeline.getStatus() == Timeline.Status.RUNNING) {
+            timeline.stop();
+            progressBar.setProgress(0);
+            stateLabelUpdate();
+            buttonState(true);
+            skipAnimation.setDisable(true);
+        }
+
+        this.currentState = algorithm.getStates().size() - 1;
+        State s = algorithm.getStates().get(this.currentState);
+
+        drawArray(s.getList(), s.getIndexs());
+    }
+
+
+    /**
+     * Visual Container manipulation methods
+     */
 
     public void drawArray(List<Integer> list, List<Integer> indexs) {
         visualContainer.getChildren().clear();
@@ -141,21 +378,7 @@ public class Controller {
         }
     }
 
-    private void updateAlgorithm(ActionEvent e)
-    {
-        System.out.println(algorithmComboBox.getValue());
-        switch (algorithmComboBox.getValue()) {
-            case "Bubble Sort":
-                this.algorithm = new BubbleSort<>();
-                algorithmInfo.setText(algorithm.info());
-                sortWarning.setText("");
-                break;
-            default:
-                break;
-        }
-    }
-
-    public void animate(int duration) {
+    public void animate() {
         if (algorithm == null || algorithm.getStates().isEmpty()) {
             return;
         }
@@ -165,10 +388,13 @@ public class Controller {
 
         if (size == 0) return;
 
-        double timePerState = (double) duration / size; // in seconds
+        updateWarning("clear", null, null);
+        
+        double duration = Double.parseDouble(animationDuration.getText());
+        double timePerState = (double) duration / size;
 
         // Timeline for animation
-        Timeline timeline = new Timeline();
+        this.timeline = new Timeline();
 
         for (int i = 0; i < size; i++) {
             State state = states.get(i);
@@ -177,7 +403,6 @@ public class Controller {
             KeyFrame keyFrame = new KeyFrame(Duration.seconds(i * timePerState), _ -> {
                 drawArray(state.getList(), state.getIndexs());
             });
-
             
             timeline.getKeyFrames().add(keyFrame);
         }
@@ -189,10 +414,12 @@ public class Controller {
         
         timeline.setOnFinished(_ -> {
             progressBar.setProgress(0);
-            sortButton.setDisable(false);
+            stateLabelUpdate();
+            buttonState(true);
+            skipAnimation.setDisable(true);
         });
 
-        sortButton.setDisable(true);
+        skipAnimation.setDisable(false);
         timeline.play();
     }
 }

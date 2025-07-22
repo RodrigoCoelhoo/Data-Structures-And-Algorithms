@@ -4,44 +4,45 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.19962453066332916" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<SplitPane fx:id="splitPane" dividerPositions="0.19962453066332916" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="898.0" prefWidth="519.0">
          <children>
-            <ComboBox fx:id="algorithmComboBox" layoutX="25.0" layoutY="105.0" prefHeight="25.0" prefWidth="266.0" promptText="Select the Sort Algorithm" />
-            <Button layoutX="25.0" layoutY="21.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="123.0" text="Algorithms" />
-            <Button layoutX="168.0" layoutY="21.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="123.0" text="Data Structures" />
-            <Button layoutX="189.0" layoutY="349.0" mnemonicParsing="false" onAction="#createArray" prefHeight="39.0" prefWidth="108.0" text="Create Array" />
-            <Button fx:id="sortButton" layoutX="24.0" layoutY="430.0" mnemonicParsing="false" onAction="#sortArray" prefHeight="52.0" prefWidth="273.0" text="Sort Array" />
-            <TextField id="sizeField" fx:id="sizeField" layoutX="25.0" layoutY="349.0" prefHeight="39.0" prefWidth="108.0" promptText="Array Size" />
-            <Button layoutX="24.0" layoutY="530.0" mnemonicParsing="false" onAction="#printArray" prefHeight="52.0" prefWidth="273.0" text="Print Array" />
-            <Button layoutX="24.0" layoutY="630.0" mnemonicParsing="false" onAction="#clearArray" prefHeight="52.0" prefWidth="273.0" text="Clear Array" />
-            <Label layoutX="25.0" layoutY="325.0" prefHeight="17.0" prefWidth="136.0" text="Size of the array [10-300]" />
-            <Label id="sizeFieldWarning" fx:id="sizeFieldWarning" layoutX="25.0" layoutY="397.0" prefHeight="17.0" prefWidth="273.0" />
-            <Label fx:id="algorithmInfo" alignment="TOP_LEFT" layoutX="25.0" layoutY="153.0" prefHeight="147.0" prefWidth="266.0" style="-fx-background-color: e0e0e0;" wrapText="true">
+            <ComboBox fx:id="algorithmComboBox" layoutX="25.0" layoutY="128.0" prefHeight="25.0" prefWidth="266.0" promptText="Select the Sort Algorithm" />
+            <Button fx:id="generateButton" layoutX="129.0" layoutY="470.0" mnemonicParsing="false" onAction="#createArray" prefHeight="52.0" prefWidth="95.0" text="Generate Array" textAlignment="CENTER" wrapText="true">
                <font>
-                  <Font size="11.0" />
+                  <Font size="15.0" />
+               </font></Button>
+            <Button fx:id="sortButton" layoutX="140.0" layoutY="704.0" mnemonicParsing="false" onAction="#sortArray" prefHeight="44.0" prefWidth="73.0" text="Start">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <tooltip>
+                  <Tooltip text="Start Animation" />
+               </tooltip></Button>
+            <TextField id="sizeField" fx:id="sizeField" alignment="CENTER" layoutX="22.0" layoutY="470.0" prefHeight="52.0" prefWidth="95.0" promptText="Array Size">
+               <font>
+                  <Font size="17.0" />
+               </font></TextField>
+            <Label id="sizeFieldWarning" fx:id="arrayWarning" layoutX="25.0" layoutY="447.0" prefHeight="17.0" prefWidth="273.0" />
+            <Label fx:id="algorithmInfo" alignment="TOP_LEFT" layoutX="25.0" layoutY="160.0" prefHeight="227.0" prefWidth="266.0" style="-fx-background-color: e0e0e0;" wrapText="true">
+               <font>
+                  <Font size="13.0" />
                </font>
             </Label>
-            <Label fx:id="sortWarning" layoutX="31.0" layoutY="494.0" prefHeight="17.0" prefWidth="266.0" />
-            <Button contentDisplay="GRAPHIC_ONLY" layoutX="131.0" layoutY="806.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="55.0" text="Button">
-               <graphic>
-                  <ImageView fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/play.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button contentDisplay="GRAPHIC_ONLY" layoutX="202.0" layoutY="806.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="55.0" text="Button">
+            <Label fx:id="animationWarning" contentDisplay="CENTER" layoutX="22.0" layoutY="683.0" prefHeight="17.0" prefWidth="273.0" />
+            <Button fx:id="nextButton" contentDisplay="GRAPHIC_ONLY" layoutX="166.0" layoutY="787.0" mnemonicParsing="false" onAction="#nextState" prefHeight="39.0" prefWidth="55.0" text="Button">
                <graphic>
                   <ImageView fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -50,7 +51,71 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button contentDisplay="GRAPHIC_ONLY" layoutX="59.0" layoutY="806.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="55.0" text="Button">
+            <Button fx:id="clearButton" contentDisplay="GRAPHIC_ONLY" layoutX="232.0" layoutY="470.0" mnemonicParsing="false" onAction="#clearArray" prefHeight="52.0" prefWidth="63.0" text="Button">
+               <graphic>
+                  <ImageView fitHeight="40.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/eraser.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="firstButton" contentDisplay="GRAPHIC_ONLY" layoutX="20.0" layoutY="787.0" mnemonicParsing="false" onAction="#startState" prefHeight="39.0" prefWidth="63.0" text="Button">
+               <graphic>
+                  <ImageView fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/start.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <ProgressBar fx:id="progressBar" layoutX="20.0" layoutY="755.0" prefHeight="23.0" prefWidth="273.0" progress="0.0" />
+            <Button fx:id="lastButton" contentDisplay="GRAPHIC_ONLY" layoutX="230.0" layoutY="787.0" mnemonicParsing="false" onAction="#endState" prefHeight="39.0" prefWidth="63.0" text="Button">
+               <graphic>
+                  <ImageView fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/end.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="uploadButton" layoutX="22.0" layoutY="538.0" mnemonicParsing="false" onAction="#uploadArray" prefHeight="25.0" prefWidth="273.0" text="Upload Array">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/upload.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Separator layoutX="22.0" layoutY="677.0" prefHeight="3.0" prefWidth="273.0" />
+            <Label layoutX="25.0" layoutY="637.0" prefHeight="39.0" prefWidth="266.0" text="Animation">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Separator layoutX="22.0" layoutY="443.0" prefHeight="3.0" prefWidth="273.0" />
+            <Label layoutX="25.0" layoutY="403.0" prefHeight="39.0" prefWidth="266.0" text="Array">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="arrayStatus" layoutX="48.0" layoutY="590.0" prefHeight="25.0" prefWidth="266.0" text="Array Created" wrapText="true">
+               <font>
+                  <Font size="19.0" />
+               </font></Label>
+            <Separator layoutX="22.0" layoutY="115.0" prefHeight="3.0" prefWidth="273.0" />
+            <Label layoutX="25.0" layoutY="75.0" prefHeight="39.0" prefWidth="266.0" text="Algorithm">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Button fx:id="algorithmButton" layoutX="22.0" layoutY="24.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="123.0" text="Algorithms" />
+            <Button fx:id="dsButton" layoutX="168.0" layoutY="24.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="123.0" text="Data Structures" />
+            <Button fx:id="previousButton" contentDisplay="GRAPHIC_ONLY" layoutX="93.0" layoutY="787.0" mnemonicParsing="false" onAction="#previousState" prefHeight="39.0" prefWidth="55.0" text="Button">
                <graphic>
                   <ImageView fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -59,11 +124,41 @@
                   </ImageView>
                </graphic>
             </Button>
-            <ProgressBar fx:id="progressBar" layoutX="22.0" layoutY="853.0" prefHeight="23.0" prefWidth="273.0" progress="0.0" />
+            <Label fx:id="stateLabel" alignment="CENTER" layoutX="20.0" layoutY="846.0" prefHeight="25.0" prefWidth="273.0" text="Label">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <TextField fx:id="animationDuration" alignment="CENTER" layoutX="20.0" layoutY="704.0" prefHeight="44.0" prefWidth="109.0" promptText="Duration" text="10.00">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </TextField>
+            <Circle fx:id="arrayCircleStatus" fill="DODGERBLUE" layoutX="32.0" layoutY="605.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
+            <Button fx:id="skipAnimation" layoutX="230.0" layoutY="704.0" mnemonicParsing="false" onAction="#skipAnimation" prefHeight="44.0" prefWidth="63.0">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <tooltip>
+                  <Tooltip text="Skip Animation" />
+               </tooltip>
+               <graphic>
+                  <ImageView fitHeight="26.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/skip.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Label fx:id="arraySize" layoutX="48.0" layoutY="610.0" prefHeight="25.0" prefWidth="266.0" text="Array Size" wrapText="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="898.0" prefWidth="1114.0">
          <children>
-            <Pane fx:id="visualContainer" layoutX="11.0" layoutY="59.0" prefHeight="825.0" prefWidth="1254.0" style="-fx-background-color: e0e0e0;" />
+            <Pane fx:id="visualContainer" layoutY="59.0" prefHeight="825.0" prefWidth="1254.0" style="-fx-background-color: e0e0e0;" />
          </children></AnchorPane>
   </items>
 </SplitPane>
