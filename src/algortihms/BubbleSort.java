@@ -6,14 +6,6 @@ import java.util.List;
 public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 
 	private final ArrayList<State> states = new ArrayList<>();
-
-	public ArrayList<State> getStates() {
-		return this.states;
-	}
-
-	public void clearStates() {
-		this.states.clear();
-	}
 	
 	@Override
     public T[] sort(T[] input) 
@@ -46,10 +38,11 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 	{
 		if (input == null || input.size() <= 1) return input;
 
-		saveState(input, null);
+		saveState(input, null, null);
 
 		boolean swapped = true;
 		int tailIndex = 1;
+		ArrayList<Integer> highLight = new ArrayList<>();
 		while (swapped) 
 		{
 			swapped = false;
@@ -67,8 +60,9 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 					swapped = true;
 				}
 
-				saveState(input, indexs);
+				saveState(input, indexs, highLight);
 			}
+			highLight.add(input.size() - tailIndex);
 			tailIndex++;
 		}
 		return input;
@@ -83,7 +77,8 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 		return result;
 	}
 
-	private void saveState(ArrayList<T> input, List<Integer> indexs) 
+	@Override
+	public void saveState(ArrayList<T> input, List<Integer> indexs, List<Integer> highLight) 
 	{
 		if (!input.isEmpty() && input.get(0) instanceof Integer) 
 		{
@@ -91,9 +86,19 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 			for (T element : input) {
 				copy.add((Integer) element);
 			}
-			states.add(new State(copy, indexs));
+			states.add(new State(copy, indexs, highLight));
 		} else {
 			throw new UnsupportedOperationException("Only ArrayList<Integer> is supported by State.");
 		}
+	}
+
+	@Override
+	public ArrayList<State> getStates() {
+		return this.states;
+	}
+
+	@Override
+	public void clearStates() {
+		this.states.clear();
 	}
 }

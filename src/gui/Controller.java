@@ -126,7 +126,6 @@ public class Controller {
                 } else {
                     arraySize.setText("");
                 }
-
                 break;
             case "animationWarning":
                 animationWarning.setText(text);
@@ -168,7 +167,7 @@ public class Controller {
             }
             sizeField.setText("");
 
-            drawArray(this.list, null);
+            drawArray(this.list, null, null);
             updateWarning("arrayStatus", "Array is ready!", activeColor);
 
         } catch (NumberFormatException ex) {
@@ -210,7 +209,7 @@ public class Controller {
                 algorithm.clearStates();
             }
 
-            drawArray(this.list, null);
+            drawArray(this.list, null, null);
         }
     }
 
@@ -289,7 +288,7 @@ public class Controller {
 
         this.currentState = 0;
         State s = algorithm.getStates().get(this.currentState);
-        drawArray(s.getList(), s.getIndexs());
+        drawArray(s.getList(), s.getIndexs(), s.getHighLight());
         stateLabelUpdate();
     }
 
@@ -300,7 +299,7 @@ public class Controller {
             this.currentState++;
 
         State s = algorithm.getStates().get(this.currentState);
-        drawArray(s.getList(), s.getIndexs());
+        drawArray(s.getList(), s.getIndexs(), s.getHighLight());
         stateLabelUpdate();
     }
 
@@ -311,7 +310,7 @@ public class Controller {
             this.currentState--;
         
         State s = algorithm.getStates().get(this.currentState);
-        drawArray(s.getList(), s.getIndexs());
+        drawArray(s.getList(), s.getIndexs(), s.getHighLight());
         stateLabelUpdate();
     }
 
@@ -320,7 +319,7 @@ public class Controller {
 
         this.currentState = algorithm.getStates().size() - 1;
         State s = algorithm.getStates().get(this.currentState);
-        drawArray(s.getList(), s.getIndexs());
+        drawArray(s.getList(), s.getIndexs(), s.getHighLight());
         stateLabelUpdate();
     }
 
@@ -347,7 +346,7 @@ public class Controller {
         this.currentState = algorithm.getStates().size() - 1;
         State s = algorithm.getStates().get(this.currentState);
 
-        drawArray(s.getList(), s.getIndexs());
+        drawArray(s.getList(), s.getIndexs(), s.getHighLight());
     }
 
 
@@ -355,7 +354,7 @@ public class Controller {
      * Visual Container manipulation methods
      */
 
-    public void drawArray(List<Integer> list, List<Integer> indexs) {
+    public void drawArray(List<Integer> list, List<Integer> indexs, List<Integer> highLight) {
         visualContainer.getChildren().clear();
 
         double width = visualContainer.getWidth();
@@ -374,6 +373,8 @@ public class Controller {
             bar.setFill(barColor);
             if(indexs != null && indexs.contains(i))
                 bar.setFill(activeColor);
+            else if (highLight != null && highLight.contains(i))
+                bar.setFill(Color.RED);
             visualContainer.getChildren().add(bar);
         }
     }
@@ -401,7 +402,7 @@ public class Controller {
 
             // Define which second will the state be drawn in the timeline
             KeyFrame keyFrame = new KeyFrame(Duration.seconds(i * timePerState), _ -> {
-                drawArray(state.getList(), state.getIndexs());
+                drawArray(state.getList(), state.getIndexs(), state.getHighLight());
             });
             
             timeline.getKeyFrames().add(keyFrame);
