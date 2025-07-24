@@ -11,9 +11,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("algorithm.fxml"));
         primaryStage.setTitle("Data Structure and Algorithm Visualizer");
-        primaryStage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        
+        primaryStage.setScene(scene);
+
 
         Image icon = new Image("images/icon.png");
         primaryStage.getIcons().add(icon);

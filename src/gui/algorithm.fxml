@@ -15,11 +15,11 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane fx:id="splitPane" dividerPositions="0.19962453066332916" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<SplitPane fx:id="splitPane" dividerPositions="0.19962453066332916" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AlgorithmController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="898.0" prefWidth="519.0">
          <children>
-            <ComboBox fx:id="algorithmComboBox" layoutX="25.0" layoutY="128.0" prefHeight="25.0" prefWidth="266.0" promptText="Select the Sort Algorithm" />
+            <ComboBox fx:id="algorithmComboBox" layoutX="25.0" layoutY="98.0" prefHeight="25.0" prefWidth="266.0" promptText="Select the Sort Algorithm" />
             <Button fx:id="generateButton" layoutX="129.0" layoutY="470.0" mnemonicParsing="false" onAction="#createArray" prefHeight="52.0" prefWidth="95.0" text="Generate Array" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font size="15.0" />
@@ -36,7 +36,7 @@
                   <Font size="17.0" />
                </font></TextField>
             <Label id="sizeFieldWarning" fx:id="arrayWarning" layoutX="25.0" layoutY="447.0" prefHeight="17.0" prefWidth="273.0" />
-            <Label fx:id="algorithmInfo" alignment="TOP_LEFT" layoutX="25.0" layoutY="160.0" prefHeight="227.0" prefWidth="266.0" style="-fx-background-color: e0e0e0;" wrapText="true">
+            <Label fx:id="algorithmInfo" alignment="TOP_LEFT" layoutX="25.0" layoutY="146.0" prefHeight="245.0" prefWidth="266.0" wrapText="true">
                <font>
                   <Font size="13.0" />
                </font>
@@ -107,14 +107,12 @@
                <font>
                   <Font size="19.0" />
                </font></Label>
-            <Separator layoutX="22.0" layoutY="115.0" prefHeight="3.0" prefWidth="273.0" />
-            <Label layoutX="25.0" layoutY="75.0" prefHeight="39.0" prefWidth="266.0" text="Algorithm">
+            <Separator layoutX="22.0" layoutY="85.0" prefHeight="3.0" prefWidth="273.0" />
+            <Label layoutX="25.0" layoutY="45.0" prefHeight="39.0" prefWidth="266.0" text="Algorithm">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Button fx:id="algorithmButton" layoutX="22.0" layoutY="24.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="123.0" text="Algorithms" />
-            <Button fx:id="dsButton" layoutX="168.0" layoutY="24.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="123.0" text="Data Structures" />
             <Button fx:id="previousButton" contentDisplay="GRAPHIC_ONLY" layoutX="93.0" layoutY="787.0" mnemonicParsing="false" onAction="#previousState" prefHeight="39.0" prefWidth="55.0" text="Button">
                <graphic>
                   <ImageView fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
@@ -155,10 +153,19 @@
                   <Font size="14.0" />
                </font>
             </Label>
+            <Button fx:id="home" contentDisplay="GRAPHIC_ONLY" layoutX="5.0" layoutY="7.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="39.0" text="Button">
+               <graphic>
+                  <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/back.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
          </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="898.0" prefWidth="1114.0">
+    <AnchorPane fx:id="animationAnchor" minHeight="0.0" minWidth="0.0" prefHeight="898.0" prefWidth="1114.0" style="-fx-background-color: e2e2e2;">
          <children>
-            <Pane fx:id="visualContainer" layoutY="59.0" prefHeight="825.0" prefWidth="1254.0" style="-fx-background-color: e0e0e0;" />
+            <Pane fx:id="visualContainer" layoutX="11.0" layoutY="12.0" prefHeight="872.0" prefWidth="1254.0" style="-fx-background-color: f2f2f2;" />
          </children></AnchorPane>
   </items>
 </SplitPane>

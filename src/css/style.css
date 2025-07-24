@@ -1,0 +1,50 @@
+/* style.css */
+
+.button {   
+    -fx-cursor: hand;      
+}
+
+#home {
+    -fx-background-color: #f2f2f2;
+    -fx-text-fill: white;       
+    -fx-font-weight: bold;       
+    -fx-background-radius: 6;    
+    -fx-padding: 8 16;           
+    -fx-font-size: 14px;         
+    -fx-cursor: hand;            
+}
+
+.split-pane-divider {
+    -fx-padding: 1;                         
+    -fx-background-color: #88888839;     
+}
+
+.tooltip {
+    -fx-font-size: 13px;
+    -fx-background-color: #eeeeee;
+    -fx-text-fill: #000000;
+}
+
+#animationAnchor {
+	-fx-background-color: #e2e2e2;
+}
+
+#visualContainer {
+    -fx-background-color: #f2f2f2;
+	-fx-border-color: #cccccc;
+	-fx-border-width: 1px;
+}
+
+/* ComboBox styling */
+.combo-box {
+    -fx-font-size: 14px;
+    -fx-padding: 4px;
+}
+
+#algorithmInfo {
+	-fx-background-color: white;
+	-fx-border-color: #cccccc;
+	-fx-border-width: 1px;
+	-fx-border-radius: 4px;
+	-fx-padding: 4px;
+}

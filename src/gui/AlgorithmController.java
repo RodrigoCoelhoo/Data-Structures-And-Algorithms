@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 import algortihms.BubbleSort;
+import algortihms.BucketSort;
 import algortihms.SortAlgorithm;
 import algortihms.State;
 import javafx.animation.KeyFrame;
@@ -27,7 +28,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
-public class Controller {
+public class AlgorithmController {
 
     /**
      * Variables declaration
@@ -49,11 +50,13 @@ public class Controller {
     @FXML private ComboBox<String> algorithmComboBox;
     @FXML private Pane visualContainer;
     @FXML private ProgressBar progressBar;
-    @FXML private Button sortButton, lastButton, previousButton, nextButton, firstButton, clearButton, algorithmButton, dsButton, uploadButton, generateButton, skipAnimation;
+    @FXML private Button sortButton, lastButton, previousButton, nextButton, firstButton, clearButton, uploadButton, generateButton, skipAnimation;
     @FXML private Circle arrayCircleStatus;
     @FXML private TextField animationDuration;
 
-    private final Color barColor = Color.STEELBLUE;
+    private final Color barColor = Color.web("#90CAF9");         // Light Blue
+    private final Color highLightColor = Color.web("#1976D2");   // Blue
+    private final Color indexColor = Color.web("#66BB6A");       // Green
     private final Color activeColor = Color.LIGHTGREEN;
     private final Color warningColor = Color.RED;
 
@@ -63,7 +66,7 @@ public class Controller {
 
     @FXML
     public void initialize() {
-        algorithmComboBox.getItems().addAll("Bubble Sort", "Selection Sort", "Insertion Sort");
+        algorithmComboBox.getItems().addAll("Bubble Sort", "Bucket Sort", "Insertion Sort");
         algorithmComboBox.setOnAction(this::updateAlgorithm);
         
         // reset slider if user tries to drag it
@@ -88,6 +91,10 @@ public class Controller {
                 algorithmInfo.setText(algorithm.info());
                 updateWarning("clear", null, null);
                 break;
+            case "Bucket Sort":
+                this.algorithm = new BucketSort<>();
+                algorithmInfo.setText(algorithm.info());
+                updateWarning("clear", null, null);
             default:
                 break;
         }
@@ -100,8 +107,6 @@ public class Controller {
         nextButton.setDisable(!state);
         firstButton.setDisable(!state);
         clearButton.setDisable(!state);
-        algorithmButton.setDisable(!state);
-        dsButton.setDisable(!state);
         uploadButton.setDisable(!state);
         generateButton.setDisable(!state);
         algorithmComboBox.setDisable(!state);
@@ -365,16 +370,18 @@ public class Controller {
         double barWidth = Math.max(0, slotWidth - 2);
 
         for (int i = 0; i < size; i++) {
-            double barHeight = (list.get(i) * height) / 100.0;
+            int value = list.get(i) != null ? list.get(i) : 0;
+
+            double barHeight = (value * height) / 100.0;
             double x = i * slotWidth + 1;
             double y = height - barHeight;
 
             Rectangle bar = new Rectangle(x, y, barWidth, barHeight);
             bar.setFill(barColor);
+            if (highLight != null && highLight.contains(i))
+                bar.setFill(highLightColor);
             if(indexs != null && indexs.contains(i))
-                bar.setFill(activeColor);
-            else if (highLight != null && highLight.contains(i))
-                bar.setFill(Color.RED);
+                bar.setFill(indexColor);
             visualContainer.getChildren().add(bar);
         }
     }

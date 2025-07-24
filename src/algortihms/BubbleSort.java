@@ -94,7 +94,7 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 
 	@Override
 	public ArrayList<State> getStates() {
-		return this.states;
+		return new ArrayList<>(states);
 	}
 
 	@Override
