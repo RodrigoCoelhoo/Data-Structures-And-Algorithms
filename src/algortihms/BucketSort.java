@@ -1,10 +1,9 @@
 package algortihms;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class BucketSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 
@@ -43,10 +42,40 @@ public class BucketSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 			}
 		}
 
-		// int bucketIndex = (int) ((value - minValue) / (maxValue - minValue + 1) * bucketCount);
+		double minValue = toDouble(min);
+    	double maxValue = toDouble(max);
 
+		ArrayList<ArrayList<T>> buckets = new ArrayList<>();
+		for(int i = 0; i < input.length; i++) 
+		{
+			ArrayList<T> bucket = new ArrayList<>();
+			buckets.add(bucket);
+		}
 
-		return null;
+		for(T i : input)
+		{
+			int bucketIndex = (int) ((double) (toDouble(i) - minValue) / (maxValue - minValue + 1) * input.length);
+			buckets.get(bucketIndex).add(i);
+		}
+
+		for(ArrayList<T> bucket : buckets)
+		{
+			// Insertion Sort
+			for(int i = 1; i < bucket.size(); i++)
+			{
+				T key = bucket.get(i);
+				int j = i - 1;
+
+				while (j >= 0 && key.compareTo(bucket.get(j)) < 0) {
+					bucket.set(j + 1, bucket.get(j));
+					j--;
+				}
+
+				bucket.set(j+1, key);
+			}
+		}
+
+		return mergeBuckets(buckets).toArray(Arrays.copyOf(input, input.length));
 	}
 
 	@Override
@@ -138,12 +167,20 @@ public class BucketSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 	}
 
 	@Override
-	public String info() 
-	{
-		String result = "Time Complexity: O(n + k)\n\n";
-		result += "Bucket Sort distributes the elements into a number of buckets based on value ranges. "
-				+ "Each bucket is then sorted individually (typically using a simpler algorithm like Insertion Sort), "
-				+ "and the sorted buckets are concatenated to produce the final sorted array.";
+	public String info() {
+		String result = "Time Complexity: O(n + k)\n";
+		result += "Space Complexity: O(n + k)\n\n";
+		result += "Here, 'n' is the number of elements to be sorted, and 'k' is the number of buckets used.\n\n";
+
+		result += "Bucket Sort is a non-comparison-based sorting algorithm that distributes elements into buckets. "
+				+ "Each bucket contains a range of values, and elements are placed into buckets based on a computed index (typically derived from their value).\n\n";
+
+		result += "Each bucket is then sorted individually using a simpler algorithm, such as Insertion Sort. At the end, the buckets are concatenated to form the final sorted array.\n\n";
+
+		result += "Note:\nThis implementation uses a fixed number of buckets (configurable), but in some cases, the number of buckets is chosen to match the size of the input array to improve distribution.\n\n";
+
+		result += "For Bucket Sort to work, the elements being sorted must be mappable to a numeric range — meaning they must be convertible to a number that determines which bucket they belong to. ";
+
 		return result;
 	}
 
@@ -169,25 +206,6 @@ public class BucketSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 			states.add(new State(copy, indexs, highLight));
 		} else {
 			throw new UnsupportedOperationException("Only ArrayList<Integer> is supported by State.");
-		}
-	}
-
-	public static void main(String[] args) {
-		ArrayList<Integer> list = new ArrayList<>();
-		
-		Random r = new Random();
-		for (int i = 0; i < 50; i++) {
-			list.add(r.nextInt(1, 101));
-		}
-
-		BucketSort<Integer> algo = new BucketSort<>();
-		algo.sort(list);
-
-		for(State s : algo.getStates())
-		{
-			System.out.println(s.getList());
-			System.out.println(s.getIndexs());
-			System.out.println(s.getHighLight());
 		}
 	}
 }

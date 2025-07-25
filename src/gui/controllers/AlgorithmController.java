@@ -1,4 +1,4 @@
-package gui;
+package gui.controllers;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +20,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -42,8 +43,8 @@ public class AlgorithmController {
     
     @FXML private SplitPane splitPane;
     @FXML private TextField sizeField;
+    @FXML private TextArea algorithmInfo;
     @FXML private Label arrayWarning;
-    @FXML private Label algorithmInfo;
     @FXML private Label animationWarning;
     @FXML private Label stateLabel;
     @FXML private Label arrayStatus, arraySize;
@@ -54,9 +55,9 @@ public class AlgorithmController {
     @FXML private Circle arrayCircleStatus;
     @FXML private TextField animationDuration;
 
-    private final Color barColor = Color.web("#90CAF9");         // Light Blue
-    private final Color highLightColor = Color.web("#1976D2");   // Blue
-    private final Color indexColor = Color.web("#66BB6A");       // Green
+    private final Color barColor = Color.web("#90CAF9");       
+    private final Color highLightColor = Color.web("#1976D2"); 
+    private final Color indexColor = Color.web("#66BB6A");     
     private final Color activeColor = Color.LIGHTGREEN;
     private final Color warningColor = Color.RED;
 

@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
@@ -15,7 +16,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane fx:id="splitPane" dividerPositions="0.19962453066332916" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AlgorithmController">
+<SplitPane fx:id="splitPane" dividerPositions="0.19962453066332916" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controllers.AlgorithmController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="898.0" prefWidth="519.0">
          <children>
@@ -23,7 +24,10 @@
             <Button fx:id="generateButton" layoutX="129.0" layoutY="470.0" mnemonicParsing="false" onAction="#createArray" prefHeight="52.0" prefWidth="95.0" text="Generate Array" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font size="15.0" />
-               </font></Button>
+               </font>
+               <tooltip>
+                  <Tooltip text="Generate a random array of the selected size with values from 1-100 " />
+               </tooltip></Button>
             <Button fx:id="sortButton" layoutX="140.0" layoutY="704.0" mnemonicParsing="false" onAction="#sortArray" prefHeight="44.0" prefWidth="73.0" text="Start">
                <font>
                   <Font size="20.0" />
@@ -31,53 +35,65 @@
                <tooltip>
                   <Tooltip text="Start Animation" />
                </tooltip></Button>
-            <TextField id="sizeField" fx:id="sizeField" alignment="CENTER" layoutX="22.0" layoutY="470.0" prefHeight="52.0" prefWidth="95.0" promptText="Array Size">
+            <TextField id="sizeField" fx:id="sizeField" alignment="CENTER" layoutX="22.0" layoutY="470.0" prefHeight="52.0" prefWidth="95.0" promptText="Size">
                <font>
                   <Font size="17.0" />
                </font></TextField>
             <Label id="sizeFieldWarning" fx:id="arrayWarning" layoutX="25.0" layoutY="447.0" prefHeight="17.0" prefWidth="273.0" />
-            <Label fx:id="algorithmInfo" alignment="TOP_LEFT" layoutX="25.0" layoutY="146.0" prefHeight="245.0" prefWidth="266.0" wrapText="true">
+            <TextArea fx:id="algorithmInfo" editable="false" layoutX="25.0" layoutY="142.0" prefHeight="227.0" prefWidth="266.0" style="-fx-background-color: e0e0e0;" wrapText="true">
                <font>
                   <Font size="13.0" />
                </font>
-            </Label>
+            </TextArea>
             <Label fx:id="animationWarning" contentDisplay="CENTER" layoutX="22.0" layoutY="683.0" prefHeight="17.0" prefWidth="273.0" />
             <Button fx:id="nextButton" contentDisplay="GRAPHIC_ONLY" layoutX="166.0" layoutY="787.0" mnemonicParsing="false" onAction="#nextState" prefHeight="39.0" prefWidth="55.0" text="Button">
                <graphic>
                   <ImageView fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/next.png" />
+                        <Image url="@../../images/next.png" />
                      </image>
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="Next State" />
+               </tooltip>
             </Button>
             <Button fx:id="clearButton" contentDisplay="GRAPHIC_ONLY" layoutX="232.0" layoutY="470.0" mnemonicParsing="false" onAction="#clearArray" prefHeight="52.0" prefWidth="63.0" text="Button">
                <graphic>
                   <ImageView fitHeight="40.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/eraser.png" />
+                        <Image url="@../../images/eraser.png" />
                      </image>
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="Clear Array" />
+               </tooltip>
             </Button>
             <Button fx:id="firstButton" contentDisplay="GRAPHIC_ONLY" layoutX="20.0" layoutY="787.0" mnemonicParsing="false" onAction="#startState" prefHeight="39.0" prefWidth="63.0" text="Button">
                <graphic>
                   <ImageView fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/start.png" />
+                        <Image url="@../../images/start.png" />
                      </image>
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="First State" />
+               </tooltip>
             </Button>
             <ProgressBar fx:id="progressBar" layoutX="20.0" layoutY="755.0" prefHeight="23.0" prefWidth="273.0" progress="0.0" />
             <Button fx:id="lastButton" contentDisplay="GRAPHIC_ONLY" layoutX="230.0" layoutY="787.0" mnemonicParsing="false" onAction="#endState" prefHeight="39.0" prefWidth="63.0" text="Button">
                <graphic>
                   <ImageView fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/end.png" />
+                        <Image url="@../../images/end.png" />
                      </image>
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="Last State" />
+               </tooltip>
             </Button>
             <Button fx:id="uploadButton" layoutX="22.0" layoutY="538.0" mnemonicParsing="false" onAction="#uploadArray" prefHeight="25.0" prefWidth="273.0" text="Upload Array">
                <font>
@@ -86,7 +102,7 @@
                <graphic>
                   <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/upload.png" />
+                        <Image url="@../../images/upload.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -117,10 +133,13 @@
                <graphic>
                   <ImageView fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/previous.png" />
+                        <Image url="@../../images/previous.png" />
                      </image>
                   </ImageView>
                </graphic>
+               <tooltip>
+                  <Tooltip text="Previous State" />
+               </tooltip>
             </Button>
             <Label fx:id="stateLabel" alignment="CENTER" layoutX="20.0" layoutY="846.0" prefHeight="25.0" prefWidth="273.0" text="Label">
                <font>
@@ -143,7 +162,7 @@
                <graphic>
                   <ImageView fitHeight="26.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/skip.png" />
+                        <Image url="@../../images/skip.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -153,11 +172,11 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Button fx:id="home" contentDisplay="GRAPHIC_ONLY" layoutX="5.0" layoutY="7.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="39.0" text="Button">
+            <Button fx:id="home" contentDisplay="GRAPHIC_ONLY" layoutX="-3.0" layoutY="7.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="39.0" text="Button">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/back.png" />
+                        <Image url="@../../images/back.png" />
                      </image>
                   </ImageView>
                </graphic>
