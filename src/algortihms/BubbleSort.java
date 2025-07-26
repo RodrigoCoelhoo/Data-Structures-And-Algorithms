@@ -1,6 +1,7 @@
 package algortihms;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
@@ -11,6 +12,8 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
     public T[] sort(T[] input) 
 	{
 		if (input == null || input.length <= 1) return input;
+
+		T[] result = Arrays.copyOf(input, input.length);
 			
 		boolean swapped = true;
 		int tailIndex= 1;
@@ -18,19 +21,19 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 		{
 			swapped = false;
 
-			for(int i = 0; i < input.length - tailIndex ; i++)
+			for(int i = 0; i < result.length - tailIndex ; i++)
 			{
-				if(input[i].compareTo(input[i+1]) > 0)
+				if(result[i].compareTo(result[i+1]) > 0)
 				{
-					T temp = input[i];
-					input[i] = input[i+1];
-					input[i+1] = temp;
+					T temp = result[i];
+					result[i] = result[i+1];
+					result[i+1] = temp;
 					swapped = true;
 				}
 			}
 			tailIndex++;
 		}
-		return input;	
+		return result;	
 	}
 
 	@Override
@@ -38,7 +41,9 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 	{
 		if (input == null || input.size() <= 1) return input;
 
-		saveState(input, null, null);
+		ArrayList<T> result = new ArrayList<>(input);
+
+		saveState(result, null, null);
 
 		boolean swapped = true;
 		int tailIndex = 1;
@@ -46,26 +51,26 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 		while (swapped) 
 		{
 			swapped = false;
-			for (int i = 0; i < input.size() - tailIndex; i++) 
+			for (int i = 0; i < result.size() - tailIndex; i++) 
 			{
 				ArrayList<Integer> indexs = new ArrayList<>();
 				indexs.add(i);
 				indexs.add(i + 1);
 				
-				if (input.get(i).compareTo(input.get(i + 1)) > 0) 
+				if (result.get(i).compareTo(result.get(i + 1)) > 0) 
 				{
-					T temp = input.get(i);
-					input.set(i, input.get(i + 1));
-					input.set(i + 1, temp);
+					T temp = result.get(i);
+					result.set(i, result.get(i + 1));
+					result.set(i + 1, temp);
 					swapped = true;
 				}
 
-				saveState(input, indexs, highLight);
+				saveState(result, indexs, highLight);
 			}
-			highLight.add(input.size() - tailIndex);
+			highLight.add(result.size() - tailIndex);
 			tailIndex++;
 		}
-		return input;
+		return result;
 	}
 
 

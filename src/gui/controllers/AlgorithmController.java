@@ -9,6 +9,7 @@ import java.util.Random;
 
 import algortihms.BubbleSort;
 import algortihms.BucketSort;
+import algortihms.SelectionSort;
 import algortihms.SortAlgorithm;
 import algortihms.State;
 import javafx.animation.KeyFrame;
@@ -67,7 +68,7 @@ public class AlgorithmController {
 
     @FXML
     public void initialize() {
-        algorithmComboBox.getItems().addAll("Bubble Sort", "Bucket Sort", "Insertion Sort");
+        algorithmComboBox.getItems().addAll("Bubble Sort", "Bucket Sort", "Insertion Sort", "Selection Sort");
         algorithmComboBox.setOnAction(this::updateAlgorithm);
         
         // reset slider if user tries to drag it
@@ -89,16 +90,25 @@ public class AlgorithmController {
         switch (algorithmComboBox.getValue()) {
             case "Bubble Sort":
                 this.algorithm = new BubbleSort<>();
-                algorithmInfo.setText(algorithm.info());
-                updateWarning("clear", null, null);
+                refreshUI();
                 break;
             case "Bucket Sort":
                 this.algorithm = new BucketSort<>();
-                algorithmInfo.setText(algorithm.info());
-                updateWarning("clear", null, null);
+                refreshUI();
+                break;
+            case "Selection Sort":
+                this.algorithm = new SelectionSort<>();
+                refreshUI();
+                break;
             default:
                 break;
         }
+    }
+
+    private void refreshUI() {
+        algorithmInfo.setText(algorithm.info());
+        updateWarning("clear", null, null);
+        drawArray(list, null, null);
     }
 
     private void buttonState(boolean state) {

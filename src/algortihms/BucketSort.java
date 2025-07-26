@@ -31,7 +31,6 @@ public class BucketSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 		
 		if(!(input[0] instanceof Number)) throw new IllegalArgumentException("Bucket sort requires numeric input.");
 		
-
 		// Find min-max
 		T min = input[0], max = input[0];
 		for (int i = 1; i < input.length; i++) {
