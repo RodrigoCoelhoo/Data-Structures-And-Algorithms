@@ -9,7 +9,7 @@ public class BubbleSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 	private final ArrayList<State> states = new ArrayList<>();
 	
 	@Override
-    public T[] sort(T[] input) 
+	public T[] sort(T[] input) 
 	{
 		if (input == null || input.length <= 1) return input;
 

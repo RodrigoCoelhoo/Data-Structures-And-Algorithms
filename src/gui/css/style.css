@@ -26,13 +26,13 @@
 }
 
 #animationAnchor {
-	-fx-background-color: #e2e2e2;
+    -fx-background-color: #e2e2e2;
 }
 
 #visualContainer {
     -fx-background-color: #f2f2f2;
-	-fx-border-color: #cccccc;
-	-fx-border-width: 1px;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
 }
 
 /* ComboBox styling */
@@ -42,10 +42,10 @@
 }
 
 #algorithmInfo {
-	-fx-background-color: white;
-	-fx-border-color: #cccccc;
-	-fx-border-width: 1px;
-	-fx-border-radius: 4px;
-	-fx-padding: 4px;
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-padding: 4px;
     -fx-wrap-text: true;   
 }

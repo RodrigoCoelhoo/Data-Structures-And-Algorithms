@@ -42,7 +42,7 @@ public class BucketSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 		}
 
 		double minValue = toDouble(min);
-    	double maxValue = toDouble(max);
+		double maxValue = toDouble(max);
 
 		ArrayList<ArrayList<T>> buckets = new ArrayList<>();
 		for(int i = 0; i < input.length; i++) 
