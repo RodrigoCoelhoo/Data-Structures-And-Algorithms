@@ -14,6 +14,11 @@
     -fx-cursor: hand;            
 }
 
+#animationInfo {
+    -fx-background-color: #f2f2f2;
+    -fx-text-fill: white;       
+}
+
 .split-pane-divider {
     -fx-padding: 1;                         
     -fx-background-color: #88888839;     

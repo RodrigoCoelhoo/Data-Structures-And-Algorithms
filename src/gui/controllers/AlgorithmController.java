@@ -11,6 +11,7 @@ import algortihms.BubbleSort;
 import algortihms.BucketSort;
 import algortihms.InsertionSort;
 import algortihms.MergeSort;
+import algortihms.QuickSort;
 import algortihms.SelectionSort;
 import algortihms.SortAlgorithm;
 import algortihms.State;
@@ -70,7 +71,7 @@ public class AlgorithmController {
 
     @FXML
     public void initialize() {
-        algorithmComboBox.getItems().addAll("Bubble Sort", "Bucket Sort", "Insertion Sort", "Selection Sort", "Merge Sort");
+        algorithmComboBox.getItems().addAll("Bubble Sort", "Bucket Sort", "Insertion Sort", "Selection Sort", "Merge Sort", "Quick Sort");
         algorithmComboBox.setOnAction(this::updateAlgorithm);
         
         // reset slider if user tries to drag it
@@ -108,6 +109,10 @@ public class AlgorithmController {
                 break;
             case "Merge Sort":
                 this.algorithm = new MergeSort<>();
+                refreshUI();
+                break;
+            case "Quick Sort":
+                this.algorithm = new QuickSort<>();
                 refreshUI();
                 break;
             default:
