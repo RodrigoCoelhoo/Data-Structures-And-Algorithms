@@ -172,7 +172,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Button fx:id="home" contentDisplay="GRAPHIC_ONLY" layoutX="-3.0" layoutY="7.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="39.0" text="Button">
+            <Button fx:id="home" contentDisplay="GRAPHIC_ONLY" layoutX="-3.0" layoutY="7.0" mnemonicParsing="false" onAction="#handleSwitchToHome" prefHeight="39.0" prefWidth="39.0" text="Button">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                      <image>

@@ -15,6 +15,7 @@ import algortihms.QuickSort;
 import algortihms.SelectionSort;
 import algortihms.SortAlgorithm;
 import algortihms.State;
+import gui.SceneManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -86,6 +87,15 @@ public class AlgorithmController {
         updateWarning("arrayStatus", "Array is empty.", warningColor);
 
         skipAnimation.setDisable(true);
+    }
+
+    @FXML
+    private void handleSwitchToHome(ActionEvent event) {
+        try {
+            SceneManager.switchScene("layouts/main.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateAlgorithm(ActionEvent e)
