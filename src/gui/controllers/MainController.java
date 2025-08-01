@@ -7,9 +7,18 @@ import javafx.fxml.FXML;
 public class MainController {
 	
 	@FXML
-    private void handleSwitchToAlgorithm(ActionEvent event) {
+    private void handleSwitchToAlgorithmSort(ActionEvent event) {
         try {
-            SceneManager.switchScene("layouts/algorithm.fxml");
+            SceneManager.switchScene("layouts/algorithm_sort.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleSwitchToAlgorithmSearch(ActionEvent event) {
+        try {
+            SceneManager.switchScene("layouts/algorithm_search.fxml");
         } catch (Exception e) {
             e.printStackTrace();
         }

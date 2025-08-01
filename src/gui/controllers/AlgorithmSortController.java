@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import algortihms.BubbleSort;
-import algortihms.BucketSort;
-import algortihms.InsertionSort;
-import algortihms.MergeSort;
-import algortihms.QuickSort;
-import algortihms.SelectionSort;
-import algortihms.SortAlgorithm;
-import algortihms.State;
+import algorithms.sort.BubbleSort;
+import algorithms.sort.BucketSort;
+import algorithms.sort.InsertionSort;
+import algorithms.sort.MergeSort;
+import algorithms.sort.QuickSort;
+import algorithms.sort.SelectionSort;
+import algorithms.sort.SortAlgorithm;
+import algorithms.sort.State;
 import gui.SceneManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -34,7 +34,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
-public class AlgorithmController {
+public class AlgorithmSortController {
 
     /**
      * Variables declaration

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane fx:id="splitPane" dividerPositions="0.19962453066332916" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controllers.AlgorithmSearchController">
+  <items>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="898.0" prefWidth="519.0">
+         <children>
+            <ComboBox fx:id="algorithmComboBox" layoutX="25.0" layoutY="98.0" prefHeight="25.0" prefWidth="266.0" promptText="Select the Search Algorithm" />
+            <Button fx:id="generateButton" layoutX="129.0" layoutY="470.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="95.0" text="Generate Array" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <tooltip>
+                  <Tooltip text="Generate a random array of the selected size with values from 1-100 " />
+               </tooltip></Button>
+            <TextField id="sizeField" fx:id="sizeField" alignment="CENTER" layoutX="22.0" layoutY="470.0" prefHeight="52.0" prefWidth="95.0" promptText="Size">
+               <font>
+                  <Font size="17.0" />
+               </font></TextField>
+            <Label id="sizeFieldWarning" fx:id="arrayWarning" layoutX="25.0" layoutY="447.0" prefHeight="17.0" prefWidth="273.0" />
+            <TextArea fx:id="algorithmInfo" editable="false" layoutX="25.0" layoutY="142.0" prefHeight="227.0" prefWidth="266.0" style="-fx-background-color: e0e0e0;" wrapText="true">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </TextArea>
+            <Label fx:id="animationWarning" contentDisplay="CENTER" layoutX="22.0" layoutY="683.0" prefHeight="17.0" prefWidth="273.0" />
+            <Button fx:id="clearButton" contentDisplay="GRAPHIC_ONLY" layoutX="232.0" layoutY="470.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="63.0" text="Button">
+               <graphic>
+                  <ImageView fitHeight="40.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../images/eraser.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Clear Array" />
+               </tooltip>
+            </Button>
+            <Button fx:id="uploadButton" layoutX="22.0" layoutY="538.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="273.0" text="Upload Array">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../images/upload.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Separator layoutX="22.0" layoutY="443.0" prefHeight="3.0" prefWidth="273.0" />
+            <Label layoutX="25.0" layoutY="403.0" prefHeight="39.0" prefWidth="266.0" text="Grid">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="arrayStatus" layoutX="48.0" layoutY="590.0" prefHeight="25.0" prefWidth="266.0" text="Array Created" wrapText="true">
+               <font>
+                  <Font size="19.0" />
+               </font></Label>
+            <Separator layoutX="22.0" layoutY="85.0" prefHeight="3.0" prefWidth="273.0" />
+            <Label layoutX="25.0" layoutY="45.0" prefHeight="39.0" prefWidth="266.0" text="Algorithm">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Circle fx:id="arrayCircleStatus" fill="DODGERBLUE" layoutX="32.0" layoutY="605.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
+            <Label fx:id="arraySize" layoutX="48.0" layoutY="610.0" prefHeight="25.0" prefWidth="266.0" text="Array Size" wrapText="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Button fx:id="home" contentDisplay="GRAPHIC_ONLY" layoutX="-3.0" layoutY="7.0" mnemonicParsing="false" onAction="#handleSwitchToHome" prefHeight="39.0" prefWidth="39.0" text="Button">
+               <graphic>
+                  <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../images/back.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Label fx:id="arrayStatus1" layoutX="48.0" layoutY="678.0" prefHeight="25.0" prefWidth="266.0" text="Objective Node assigned" wrapText="true">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+            <Circle fx:id="arrayCircleStatus1" fill="DODGERBLUE" layoutX="32.0" layoutY="693.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
+            <Label fx:id="arrayStatus2" layoutX="48.0" layoutY="716.0" prefHeight="25.0" prefWidth="266.0" text="Start Node assigned" wrapText="true">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+            <Circle fx:id="arrayCircleStatus2" fill="DODGERBLUE" layoutX="32.0" layoutY="731.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
+            <TextArea editable="false" layoutX="18.0" layoutY="747.0" prefHeight="132.0" prefWidth="264.0" promptText="CTRL + LEFT CLICK -&gt; Objective CTRL + RIGHT CLICK -&gt; Start       LEFT CLICK -&gt; WALL" style="-fx-background-color: e0e0e0;" wrapText="true">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextArea>
+         </children></AnchorPane>
+    <AnchorPane fx:id="animationAnchor" minHeight="0.0" minWidth="0.0" prefHeight="898.0" prefWidth="1114.0" style="-fx-background-color: e2e2e2;">
+         <children>
+            <Pane fx:id="visualContainer" layoutX="11.0" layoutY="12.0" prefHeight="872.0" prefWidth="1254.0" style="-fx-background-color: f2f2f2;" />
+         </children></AnchorPane>
+  </items>
+</SplitPane>
