@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import utils.State;
+
 public class InsertionSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 
 	private final ArrayList<State> states = new ArrayList<>();

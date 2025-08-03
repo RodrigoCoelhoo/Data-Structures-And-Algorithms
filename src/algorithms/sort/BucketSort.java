@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import utils.State;
+
 public class BucketSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 
 	private final ArrayList<State> states = new ArrayList<>();

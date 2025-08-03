@@ -14,7 +14,6 @@ import algorithms.sort.MergeSort;
 import algorithms.sort.QuickSort;
 import algorithms.sort.SelectionSort;
 import algorithms.sort.SortAlgorithm;
-import algorithms.sort.State;
 import gui.SceneManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -33,6 +32,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+import utils.State;
 
 public class AlgorithmSortController {
 

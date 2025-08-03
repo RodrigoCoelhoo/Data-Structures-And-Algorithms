@@ -3,6 +3,8 @@ package algorithms.sort;
 import java.util.ArrayList;
 import java.util.List;
 
+import utils.State;
+
 public class QuickSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 
 	private final ArrayList<State> states = new ArrayList<>();

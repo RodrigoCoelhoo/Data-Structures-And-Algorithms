@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import utils.State;
+
 public class MergeSort<T extends Comparable<T>> implements SortAlgorithm<T> {
 
 	private final ArrayList<State> states = new ArrayList<>();

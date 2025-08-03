@@ -12,14 +12,19 @@ A JavaFX based application for visualizing classic sorting algorithms and data s
 
 ## Algortihms
 
-### 📦 Implemented
+### 🔄 Sort
 - Bubble Sort
 - Bucket Sort
 - Insertion Sort
 - Merge Sort
 - Quick Sort
 - Selection Sort
-- ...
+
+### 🔎 Search
+- A*
+- Dijkstra's
+- Breadth-First Search (BFS) 
+- Depth-First Search (DFS)
 
 ## 🧪 Running the Project
 To run this project, ensure you have JavaFX configured properly. Here's how:
@@ -43,11 +48,3 @@ Select DS
 - Option to add nodes for example
 - Draw types? List, tree, ...
 - Search
-
-
-
-Missing: 
-- Tooltips
-- 
-
-https://www.flaticon.com/
