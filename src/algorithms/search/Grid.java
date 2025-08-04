@@ -1,10 +1,14 @@
 package algorithms.search;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class Grid {
+public class Grid implements ILayout {
 	private Cell[][] grid;
 	private static Cell startCell;
 	private static Cell objectiveCell;
@@ -26,14 +30,14 @@ public class Grid {
         double cellWidth = usableWidth / columns;
         double cellHeight = usableHeight / rows;
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                double x = outerPadding + j * cellWidth + innerPadding / 2;
-                double y = outerPadding + i * cellHeight + innerPadding / 2;
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                double x = outerPadding + column * cellWidth + innerPadding / 2;
+                double y = outerPadding + row * cellHeight + innerPadding / 2;
                 double width = cellWidth - innerPadding;
                 double height = cellHeight - innerPadding;
 
-                grid[i][j] = new Cell(x, y, x + width, y + height);
+                grid[row][column] = new Cell(row, column, x, y, x + width, y + height);
             }
         }
     }
@@ -42,17 +46,18 @@ public class Grid {
 	public static Cell getStartCell() { return startCell; }
 	public static Cell getObjectiveCell() { return objectiveCell; }
 
-	public class Cell {
+	public class Cell implements INode {
+		private final int row;
+		private final int column;
+		private final Rectangle rect;
+
 		private boolean isWall;
 		private boolean isObjective;
 		private boolean isStart;
 
-		private final Point p1;
-		private final Point p2;
+		private INode parent;
 
-		private final Rectangle rect;
-
-		public Cell(double x1, double y1, double x2, double y2) {
+		public Cell(int row, int column, double x1, double y1, double x2, double y2) {
 			if (x1 == x2 || y1 == y2) 
 				throw new IllegalArgumentException("A cell must be a non-degenerate rectangle.");
 
@@ -60,9 +65,6 @@ public class Grid {
 			double minY = Math.min(y1, y2);
 			double maxX = Math.max(x1, x2);
 			double maxY = Math.max(y1, y2);
-
-			this.p1 = new Point(minX, minY); 
-			this.p2 = new Point(maxX, maxY);
 
 			this.rect = new Rectangle(minX, minY, maxX - minX, maxY - minY);
 			this.rect.setFill(Color.LIGHTGRAY);
@@ -79,10 +81,11 @@ public class Grid {
 				}
 			});
 
-
 			this.isWall = false;
 			this.isObjective = false;
 			this.isStart = false;
+			this.row = row;
+			this.column = column;
 		}
 
 		public void setWall(boolean wall) { 
@@ -94,7 +97,6 @@ public class Grid {
 				this.isStart = false;
 			}
 		}
-
 		
 		public void setStart(boolean start) {
 			if(Grid.startCell != null) {
@@ -142,23 +144,82 @@ public class Grid {
 		public boolean isStart() { return this.isStart; }
 		public boolean isObjective() { return this.isObjective; }
 
-		public Point getP1() { return this.p1; }
-		public Point getP2() { return this.p2; }
 		public Rectangle getRect() { return this.rect; }
-	}
 
-	public class Point {
-		private final double x;
-		private final double y;
-
-		public Point(double x, double y) {
-			if (x < 0 || y < 0) throw new IllegalArgumentException("Coordinates must be non-negative.");
-			
-			this.x = x;
-			this.y = y;
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (!(o instanceof Cell)) return false;
+			Cell cell = (Cell) o;
+			return row == cell.row && column == cell.column;
 		}
 
-		public double getX() { return this.x; }
-		public double getY() { return this.y; }
+		@Override
+		public int hashCode() {
+			return Objects.hash(row, column);
+		}
+
+		@Override
+		public int getH() {
+			int dx = Math.abs(this.column - objectiveCell.column);
+			int dy = Math.abs(this.row - objectiveCell.row);
+
+			return dx + dy;
+		}
+
+		@Override
+		public int getG() {
+			if(this.parent == null) return 1;
+			return parent.getG() + 1;
+		}
+
+		@Override
+		public int getF() {
+			return getG() + getH();
+		}
+
+		@Override
+		public INode getParent() {
+			return this.parent;
+		}
+
+		@Override
+		public void setParent(INode parent) {
+			this.parent = parent;
+		}
 	}
+
+	@Override
+	public INode getInitialNode() {
+		return startCell;
+	}
+
+	@Override
+	public boolean isGoal(INode node) {
+		return node.equals(objectiveCell);
+	}
+
+	@Override
+    public List<INode> getSuccessors(INode node) {
+        List<INode> successors = new ArrayList<>();
+        Cell cell = (Cell) node;
+
+        int[][] directions = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
+
+        for (int[] dir : directions) {
+            int newRow = cell.row + dir[0];
+            int newCol = cell.column + dir[1];
+
+            if (newRow >= 0 && newRow < grid.length &&
+                newCol >= 0 && newCol < grid[0].length) {
+
+                Cell neighbor = grid[newRow][newCol];
+                if (!neighbor.isWall()) {
+                    successors.add(neighbor);
+                }
+            }
+        }
+
+        return successors;
+    }
 }
