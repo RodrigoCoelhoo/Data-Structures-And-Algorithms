@@ -1,9 +1,15 @@
 package algorithms.search;
 
 public interface INode {
-	public int getH();	// Cost to goal (Heuristic)
-	public int getG();	// Cost from start
-	public int getF();	// Total cost
+	// Cost to goal (Heuristic)
+	public int getH();
+	
+	// Cost from start
+	public int getG();	
+	public void setG(int g);
+
+	// Total cost
+	public int getF();	
 
 	// For path
 	public INode getParent();

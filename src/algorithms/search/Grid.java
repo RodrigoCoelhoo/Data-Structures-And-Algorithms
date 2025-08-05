@@ -56,6 +56,7 @@ public class Grid implements ILayout {
 		private boolean isStart;
 
 		private INode parent;
+		private int g = Integer.MAX_VALUE;
 
 		public Cell(int row, int column, double x1, double y1, double x2, double y2) {
 			if (x1 == x2 || y1 == y2) 
@@ -169,13 +170,17 @@ public class Grid implements ILayout {
 
 		@Override
 		public int getG() {
-			if(this.parent == null) return 1;
-			return parent.getG() + 1;
+			return this.g;
 		}
 
 		@Override
 		public int getF() {
 			return getG() + getH();
+		}
+
+		@Override
+		public void setG(int g) {
+			this.g = g;
 		}
 
 		@Override
