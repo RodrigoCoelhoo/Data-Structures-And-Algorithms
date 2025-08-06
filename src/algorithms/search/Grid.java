@@ -46,10 +46,46 @@ public class Grid implements ILayout {
 	public static Cell getStartCell() { return startCell; }
 	public static Cell getObjectiveCell() { return objectiveCell; }
 
+	@Override
+	public INode getInitialNode() {
+		return startCell;
+	}
+
+	@Override
+	public boolean isGoal(INode node) {
+		return node.equals(objectiveCell);
+	}
+
+	@Override
+    public List<INode> getSuccessors(INode node) {
+        List<INode> successors = new ArrayList<>();
+        Cell cell = (Cell) node;
+
+        int[][] directions = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
+
+        for (int[] dir : directions) {
+            int newRow = cell.row + dir[0];
+            int newCol = cell.column + dir[1];
+
+            if (newRow >= 0 && newRow < grid.length &&
+                newCol >= 0 && newCol < grid[0].length) {
+
+                Cell neighbor = grid[newRow][newCol];
+                if (!neighbor.isWall()) {
+                    successors.add(neighbor);
+                }
+            }
+        }
+
+        return successors;
+    }
+
 	public class Cell implements INode {
 		private final int row;
 		private final int column;
 		private final Rectangle rect;
+		private final Point p1;
+		private final Point p2;
 
 		private boolean isWall;
 		private boolean isObjective;
@@ -66,6 +102,8 @@ public class Grid implements ILayout {
 			double minY = Math.min(y1, y2);
 			double maxX = Math.max(x1, x2);
 			double maxY = Math.max(y1, y2);
+			this.p1 = new Point(minX, minY);
+			this.p2 = new Point(maxX, maxY);
 
 			this.rect = new Rectangle(minX, minY, maxX - minX, maxY - minY);
 			this.rect.setFill(Color.LIGHTGRAY);
@@ -146,6 +184,8 @@ public class Grid implements ILayout {
 		public boolean isObjective() { return this.isObjective; }
 
 		public Rectangle getRect() { return this.rect; }
+		public Point getP1() { return this.p1; }
+		public Point getP2() { return this.p2; }
 
 		@Override
 		public boolean equals(Object o) {
@@ -194,37 +234,18 @@ public class Grid implements ILayout {
 		}
 	}
 
-	@Override
-	public INode getInitialNode() {
-		return startCell;
+	public class Point {
+		private final double x;
+		private final double y;
+
+		public Point(double x, double y) {
+			if (x < 0 || y < 0) throw new IllegalArgumentException("Coordinates must be non-negative.");
+			
+			this.x = x;
+			this.y = y;
+		}
+
+		public double getX() { return this.x; }
+		public double getY() { return this.y; }
 	}
-
-	@Override
-	public boolean isGoal(INode node) {
-		return node.equals(objectiveCell);
-	}
-
-	@Override
-    public List<INode> getSuccessors(INode node) {
-        List<INode> successors = new ArrayList<>();
-        Cell cell = (Cell) node;
-
-        int[][] directions = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
-
-        for (int[] dir : directions) {
-            int newRow = cell.row + dir[0];
-            int newCol = cell.column + dir[1];
-
-            if (newRow >= 0 && newRow < grid.length &&
-                newCol >= 0 && newCol < grid[0].length) {
-
-                Cell neighbor = grid[newRow][newCol];
-                if (!neighbor.isWall()) {
-                    successors.add(neighbor);
-                }
-            }
-        }
-
-        return successors;
-    }
 }

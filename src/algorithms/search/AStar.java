@@ -13,44 +13,44 @@ import utils.State;
 public class AStar implements SearchAlgorithm {
 	
 	private final ArrayList<State> states = new ArrayList<>();
-
+	
 	@Override
 	public List<INode> solve(ILayout layout) {
 		List<INode> path = new ArrayList<>();
 		PriorityQueue<INode> openQueue = new PriorityQueue<>(Comparator.comparingInt(INode::getF));
 		Set<INode> openSet = new HashSet<>();
     	Set<INode> closedSet = new HashSet<>();
-
+		
 		INode start = layout.getInitialNode();
 		if(layout.isGoal(start)) return path;
-
+		
 		start.setParent(null);
 		start.setG(0);
 		openQueue.add(start);
 		openSet.add(start);
-
+		
 		while (!openQueue.isEmpty()) {
 			INode current = openQueue.poll();
 			if(openSet.contains(current)) openSet.remove(current);
-
+			
 			if(layout.isGoal(current)) {
 				path = getPath(current);
 				break;
 			}
-
+			
 			closedSet.add(current);
-
+			
 			ArrayList<INode> currentSuccessors = (ArrayList<INode>) layout.getSuccessors(current);
 			for(INode successor : currentSuccessors)
 			{
 				if(closedSet.contains(successor)) continue;
 				
 				int newG = current.getG() + 1;
-
+				
 				if(!openSet.contains(successor)) {
 					successor.setParent(current);
 					successor.setG(newG);
-
+					
 					openQueue.add(successor);
 					openSet.add(successor);
 				} else if (newG < successor.getG()) {
@@ -64,8 +64,13 @@ public class AStar implements SearchAlgorithm {
 				}
 			}
 		}
-
+		
 		return path;  
+	}
+
+	@Override
+	public String info() {
+		return "Teste";
 	}
 
 	private List<INode> getPath(INode node) {

@@ -8,6 +8,7 @@ import utils.State;
 
 public interface SearchAlgorithm {
     List<INode> solve(ILayout layout);
+	public String info();
 
 	/** Optional: Usefull for algorithm visualizer */
 	default ArrayList<State> getStates() { return new ArrayList<>(); }

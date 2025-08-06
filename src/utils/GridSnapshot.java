@@ -6,6 +6,7 @@ import algorithms.search.Grid;
 import algorithms.search.Grid.Cell;
 import algorithms.search.ILayout;
 import algorithms.search.INode;
+import javafx.scene.paint.Color;
 
 public class GridSnapshot {
 	static final int EMPTY = 0;
@@ -15,6 +16,13 @@ public class GridSnapshot {
 	static final int START = 4;
 	static final int GOAL = 5;
 	//static final int PATH = 6;
+
+	static final Color EMPTY_COLOR 	= Color.LIGHTGRAY;
+    static final Color OPEN_COLOR 		= Color.web("#90CAF9");       
+    static final Color CLOSED_COLOR 	= Color.web("#1976D2");
+	static final Color WALL_COLOR 		= Color.RED;
+	static final Color START_COLOR		= Color.YELLOW;
+	static final Color GOAL_COLOR		= Color.web("#66BB6A");
 
 	private final int[][] snapshot;
 
@@ -41,5 +49,26 @@ public class GridSnapshot {
 		if(closedSet.contains(current)) return CLOSED;
 		
 		return EMPTY;
+	}
+
+	public int[][] getGrid() { return this.snapshot; }
+
+	public static Color getColor(int i) {
+		switch (i) {
+			case EMPTY:
+				return EMPTY_COLOR;
+			case WALL:
+				return WALL_COLOR;
+			case START:
+				return START_COLOR;
+			case GOAL:
+				return GOAL_COLOR;
+			case OPEN:
+				return OPEN_COLOR;
+			case CLOSED:
+				return CLOSED_COLOR;
+			default:
+				return null;
+		}
 	}
 }
