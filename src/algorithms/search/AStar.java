@@ -30,15 +30,21 @@ public class AStar implements SearchAlgorithm {
 		openSet.add(start);
 		
 		while (!openQueue.isEmpty()) {
-			INode current = openQueue.poll();
-			if(openSet.contains(current)) openSet.remove(current);
 			
+			INode current = openQueue.poll();
+			if(current != layout.getInitialNode())
+				saveState(layout, openSet, closedSet);
+			
+			if(openSet.contains(current)) openSet.remove(current);
+
+
 			if(layout.isGoal(current)) {
 				path = getPath(current);
 				break;
 			}
 			
 			closedSet.add(current);
+			saveState(layout, openSet, closedSet);
 			
 			ArrayList<INode> currentSuccessors = (ArrayList<INode>) layout.getSuccessors(current);
 			for(INode successor : currentSuccessors)
@@ -90,7 +96,7 @@ public class AStar implements SearchAlgorithm {
 
 	@Override
 	public ArrayList<State> getStates() {
-		return new ArrayList<>(states);
+		return states;
 	}
 
 	@Override

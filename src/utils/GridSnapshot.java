@@ -15,14 +15,15 @@ public class GridSnapshot {
 	static final int CLOSED = 3;
 	static final int START = 4;
 	static final int GOAL = 5;
-	//static final int PATH = 6;
+	static final int PATH = 6;
 
 	static final Color EMPTY_COLOR 	= Color.LIGHTGRAY;
     static final Color OPEN_COLOR 		= Color.web("#90CAF9");       
     static final Color CLOSED_COLOR 	= Color.web("#1976D2");
 	static final Color WALL_COLOR 		= Color.RED;
-	static final Color START_COLOR		= Color.YELLOW;
-	static final Color GOAL_COLOR		= Color.web("#66BB6A");
+	static final Color GOAL_COLOR		= Color.YELLOW;
+	static final Color START_COLOR		= Color.web("#66BB6A");
+	static final Color PATH_COLOR		= Color.ORANGE;
 
 	private final int[][] snapshot;
 
@@ -40,6 +41,11 @@ public class GridSnapshot {
 			}
 		}
 	}
+
+	public GridSnapshot(int[][] snapshot) {
+		this.snapshot = snapshot;
+	}
+
 
 	private int getType(Cell current, Set<INode> openSet, Set<INode> closedSet) {
 		if(current.isObjective()) return GOAL;
@@ -67,8 +73,25 @@ public class GridSnapshot {
 				return OPEN_COLOR;
 			case CLOSED:
 				return CLOSED_COLOR;
+			case PATH:
+				return PATH_COLOR;
 			default:
 				return null;
+		}
+	}
+
+	public static void setCellProperties(Cell cell, int i)
+	{
+		switch (i) {
+			case WALL:
+				cell.setWall(true);
+				break;
+			case START:
+				cell.setStart(true);
+				break;
+			case GOAL:
+				cell.setObjective(true);
+				break;
 		}
 	}
 }

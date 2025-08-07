@@ -17,21 +17,28 @@ import algorithms.search.Grid.Point;
 import algorithms.search.INode;
 import algorithms.search.SearchAlgorithm;
 import gui.SceneManager;
+import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 import utils.GridSnapshot;
 import utils.State;
 
@@ -48,17 +55,26 @@ public class AlgorithmSearchController {
     @FXML private Label stateLabel, gridWarning, animationWarning, objectiveLabel, startLabel;
     @FXML private Button searchButton, lastButton, previousButton, nextButton, firstButton, clearButton, uploadButton, generateButton, skipAnimation;
     @FXML private ProgressBar progressBar;
-    @FXML private ComboBox<String> algorithmComboBox;
+    @FXML private ComboBox<String> algorithmComboBox, heuristicComboBox;
     @FXML private TextArea algorithmInfo;
     @FXML private TextField rowsField, columnsField, animationDuration;
     @FXML private Circle startCircle, objectiveCircle;
+    @FXML private CheckBox diagonalMovements;
 
     private final Color warningColor = Color.RED;
 
+    /**
+     * UI related methods
+     */
+
     @FXML
     public void initialize() {
-        algorithmComboBox.getItems().addAll("A*", "Bucket Sort", "Insertion Sort", "Selection Sort", "Merge Sort", "Quick Sort");
+        algorithmComboBox.getItems().addAll("A*", "IDA*", "Dijkstra's", "Breadth-First Search (BFS)", "Depth-First Search (DFS)");
         algorithmComboBox.setOnAction(this::updateAlgorithm);
+
+        
+        heuristicComboBox.getItems().addAll("Manhattan", "Euclidean", "Octile", "Chebyshev");
+        heuristicComboBox.setOnAction(this::updateHeuristic);
         
         splitPane.setDividerPositions(0.2);
         splitPane.getDividers().get(0).positionProperty().addListener((_, _, _) -> {
@@ -71,6 +87,32 @@ public class AlgorithmSearchController {
             columnsField.setText("12");
             drawGrid();
         });
+
+        stateLabel.setText("State 0 of 0");
+    }
+
+    @FXML
+    private void showInfoPopup() {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Controls & Instructions");
+        alert.setHeaderText(null);
+
+        String helpText =
+            "Defining Nodes: \n" +
+            "\t- CTRL + LEFT CLICK -> Goal\n" +
+            "\t- CTRL + RIGHT CLICK -> Start\n" +
+            "\t- LEFT CLICK -> Wall\n\n" +
+            "To edit the grid, it must be clear. To clear, use:\n" +
+            "\t- Clear option (Eraser icon),\n" +
+            "\t- Generate a new grid.\n" +
+            "\t- Upload a grid.\n\n" +
+            "If the bottom shows 'State 0 of 0' the grid is available to edit.";
+        alert.setContentText(helpText);
+
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(getClass().getResource("/images/help.png").toString()));
+
+        alert.showAndWait();
     }
 
 	@FXML
@@ -93,16 +135,40 @@ public class AlgorithmSearchController {
                 //this.algorithm = new
                 refreshUI();
                 break;
-            case "Djisktra's":
+            case "Dijkstra's":
                 //this.algorithm = new 
                 refreshUI();
                 break;
-            case "DFS":
+            case "Breadth-First Search (BFS)":
                 //this.algorithm = new 
                 refreshUI();
                 break;
-            case "BFS":
+            case "Depth-First Search (DFS)":
                 //this.algorithm = new 
+                refreshUI();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void updateHeuristic(ActionEvent e)
+    {
+        switch (heuristicComboBox.getValue()) {
+            case "Manhattan":
+                Grid.setHeuristic("Manhattan");
+                refreshUI();
+                break;
+            case "Euclidean":
+                Grid.setHeuristic("Euclidean");
+                refreshUI();
+                break;
+            case "Octile":
+                Grid.setHeuristic("Octile");
+                refreshUI();
+                break;
+            case "Chebyshev":
+                Grid.setHeuristic("Chebyshev");
                 refreshUI();
                 break;
             default:
@@ -112,7 +178,7 @@ public class AlgorithmSearchController {
 
     private void refreshUI() {
         algorithmInfo.setText(algorithm.info());
-        //updateWarning("clear", null, null);
+        updateWarning("clear", null, null);
         drawGrid();
     }
 
@@ -139,6 +205,7 @@ public class AlgorithmSearchController {
             case "clear":
                 gridWarning.setText("");
                 animationWarning.setText("");
+                stateLabel.setText("State 0 of 0");
                 break;
             default:
                 break;
@@ -179,6 +246,7 @@ public class AlgorithmSearchController {
         }
 
         updateWarning("clear", null, null);
+        this.algorithm.clearStates();
 
         this.grid = new Grid(rows, columns, visualContainer);
         drawGrid();
@@ -195,10 +263,9 @@ public class AlgorithmSearchController {
     
     public void clearGrid(ActionEvent e) {
         if(this.grid == null) return;
-        Cell[][] oldGrid = this.grid.getGrid();
-        int rows = oldGrid.length;
-        int columns = oldGrid[0].length;
-        this.grid = new Grid(rows, columns, visualContainer);
+
+        updateWarning("clear", null, null);
+        this.algorithm.clearStates();
         drawGrid();
     }
 
@@ -230,13 +297,17 @@ public class AlgorithmSearchController {
         {
             for(int column = 0; column < rows.get(0).length; column++)
             {
-                newGridCells[row][column].getRect().setFill(GridSnapshot.getColor(rows.get(row)[column]));
+                Cell current = newGridCells[row][column];
+                current.getRect().setFill(GridSnapshot.getColor(rows.get(row)[column]));
+                GridSnapshot.setCellProperties(current, rows.get(row)[column]);
             }
         }
 
         rowsField.setText(String.valueOf(rows.size()));
         columnsField.setText(String.valueOf(rows.get(0).length));
         this.grid = newGrid;
+        updateWarning("clear", null, null);
+        this.algorithm.clearStates();
         drawGrid();
     }
 
@@ -292,6 +363,20 @@ public class AlgorithmSearchController {
         );
 
         return fileChooser;
+    }
+
+    public void setGridMovements(ActionEvent e) {
+        if(diagonalMovements.isSelected()) {
+            Grid.setDirections(new int[][]{
+                {-1, 0}, {1, 0}, {0, -1}, {0, 1},  
+                {-1, -1}, {-1, 1}, {1, -1}, {1, 1} 
+            });
+            return;
+        }
+
+        Grid.setDirections(new int[][]{
+            {-1, 0}, {1, 0}, {0, -1}, {0, 1}
+        });
     }
 
     /**
@@ -411,5 +496,115 @@ public class AlgorithmSearchController {
 
             // Performance -> Fazer com que só altere as diferenças, se forem iguais e só mudar o 1 celula, esse retangulo é atualiazdo (grid "estática" somente muda a cor, para visualização só precisa dos retangulos)?
         }
+    }
+
+    /**
+     * Animation method
+     */
+
+    public void search(ActionEvent e) {
+        if (algorithm == null) {
+            updateWarning("animationWarning", "Please select an algorithm.", warningColor);
+            return;
+        }
+
+        if (Grid.getHeuristic() == null) {
+            updateWarning("animationWarning", "Please select an heuristic.", warningColor);
+            return;
+        }
+
+        if (this.grid == null || this.grid.getInitialNode() == null || this.grid.getObjectiveCell() == null) {
+            updateWarning("animationWarning", "Please define a start and goal node!", warningColor);
+            return;
+        }
+
+        double duration = Double.parseDouble(animationDuration.getText());
+        if (duration <= 0) {
+            updateWarning("animationWarning", "Please enter a valid duration.", warningColor);
+            return;
+        }
+
+        algorithm.clearStates();
+        List<INode> path = algorithm.solve(this.grid);
+        getPathStates(path);
+        this.currentState = 0;
+
+        stateLabel.setText("Calculating states ...");
+        buttonState(false);
+        animate();
+
+        this.currentState = algorithm.getStates().size() - 1;
+    }
+
+    private void getPathStates(List<INode> path) {
+        State lastState = this.algorithm.getStates().get(this.algorithm.getStates().size() - 1);
+        GridSnapshot snapshot = lastState.getSnapshot();
+        int[][] baseGrid = snapshot.getGrid();
+
+        for(INode node : path) {
+            Cell cell = (Cell) node;
+            int[][] grid = deepCopy(baseGrid);
+            grid[cell.getRow()][cell.getColumn()] = 6;
+            algorithm.getStates().add(new State(new GridSnapshot(grid)));
+            baseGrid = grid;
+        }
+    }
+
+    private int[][] deepCopy(int[][] array)
+    {
+        if(array == null) return null;
+
+        int[][] result = new int[array.length][array[0].length];
+        for(int i = 0; i < array.length; i++) {
+            for(int j = 0; j < array[0].length; j++) {
+                result[i][j] = array[i][j];
+            }
+        }
+        return result;
+    }
+
+    public void animate() {
+        if (algorithm == null || algorithm.getStates().isEmpty()) {
+            return;
+        }
+
+        ArrayList<State> states = algorithm.getStates();
+        int size = states.size();
+
+        if (size == 0) return;
+
+        updateWarning("clear", null, null);
+        
+        double duration = Double.parseDouble(animationDuration.getText());
+        double timePerState = (double) duration / size;
+
+        // Timeline for animation
+        this.timeline = new Timeline();
+
+        for (int i = 0; i < size; i++) {
+            State state = states.get(i);
+
+            // Define which second will the state be drawn in the timeline
+            KeyFrame keyFrame = new KeyFrame(Duration.seconds(i * timePerState), _ -> {
+                drawGrid(state);
+            });
+            
+            timeline.getKeyFrames().add(keyFrame);
+        }
+        
+        timeline.currentTimeProperty().addListener((_, _, newTime) -> {
+            double progress = newTime.toSeconds() / duration;
+            progressBar.setProgress(progress);
+        });
+        
+        timeline.setOnFinished(_ -> {
+            progressBar.setProgress(0);
+            stateLabelUpdate();
+            buttonState(true);
+            skipAnimation.setDisable(true);
+        });
+
+        skipAnimation.setDisable(false);
+        timeline.play();
     }
 }

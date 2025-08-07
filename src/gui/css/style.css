@@ -1,10 +1,8 @@
-/* style.css */
-
 .button {   
     -fx-cursor: hand;      
 }
 
-#home {
+#home, #help {
     -fx-background-color: #f2f2f2;
     -fx-text-fill: white;       
     -fx-font-weight: bold;       
@@ -40,13 +38,12 @@
     -fx-border-width: 1px;
 }
 
-/* ComboBox styling */
 .combo-box {
     -fx-font-size: 14px;
     -fx-padding: 4px;
 }
 
-#algorithmInfo {
+#algorithmInfo, #heuristicInfo {
     -fx-background-color: white;
     -fx-border-color: #cccccc;
     -fx-border-width: 1px;

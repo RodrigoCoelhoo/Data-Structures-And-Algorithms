@@ -10,13 +10,25 @@ import javafx.scene.shape.Rectangle;
 
 public class Grid implements ILayout {
 	private Cell[][] grid;
-	private static Cell startCell;
-	private static Cell objectiveCell;
+	private Cell startCell;
+	private Cell objectiveCell;
+	private static String heuristic = null;
+	private static int[][] directions = {
+			{-1, 0}, {1, 0}, {0, -1}, {0, 1},  
+			{-1, -1}, {-1, 1}, {1, -1}, {1, 1} 
+		};
+
+	static final Color EMPTY_COLOR 	= Color.LIGHTGRAY;
+    static final Color OPEN_COLOR 		= Color.web("#90CAF9");       
+    static final Color CLOSED_COLOR 	= Color.web("#1976D2");
+	static final Color WALL_COLOR 		= Color.RED;
+	static final Color GOAL_COLOR		= Color.YELLOW;
+	static final Color START_COLOR		= Color.web("#66BB6A");
 
 	public Grid(int rows, int columns, Pane visualContainer) {
         this.grid = new Cell[rows][columns];
-		Grid.startCell = null;
-		Grid.objectiveCell = null;
+		this.startCell = null;
+		this.objectiveCell = null;
 
         double outerPadding = 5.0;
         double innerPadding = 2.0;
@@ -43,8 +55,10 @@ public class Grid implements ILayout {
     }
 
 	public Cell[][] getGrid() { return this.grid; }
-	public static Cell getStartCell() { return startCell; }
-	public static Cell getObjectiveCell() { return objectiveCell; }
+	public Cell getObjectiveCell() { return objectiveCell; }
+	public static String getHeuristic() { return heuristic; }
+	public static void setHeuristic(String h) { heuristic = h; }
+	public static void setDirections(int[][] dir) { directions = dir; }
 
 	@Override
 	public INode getInitialNode() {
@@ -60,8 +74,6 @@ public class Grid implements ILayout {
     public List<INode> getSuccessors(INode node) {
         List<INode> successors = new ArrayList<>();
         Cell cell = (Cell) node;
-
-        int[][] directions = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
 
         for (int[] dir : directions) {
             int newRow = cell.row + dir[0];
@@ -106,7 +118,7 @@ public class Grid implements ILayout {
 			this.p2 = new Point(maxX, maxY);
 
 			this.rect = new Rectangle(minX, minY, maxX - minX, maxY - minY);
-			this.rect.setFill(Color.LIGHTGRAY);
+			this.rect.setFill(EMPTY_COLOR);
 			this.rect.setArcWidth(4);
 			this.rect.setArcHeight(4);
 
@@ -129,7 +141,7 @@ public class Grid implements ILayout {
 
 		public void setWall(boolean wall) { 
 			this.isWall = wall;
-			this.rect.setFill(wall ? Color.RED : Color.LIGHTGRAY);
+			this.rect.setFill(wall ? WALL_COLOR : EMPTY_COLOR);
 
 			if (wall) {
 				this.isObjective = false;
@@ -138,12 +150,12 @@ public class Grid implements ILayout {
 		}
 		
 		public void setStart(boolean start) {
-			if(Grid.startCell != null) {
-				Grid.startCell.isObjective = false;
-				Grid.startCell.isStart = false;
-				Grid.startCell.isWall = false;
-				Grid.startCell.rect.setFill(Color.LIGHTGRAY);
-				Grid.startCell = null;
+			if(startCell != null) {
+				startCell.isObjective = false;
+				startCell.isStart = false;
+				startCell.isWall = false;
+				startCell.rect.setFill(EMPTY_COLOR);
+				startCell = null;
 			}
 
 			this.isStart = start;
@@ -151,20 +163,20 @@ public class Grid implements ILayout {
 			if (start) {
 				this.isWall = false;
 				this.isObjective = false;
-				this.rect.setFill(Color.YELLOW);
-				Grid.startCell = this;
+				this.rect.setFill(START_COLOR);
+				startCell = this;
 			} else {
-				this.rect.setFill(Color.LIGHTGRAY);
+				this.rect.setFill(EMPTY_COLOR);
 			}
 		}
 
 		public void setObjective(boolean objective) {
-			if(Grid.objectiveCell != null) {
-				Grid.objectiveCell.isObjective = false;
-				Grid.objectiveCell.isStart = false;
-				Grid.objectiveCell.isWall = false;
-				Grid.objectiveCell.rect.setFill(Color.LIGHTGRAY);
-				Grid.objectiveCell = null;
+			if(objectiveCell != null) {
+				objectiveCell.isObjective = false;
+				objectiveCell.isStart = false;
+				objectiveCell.isWall = false;
+				objectiveCell.rect.setFill(EMPTY_COLOR);
+				objectiveCell = null;
 			}
 
 			this.isObjective = objective;
@@ -172,10 +184,10 @@ public class Grid implements ILayout {
 			if (objective) {
 				this.isWall = false;
 				this.isStart = false;
-				this.rect.setFill(Color.web("#66BB6A"));
-				Grid.objectiveCell = this;
+				this.rect.setFill(GOAL_COLOR);
+				objectiveCell = this;
 			} else {
-				this.rect.setFill(Color.LIGHTGRAY);
+				this.rect.setFill(EMPTY_COLOR);
 			}
 		}
 
@@ -186,6 +198,8 @@ public class Grid implements ILayout {
 		public Rectangle getRect() { return this.rect; }
 		public Point getP1() { return this.p1; }
 		public Point getP2() { return this.p2; }
+		public int getColumn() { return column; }
+		public int getRow() { return row; }
 
 		@Override
 		public boolean equals(Object o) {
@@ -203,9 +217,25 @@ public class Grid implements ILayout {
 		@Override
 		public int getH() {
 			int dx = Math.abs(this.column - objectiveCell.column);
-			int dy = Math.abs(this.row - objectiveCell.row);
+    		int dy = Math.abs(this.row - objectiveCell.row);
+			
+			switch (heuristic) {
+				case "Manhattan":
+					return dx + dy;
 
-			return dx + dy;
+				case "Euclidean":
+					return (int) Math.sqrt(dx * dx + dy * dy);
+
+				case "Octile":
+					double F = Math.sqrt(2) - 1;
+            		return (int) (F * Math.min(dx, dy) + Math.max(dx, dy));
+
+				case "Chebyshev":
+					return Math.max(dx, dy);
+					
+				default:
+					throw new IllegalArgumentException("Unknown heuristic: " + heuristic);
+			}
 		}
 
 		@Override

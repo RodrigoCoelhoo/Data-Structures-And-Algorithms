@@ -30,6 +30,14 @@ public class State {
         this.snapshot = new GridSnapshot(layout, openSet, closedSet);
     }
 
+    public State(GridSnapshot snapshot) {
+        this.list = null;
+        this.indexs = null;
+        this.highLight = null;
+        
+        this.snapshot = snapshot;
+    }
+
     public List<Integer> getList() {
         return new ArrayList<>(list);
     }
