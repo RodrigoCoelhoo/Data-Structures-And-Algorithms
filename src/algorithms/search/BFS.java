@@ -2,22 +2,22 @@ package algorithms.search;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 
 import utils.State;
 
-public class AStar implements SearchAlgorithm {
+public class BFS implements SearchAlgorithm {
 	
 	private final ArrayList<State> states = new ArrayList<>();
-	
+
 	@Override
 	public List<INode> solve(ILayout layout) {
 		List<INode> path = new ArrayList<>();
-		PriorityQueue<INode> openQueue = new PriorityQueue<>(Comparator.comparingInt(INode::getF));
+		Queue<INode> openQueue = new LinkedList<>();
 		Set<INode> openSet = new HashSet<>();
     	Set<INode> closedSet = new HashSet<>();
 		
@@ -27,61 +27,41 @@ public class AStar implements SearchAlgorithm {
 			return path;
 		}
 		
-		start.setParent(null);
-		start.setG(0);
 		openQueue.add(start);
 		openSet.add(start);
 		
-		while (!openQueue.isEmpty()) {
-			
+		while(!openQueue.isEmpty()) {
 			INode current = openQueue.poll();
-			if(current != layout.getInitialNode())
-				saveState(layout, openSet, closedSet);
-			
-			if(openSet.contains(current)) openSet.remove(current);
 
+			if(openSet.contains(current)) openSet.remove(current);
 
 			if(layout.isGoal(current)) {
 				path = getPath(current);
 				break;
 			}
-			
+
 			closedSet.add(current);
 			saveState(layout, openSet, closedSet);
-			
+
 			ArrayList<INode> currentSuccessors = (ArrayList<INode>) layout.getSuccessors(current);
-			for(INode successor : currentSuccessors)
-			{
-				if(closedSet.contains(successor)) continue;
-				
-				int newG = current.getG() + 1;
-				
-				if(!openSet.contains(successor)) {
-					successor.setParent(current);
-					successor.setG(newG);
-					
-					openQueue.add(successor);
-					openSet.add(successor);
-				} else if (newG < successor.getG()) {
-					// Better parent (Path) found
-					successor.setParent(current);
-					successor.setG(newG);
-					
-					// Re-add to priority queue to reorder
-					openQueue.remove(successor);
-					openQueue.add(successor);
-				}
+			for(INode successor : currentSuccessors) {
+				if(closedSet.contains(successor) || openSet.contains(successor)) continue;
+
+				successor.setParent(current);
+				openQueue.add(successor);
+				openSet.add(successor);
 			}
+			saveState(layout, openSet, closedSet);
 		}
 		
-		return path;  
+		return path;
 	}
 
 	@Override
 	public String info() {
-		return "Teste";
+		return "";
 	}
-
+	
 	private List<INode> getPath(INode node) {
 		ArrayList<INode> result = new ArrayList<>();
 

@@ -182,7 +182,7 @@
                </font>
             </TextField>
             <TextField id="sizeField" fx:id="columnsField" alignment="CENTER" layoutX="93.0" layoutY="449.0" prefHeight="43.0" prefWidth="63.0" promptText="Columns" />
-            <Button fx:id="uploadButton1" layoutX="163.0" layoutY="504.0" mnemonicParsing="false" onAction="#downloadGrid" prefHeight="45.0" prefWidth="135.0" text="Download">
+            <Button fx:id="downloadButton" layoutX="163.0" layoutY="504.0" mnemonicParsing="false" onAction="#downloadGrid" prefHeight="45.0" prefWidth="135.0" text="Download">
                <font>
                   <Font size="16.0" />
                </font>

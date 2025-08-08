@@ -10,14 +10,17 @@ import java.util.Set;
 
 import utils.State;
 
-public class AStar implements SearchAlgorithm {
+/**
+ * Best-First Search
+ */
+public class Greedy implements SearchAlgorithm{
 	
 	private final ArrayList<State> states = new ArrayList<>();
 	
 	@Override
 	public List<INode> solve(ILayout layout) {
 		List<INode> path = new ArrayList<>();
-		PriorityQueue<INode> openQueue = new PriorityQueue<>(Comparator.comparingInt(INode::getF));
+		PriorityQueue<INode> openQueue = new PriorityQueue<>(Comparator.comparingInt(INode::getH));
 		Set<INode> openSet = new HashSet<>();
     	Set<INode> closedSet = new HashSet<>();
 		
@@ -28,15 +31,12 @@ public class AStar implements SearchAlgorithm {
 		}
 		
 		start.setParent(null);
-		start.setG(0);
 		openQueue.add(start);
 		openSet.add(start);
 		
 		while (!openQueue.isEmpty()) {
 			
 			INode current = openQueue.poll();
-			if(current != layout.getInitialNode())
-				saveState(layout, openSet, closedSet);
 			
 			if(openSet.contains(current)) openSet.remove(current);
 
@@ -52,26 +52,13 @@ public class AStar implements SearchAlgorithm {
 			ArrayList<INode> currentSuccessors = (ArrayList<INode>) layout.getSuccessors(current);
 			for(INode successor : currentSuccessors)
 			{
-				if(closedSet.contains(successor)) continue;
+				if(closedSet.contains(successor) || openSet.contains(successor)) continue;
 				
-				int newG = current.getG() + 1;
-				
-				if(!openSet.contains(successor)) {
-					successor.setParent(current);
-					successor.setG(newG);
-					
-					openQueue.add(successor);
-					openSet.add(successor);
-				} else if (newG < successor.getG()) {
-					// Better parent (Path) found
-					successor.setParent(current);
-					successor.setG(newG);
-					
-					// Re-add to priority queue to reorder
-					openQueue.remove(successor);
-					openQueue.add(successor);
-				}
+				successor.setParent(current);
+				openQueue.add(successor);
+				openSet.add(successor);
 			}
+			saveState(layout, openSet, closedSet);
 		}
 		
 		return path;  

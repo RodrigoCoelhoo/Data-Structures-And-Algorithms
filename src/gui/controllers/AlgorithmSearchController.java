@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import algorithms.search.AStar;
+import algorithms.search.BFS;
+import algorithms.search.Greedy;
 import algorithms.search.Grid;
 import algorithms.search.Grid.Cell;
 import algorithms.search.Grid.Point;
@@ -53,7 +55,7 @@ public class AlgorithmSearchController {
     @FXML private Pane visualContainer;
     @FXML private SplitPane splitPane;
     @FXML private Label stateLabel, gridWarning, animationWarning, objectiveLabel, startLabel;
-    @FXML private Button searchButton, lastButton, previousButton, nextButton, firstButton, clearButton, uploadButton, generateButton, skipAnimation;
+    @FXML private Button searchButton, lastButton, previousButton, nextButton, firstButton, clearButton, uploadButton, generateButton, skipAnimation, downloadButton;
     @FXML private ProgressBar progressBar;
     @FXML private ComboBox<String> algorithmComboBox, heuristicComboBox;
     @FXML private TextArea algorithmInfo;
@@ -69,7 +71,8 @@ public class AlgorithmSearchController {
 
     @FXML
     public void initialize() {
-        algorithmComboBox.getItems().addAll("A*", "IDA*", "Dijkstra's", "Breadth-First Search (BFS)", "Depth-First Search (DFS)");
+        algorithmComboBox.getItems().addAll("A*", "IDA*", "Dijkstra's", "Breadth-First Search (BFS)", "Best First Search (Greedy)", 
+                                            "Jump Point Search", "Orthogonal Jump Point Search", "Trace");
         algorithmComboBox.setOnAction(this::updateAlgorithm);
 
         
@@ -129,22 +132,27 @@ public class AlgorithmSearchController {
         switch (algorithmComboBox.getValue()) {
             case "A*":
                 this.algorithm = new AStar();
+                enableHeuristic(true);
                 refreshUI();
                 break;
             case "IDA*":
-                //this.algorithm = new
+                this.algorithm = new AStar();
+                enableHeuristic(true);
                 refreshUI();
                 break;
             case "Dijkstra's":
                 //this.algorithm = new 
+                enableHeuristic(true);
                 refreshUI();
                 break;
             case "Breadth-First Search (BFS)":
-                //this.algorithm = new 
+                this.algorithm = new BFS();
+                enableHeuristic(false);
                 refreshUI();
                 break;
-            case "Depth-First Search (DFS)":
-                //this.algorithm = new 
+            case "Best First Search (Greedy)":
+                this.algorithm = new Greedy(); 
+                enableHeuristic(true);
                 refreshUI();
                 break;
             default:
@@ -152,28 +160,25 @@ public class AlgorithmSearchController {
         }
     }
 
-    private void updateHeuristic(ActionEvent e)
-    {
-        switch (heuristicComboBox.getValue()) {
+    private void updateHeuristic(ActionEvent e) {
+        String value = heuristicComboBox.getValue();
+        if (value == null) {
+            return;
+        }
+
+        switch (value) {
             case "Manhattan":
-                Grid.setHeuristic("Manhattan");
-                refreshUI();
-                break;
             case "Euclidean":
-                Grid.setHeuristic("Euclidean");
-                refreshUI();
-                break;
             case "Octile":
-                Grid.setHeuristic("Octile");
-                refreshUI();
-                break;
             case "Chebyshev":
-                Grid.setHeuristic("Chebyshev");
-                refreshUI();
-                break;
-            default:
+                Grid.setHeuristic(value);
                 break;
         }
+        refreshUI();
+    }
+
+    private void enableHeuristic(boolean activate) {
+        heuristicComboBox.setDisable(!activate);
     }
 
     private void refreshUI() {
@@ -225,6 +230,9 @@ public class AlgorithmSearchController {
         animationDuration.setDisable(!state);
         rowsField.setDisable(!state);
         columnsField.setDisable(!state);
+        heuristicComboBox.setDisable(!state);
+        downloadButton.setDisable(!state);
+        diagonalMovements.setDisable(!state);
     }
 
     /**
@@ -307,7 +315,7 @@ public class AlgorithmSearchController {
         columnsField.setText(String.valueOf(rows.get(0).length));
         this.grid = newGrid;
         updateWarning("clear", null, null);
-        this.algorithm.clearStates();
+        if(this.algorithm != null) this.algorithm.clearStates();
         drawGrid();
     }
 
@@ -508,7 +516,7 @@ public class AlgorithmSearchController {
             return;
         }
 
-        if (Grid.getHeuristic() == null) {
+        if (!heuristicComboBox.isDisabled() && Grid.getHeuristic() == null) {
             updateWarning("animationWarning", "Please select an heuristic.", warningColor);
             return;
         }
