@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import algorithms.search.ILayout;
-import algorithms.search.INode;
+import algorithms.interfaces.ILayout;
+import algorithms.interfaces.INode;
 
 public class State {
     private final List<Integer> list;

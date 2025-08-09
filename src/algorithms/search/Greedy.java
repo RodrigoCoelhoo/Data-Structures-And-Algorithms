@@ -8,12 +8,15 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import algorithms.interfaces.ILayout;
+import algorithms.interfaces.INode;
+import algorithms.interfaces.ISearchAlgorithm;
 import utils.State;
 
 /**
  * Best-First Search
  */
-public class Greedy implements SearchAlgorithm{
+public class Greedy implements ISearchAlgorithm{
 	
 	private final ArrayList<State> states = new ArrayList<>();
 	

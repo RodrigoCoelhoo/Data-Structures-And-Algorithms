@@ -1,9 +1,11 @@
-package algorithms.search;
+package utils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import algorithms.interfaces.ILayout;
+import algorithms.interfaces.INode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -14,9 +16,9 @@ public class Grid implements ILayout {
 	private Cell objectiveCell;
 	private static String heuristic = null;
 	private static int[][] directions = {
-			{-1, 0}, {1, 0}, {0, -1}, {0, 1},  
-			{-1, -1}, {-1, 1}, {1, -1}, {1, 1} 
-		};
+                {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, 
+                {1, 0}, {1, -1}, {0, -1}, {-1, -1}
+            };
 
 	static final Color EMPTY_COLOR 	= Color.LIGHTGRAY;
     static final Color OPEN_COLOR 		= Color.web("#90CAF9");       
@@ -59,6 +61,7 @@ public class Grid implements ILayout {
 	public static String getHeuristic() { return heuristic; }
 	public static void setHeuristic(String h) { heuristic = h; }
 	public static void setDirections(int[][] dir) { directions = dir; }
+	public static int[][] getDirections() { return directions; }
 
 	@Override
 	public INode getInitialNode() {

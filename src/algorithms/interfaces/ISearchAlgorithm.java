@@ -1,4 +1,4 @@
-package algorithms.search;
+package algorithms.interfaces;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.Set;
 
 import utils.State;
 
-public interface SearchAlgorithm {
+public interface ISearchAlgorithm {
     List<INode> solve(ILayout layout);
 	public String info();
 

@@ -10,14 +10,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import algorithms.interfaces.INode;
+import algorithms.interfaces.ISearchAlgorithm;
 import algorithms.search.AStar;
 import algorithms.search.BFS;
 import algorithms.search.Greedy;
-import algorithms.search.Grid;
-import algorithms.search.Grid.Cell;
-import algorithms.search.Grid.Point;
-import algorithms.search.INode;
-import algorithms.search.SearchAlgorithm;
 import gui.SceneManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -41,13 +38,16 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import utils.Grid;
 import utils.GridSnapshot;
 import utils.State;
+import utils.Grid.Cell;
+import utils.Grid.Point;
 
 public class AlgorithmSearchController {
 
     Grid grid;
-    private SearchAlgorithm algorithm = null;
+    private ISearchAlgorithm algorithm = null;
     private int currentState = -1;
 
     private Timeline timeline;
@@ -230,9 +230,11 @@ public class AlgorithmSearchController {
         animationDuration.setDisable(!state);
         rowsField.setDisable(!state);
         columnsField.setDisable(!state);
-        heuristicComboBox.setDisable(!state);
         downloadButton.setDisable(!state);
         diagonalMovements.setDisable(!state);
+
+        if(!heuristicComboBox.isDisabled())
+            heuristicComboBox.setDisable(!state);
     }
 
     /**
@@ -376,14 +378,14 @@ public class AlgorithmSearchController {
     public void setGridMovements(ActionEvent e) {
         if(diagonalMovements.isSelected()) {
             Grid.setDirections(new int[][]{
-                {-1, 0}, {1, 0}, {0, -1}, {0, 1},  
-                {-1, -1}, {-1, 1}, {1, -1}, {1, 1} 
+                {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, 
+                {1, 0}, {1, -1}, {0, -1}, {-1, -1}
             });
             return;
         }
 
         Grid.setDirections(new int[][]{
-            {-1, 0}, {1, 0}, {0, -1}, {0, 1}
+            {-1, 0}, {0, 1}, {1, 0}, {0, -1}
         });
     }
 

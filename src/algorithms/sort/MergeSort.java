@@ -6,9 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import algorithms.interfaces.ISortAlgorithm;
 import utils.State;
 
-public class MergeSort<T extends Comparable<T>> implements SortAlgorithm<T> {
+public class MergeSort<T extends Comparable<T>> implements ISortAlgorithm<T> {
 
 	private final ArrayList<State> states = new ArrayList<>();
 

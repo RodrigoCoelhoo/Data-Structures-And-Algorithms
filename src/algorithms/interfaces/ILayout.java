@@ -1,4 +1,4 @@
-package algorithms.search;
+package algorithms.interfaces;
 
 import java.util.List;
 

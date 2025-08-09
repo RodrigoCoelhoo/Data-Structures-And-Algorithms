@@ -8,9 +8,12 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
+import algorithms.interfaces.ILayout;
+import algorithms.interfaces.INode;
+import algorithms.interfaces.ISearchAlgorithm;
 import utils.State;
 
-public class BFS implements SearchAlgorithm {
+public class BFS implements ISearchAlgorithm {
 	
 	private final ArrayList<State> states = new ArrayList<>();
 

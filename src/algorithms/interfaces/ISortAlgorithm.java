@@ -1,4 +1,4 @@
-package algorithms.sort;
+package algorithms.interfaces;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.Map;
 
 import utils.State;
 
-public interface SortAlgorithm<T extends Comparable<T>> {
+public interface ISortAlgorithm<T extends Comparable<T>> {
 	public T[] sort(T[] input);
 	public ArrayList<T> sort(ArrayList<T> input);
 	public String info();

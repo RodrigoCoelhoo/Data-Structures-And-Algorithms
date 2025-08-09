@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import algorithms.interfaces.ISortAlgorithm;
 import algorithms.sort.BubbleSort;
 import algorithms.sort.BucketSort;
 import algorithms.sort.InsertionSort;
 import algorithms.sort.MergeSort;
 import algorithms.sort.QuickSort;
 import algorithms.sort.SelectionSort;
-import algorithms.sort.SortAlgorithm;
 import gui.SceneManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -41,7 +41,7 @@ public class AlgorithmSortController {
      */
 
     private ArrayList<Integer> list = new ArrayList<>();
-    private SortAlgorithm<Integer> algorithm = null;
+    private ISortAlgorithm<Integer> algorithm = null;
     private int currentState = -1;
 
     private Timeline timeline;

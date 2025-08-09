@@ -1,4 +1,4 @@
-package algorithms.search;
+package algorithms.interfaces;
 
 public interface INode {
 	// Cost to goal (Heuristic)

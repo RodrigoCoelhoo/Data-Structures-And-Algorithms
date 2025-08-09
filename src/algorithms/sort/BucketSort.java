@@ -5,9 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import algorithms.interfaces.ISortAlgorithm;
 import utils.State;
 
-public class BucketSort<T extends Comparable<T>> implements SortAlgorithm<T> {
+public class BucketSort<T extends Comparable<T>> implements ISortAlgorithm<T> {
 
 	private final ArrayList<State> states = new ArrayList<>();
 	private int bucketCount = 10; // Default number of buckets

@@ -2,11 +2,10 @@ package utils;
 
 import java.util.Set;
 
-import algorithms.search.Grid;
-import algorithms.search.Grid.Cell;
-import algorithms.search.ILayout;
-import algorithms.search.INode;
+import algorithms.interfaces.ILayout;
+import algorithms.interfaces.INode;
 import javafx.scene.paint.Color;
+import utils.Grid.Cell;
 
 public class GridSnapshot {
 	static final int EMPTY = 0;
