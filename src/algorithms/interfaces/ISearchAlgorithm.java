@@ -13,5 +13,5 @@ public interface ISearchAlgorithm {
 	/** Optional: Usefull for algorithm visualizer */
 	default ArrayList<State> getStates() { return new ArrayList<>(); }
 	default void clearStates() { }
-	default void saveState(ILayout layout, Set<INode> openSet, Set<INode> closedSet) { }
+	default void saveState(ILayout layout, Set<INode> openSet, Set<INode> closedSet, Set<INode> highlight) {}
 }

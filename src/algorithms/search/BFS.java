@@ -44,7 +44,7 @@ public class BFS implements ISearchAlgorithm {
 			}
 
 			closedSet.add(current);
-			saveState(layout, openSet, closedSet);
+			saveState(layout, openSet, closedSet, null);
 
 			ArrayList<INode> currentSuccessors = (ArrayList<INode>) layout.getSuccessors(current);
 			for(INode successor : currentSuccessors) {
@@ -54,7 +54,7 @@ public class BFS implements ISearchAlgorithm {
 				openQueue.add(successor);
 				openSet.add(successor);
 			}
-			saveState(layout, openSet, closedSet);
+			saveState(layout, openSet, closedSet, null);
 		}
 		
 		return path;
@@ -91,8 +91,8 @@ public class BFS implements ISearchAlgorithm {
 	}
 
 	@Override
-	public void saveState(ILayout layout, Set<INode> openSet, Set<INode> closedSet) 
+	public void saveState(ILayout layout, Set<INode> openSet, Set<INode> closedSet, Set<INode> highlight) 
 	{
-		states.add(new State(layout, openSet, closedSet));
+		states.add(new State(layout, openSet, closedSet, highlight));
 	}
 }

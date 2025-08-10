@@ -15,6 +15,7 @@ import algorithms.interfaces.ISearchAlgorithm;
 import algorithms.search.AStar;
 import algorithms.search.BFS;
 import algorithms.search.Greedy;
+import algorithms.search.JPS;
 import gui.SceneManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -155,6 +156,11 @@ public class AlgorithmSearchController {
                 enableHeuristic(true);
                 refreshUI();
                 break;
+            case "Jump Point Search":
+                this.algorithm = new JPS();
+                enableHeuristic(true);
+                refreshUI();
+                break;
             default:
                 break;
         }
@@ -232,9 +238,6 @@ public class AlgorithmSearchController {
         columnsField.setDisable(!state);
         downloadButton.setDisable(!state);
         diagonalMovements.setDisable(!state);
-
-        if(!heuristicComboBox.isDisabled())
-            heuristicComboBox.setDisable(!state);
     }
 
     /**
@@ -256,7 +259,8 @@ public class AlgorithmSearchController {
         }
 
         updateWarning("clear", null, null);
-        this.algorithm.clearStates();
+        if(this.algorithm != null)
+            this.algorithm.clearStates();
 
         this.grid = new Grid(rows, columns, visualContainer);
         drawGrid();
@@ -346,7 +350,7 @@ public class AlgorithmSearchController {
         if(selectedFile != null) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(selectedFile))) 
             {
-                GridSnapshot snapshot = new GridSnapshot(this.grid, new HashSet<INode>(), new HashSet<INode>());
+                GridSnapshot snapshot = new GridSnapshot(this.grid, new HashSet<INode>(), new HashSet<INode>(), new HashSet<INode>());
                 int[][] snapshotGrid = snapshot.getGrid();
                 for(int row = 0; row < snapshotGrid.length; row++)
                 {
@@ -536,15 +540,22 @@ public class AlgorithmSearchController {
 
         algorithm.clearStates();
         List<INode> path = algorithm.solve(this.grid);
+        
+        for(INode node : path) {
+            Cell cell = (Cell) node;
+
+            System.out.println(cell.getRow() + " " + cell.getColumn());
+        }
+        
         getPathStates(path);
         this.currentState = 0;
-
+//
         stateLabel.setText("Calculating states ...");
         buttonState(false);
         animate();
-
+//
         this.currentState = algorithm.getStates().size() - 1;
-    }
+    }//
 
     private void getPathStates(List<INode> path) {
         State lastState = this.algorithm.getStates().get(this.algorithm.getStates().size() - 1);

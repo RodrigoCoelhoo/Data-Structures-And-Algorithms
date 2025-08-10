@@ -39,7 +39,7 @@ public class AStar implements ISearchAlgorithm {
 			
 			INode current = openQueue.poll();
 			if(current != layout.getInitialNode())
-				saveState(layout, openSet, closedSet);
+				saveState(layout, openSet, closedSet, null);
 			
 			if(openSet.contains(current)) openSet.remove(current);
 
@@ -50,7 +50,7 @@ public class AStar implements ISearchAlgorithm {
 			}
 			
 			closedSet.add(current);
-			saveState(layout, openSet, closedSet);
+			saveState(layout, openSet, closedSet, null);
 			
 			ArrayList<INode> currentSuccessors = (ArrayList<INode>) layout.getSuccessors(current);
 			for(INode successor : currentSuccessors)
@@ -111,8 +111,8 @@ public class AStar implements ISearchAlgorithm {
 	}
 
 	@Override
-	public void saveState(ILayout layout, Set<INode> openSet, Set<INode> closedSet) 
+	public void saveState(ILayout layout, Set<INode> openSet, Set<INode> closedSet, Set<INode> highlight) 
 	{
-		states.add(new State(layout, openSet, closedSet));
+		states.add(new State(layout, openSet, closedSet, highlight));
 	}
 }

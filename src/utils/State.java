@@ -22,12 +22,12 @@ public class State {
         this.snapshot = null;
     }
 
-    public State(ILayout layout, Set<INode> openSet, Set<INode> closedSet) {
+    public State(ILayout layout, Set<INode> openSet, Set<INode> closedSet, Set<INode> highlight) {
         this.list = null;
         this.indexs = null;
         this.highLight = null;
 
-        this.snapshot = new GridSnapshot(layout, openSet, closedSet);
+        this.snapshot = new GridSnapshot(layout, openSet, closedSet, highlight);
     }
 
     public State(GridSnapshot snapshot) {
