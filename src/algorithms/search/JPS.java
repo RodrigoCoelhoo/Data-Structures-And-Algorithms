@@ -24,7 +24,6 @@ public class JPS implements ISearchAlgorithm {
 	private final ArrayList<State> states = new ArrayList<>();
 
 	// https://www.youtube.com/watch?v=WVDnN4Cyj2A&ab_channel=GameAiUncovered
-	
 	// For the start node
 
 	// For each direction of the grid check if there is a jumping point (When a forced neighbor is found)
@@ -61,6 +60,10 @@ public class JPS implements ISearchAlgorithm {
 
 	@Override
 	public List<INode> solve(ILayout layout) {
+		visualizationOpenSet.clear();
+		visualizationClosedSet.clear();
+		visualizationHighlightSet.clear();
+
 		List<INode> path = new ArrayList<>();
 		PriorityQueue<INode> openQueue = new PriorityQueue<>(Comparator.comparingInt(INode::getF));
 		Set<INode> openSet = new HashSet<>();
@@ -80,6 +83,7 @@ public class JPS implements ISearchAlgorithm {
 		for(int[] direction : Grid.getDirections())
 		{
 			INode jumpingPoint = getJumpingPoint(layout, start, direction);
+			visualizationOpenSet.clear();
 			
 			if(jumpingPoint != null) {
 				openQueue.add(jumpingPoint);
@@ -89,13 +93,15 @@ public class JPS implements ISearchAlgorithm {
 			}
 		}
 		closedSet.add(start);
+		visualizationClosedSet.add(start);
 		
 		Cell[][] grid = ((Grid) layout).getGrid();
 		while(!openQueue.isEmpty()) {
 			// Check if the node is the target
 			visualizationOpenSet.clear();
-
+			
 			INode current = openQueue.poll();
+			visualizationClosedSet.add(current);
 			if(layout.isGoal(current)) {
 				path = getPath(current);
 				break;
@@ -104,7 +110,6 @@ public class JPS implements ISearchAlgorithm {
 			if(openSet.contains(current)) openSet.remove(current);
 			if(visualizationHighlightSet.contains(current)) { 
 				visualizationHighlightSet.remove(current);
-				visualizationClosedSet.add(current);
 			}
 			saveState(layout, visualizationOpenSet, visualizationClosedSet, visualizationHighlightSet);
  
@@ -121,6 +126,8 @@ public class JPS implements ISearchAlgorithm {
 				if(jumpingPoint != null) {
 					openQueue.add(jumpingPoint);
 					openSet.add(jumpingPoint);
+					visualizationHighlightSet.add(jumpingPoint);
+					saveState(layout, visualizationOpenSet, visualizationClosedSet, visualizationHighlightSet);
 				}
 			}
 			closedSet.add(current);
@@ -129,7 +136,6 @@ public class JPS implements ISearchAlgorithm {
 		return path;
 	}
 
-	
 	
 	/**
 	 * @return null if hit wall/end of grid, Node if it is a jumping point
@@ -155,17 +161,23 @@ public class JPS implements ISearchAlgorithm {
 				} else {
 					return null;
 				}
+
+				if(!getForcedNeighbors(grid, currentNode, direction).isEmpty()) {
+                    return currentNode;
+                }
+				
 				visualizationOpenSet.add(currentNode);
 				saveState(layout, visualizationOpenSet, visualizationClosedSet, visualizationHighlightSet);
 				
 				if(layout.isGoal(currentNode)) return currentNode;
 				
 				int[] direction1 = {direction[0], 0};
+				int[] direction2 = {0, direction[1]};
+				
 				INode result = sweep(grid, currentNode, direction1);
 				saveState(layout, visualizationOpenSet, visualizationClosedSet, visualizationHighlightSet);
 				if(result != null) return currentNode;
 				
-				int[] direction2 = {0, direction[1]};
 				result = sweep(grid, currentNode, direction2);
 				saveState(layout, visualizationOpenSet, visualizationClosedSet, visualizationHighlightSet);
 				if(result != null) return currentNode;
@@ -177,6 +189,7 @@ public class JPS implements ISearchAlgorithm {
 		{
 			INode result = sweep(grid, node, direction);
 			saveState(layout, visualizationOpenSet, visualizationClosedSet, visualizationHighlightSet);
+			visualizationOpenSet.clear();
 			return result;
 		}
 	}
@@ -189,9 +202,9 @@ public class JPS implements ISearchAlgorithm {
 	{
 		// direction e.g. --> (row, column) (-1, 0) -> Same column, previous row (Up)
 		Cell currentNode = (Cell) node;
+		
 		int nextRow = currentNode.getRow();
 		int nextColumn = currentNode.getColumn();
-		
 		while(currentNode != null) 
 		{
 			nextRow = nextRow + direction[0];
@@ -236,34 +249,47 @@ public class JPS implements ISearchAlgorithm {
 		if (dr != 0 && dc == 0) {
 			// Check left side
 			if (isOpenNode(grid, r, c - 1) == -1 && isOpenNode(grid, r + dr, c - 1) == 1)
-			forcedDirs.add(new int[]{dr, -1});
+				forcedDirs.add(new int[]{dr, -1});
 			// Check right side
 			if (isOpenNode(grid, r, c + 1) == -1 && isOpenNode(grid, r + dr, c + 1) == 1)
-			forcedDirs.add(new int[]{dr, 1});
+				forcedDirs.add(new int[]{dr, 1});
 		}
+
 		// Moving horizontally
 		else if (dc != 0 && dr == 0) {
 			// Check up
 			if (isOpenNode(grid, r - 1, c) == -1 && isOpenNode(grid, r - 1, c + dc) == 1)
-			forcedDirs.add(new int[]{-1, dc});
+				forcedDirs.add(new int[]{-1, dc});
 			// Check down
 			if (isOpenNode(grid, r + 1, c) == -1 && isOpenNode(grid, r + 1, c + dc) == 1)
-			forcedDirs.add(new int[]{1, dc});
+				forcedDirs.add(new int[]{1, dc});
 		}
-		// Moving diagonally
 		else if (dr != 0 && dc != 0) { // Diagonal movement
-			
-			forcedDirs.addAll(getForcedNeighbors(grid, node, new int[]{dr, 0}));
-			forcedDirs.addAll(getForcedNeighbors(grid, node, new int[]{0, dc}));
-			
-			// Check horizontal forced neighbor
-			//if (isOpenNode(grid, r, c + dc) == -1 && isOpenNode(grid, r - dr, c + dc) == 1)
-			//forcedDirs.add(new int[]{-dr, dc}); // Forced neighbor direction
-			//// Check vertical forced neighbor
-			//if (isOpenNode(grid, r + dr, c) == -1 && isOpenNode(grid, r + dr, c - dc) == 1)
-			//forcedDirs.add(new int[]{dr, -dc}); // Forced neighbor direction
+
+			// CURRENT ROW + DIR[0], CURRENT COLUMN - DIR[1]
+			// R, C - DC
+			/**
+			 * (0,0) (0,1) FCNGB (0,3)
+			 * (1,0) WALLL WALLL NNNNN	(1-2, 3 - 2) -> (-1, 1)			| 		
+			 * (2,0) (2,1) PPPPP (2,3)	FCNGB = (0,2), NNNNN = (1,3)	| WALLL = (1,2) NNNNN = (1,3)			
+			 * (3,0) (3,1) (3,2) (3,3)  (1 + (-1), 3 - 1)				| R, C - DC
+			 */
+
+			// CURRENT ROW - DIR[0], CURRENT COLUMN + DIR[1]
+			/**
+			 * (0,0) (0,1) (0,2) (0,3) (0,4)
+			 * (1,0) WALLL WALLL NNNNN (1,4)	(1-2, 3 - 2) -> (-1, 1)			| (-1, 1)				
+			 * (2,0) (2,1) PPPPP WALLL FCNGB	FCNGB = (2,4), NNNNN = (1,3)	| WALLL = (2,3) NNNNN = (1,3)			
+			 * (3,0) (3,1) (3,2) (3,3) (3,4)    (1 - (-1), 3 + 1)				| R - DR, C
+			 */
+
+			if (isOpenNode(grid, r, c - dc) == -1 && isOpenNode(grid, r + dr, c - dc) == 1)
+				forcedDirs.add(new int[]{dr, -dc});
+
+			if (isOpenNode(grid, r - dr, c) == -1 && isOpenNode(grid, r - dr, c + dc) == 1)
+				forcedDirs.add(new int[]{-dr, dc}); 
 		}
-		
+
 		return forcedDirs;
 	}
 
@@ -328,10 +354,6 @@ public class JPS implements ISearchAlgorithm {
 		}
 
 		Collections.reverse(result);
-		for(INode n : result) {
-			Cell c = (Cell) n;
-			System.out.println(c.getRow() + " " + c.getColumn());
-		}
 		return result;
 	}
 

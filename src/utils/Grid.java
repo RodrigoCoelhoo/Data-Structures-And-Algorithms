@@ -27,6 +27,11 @@ public class Grid implements ILayout {
 	static final Color GOAL_COLOR		= Color.YELLOW;
 	static final Color START_COLOR		= Color.web("#66BB6A");
 
+	
+    private enum Action { WALL, START, OBJECTIVE, NONE }
+    private Action currentAction = Action.NONE;
+    private boolean dragSetValue = true;
+
 	public Grid(int rows, int columns, Pane visualContainer) {
         this.grid = new Cell[rows][columns];
 		this.startCell = null;
@@ -125,14 +130,41 @@ public class Grid implements ILayout {
 			this.rect.setArcWidth(4);
 			this.rect.setArcHeight(4);
 
-			rect.setOnMouseClicked(e -> {
+			// Step 1 — Mouse pressed: decide the action & value
+			rect.setOnMousePressed(e -> {
 				if (e.isControlDown()) {
-					this.setObjective(!this.isObjective());
+					Grid.this.currentAction = Action.OBJECTIVE;
+					Grid.this.dragSetValue = !this.isObjective();
+					this.setObjective(Grid.this.dragSetValue);
 				} else if (e.isShiftDown()) {
-					this.setStart(!this.isStart());
+					Grid.this.currentAction = Action.START;
+					Grid.this.dragSetValue = !this.isStart();
+					this.setStart(Grid.this.dragSetValue);
 				} else {
-					this.setWall(!this.isWall());
+					Grid.this.currentAction = Action.WALL;
+					Grid.this.dragSetValue = !this.isWall();
+					this.setWall(Grid.this.dragSetValue);
 				}
+			});
+
+			// Step 2 — Drag detected: tell JavaFX to send drag-entered events to other cells
+			rect.setOnDragDetected(e -> {
+				rect.startFullDrag(); // this is the legal place to start full drag
+			});
+
+			// Step 3 — Apply the action when entering another rectangle during drag
+			rect.setOnMouseDragEntered(e -> {
+				switch (Grid.this.currentAction) {
+					case OBJECTIVE -> this.setObjective(Grid.this.dragSetValue);
+					case START     -> this.setStart(Grid.this.dragSetValue);
+					case WALL      -> this.setWall(Grid.this.dragSetValue);
+					default        -> {}
+				}
+			});
+
+			// Step 4 — Reset when released
+			rect.setOnMouseReleased(e -> {
+				Grid.this.currentAction = Action.NONE;
 			});
 
 			this.isWall = false;
