@@ -148,12 +148,12 @@ public class Grid implements ILayout {
 			});
 
 			// Step 2 — Drag detected: tell JavaFX to send drag-entered events to other cells
-			rect.setOnDragDetected(e -> {
-				rect.startFullDrag(); // this is the legal place to start full drag
+			rect.setOnDragDetected(_ -> {
+				rect.startFullDrag();
 			});
 
 			// Step 3 — Apply the action when entering another rectangle during drag
-			rect.setOnMouseDragEntered(e -> {
+			rect.setOnMouseDragEntered(_ -> {
 				switch (Grid.this.currentAction) {
 					case OBJECTIVE -> this.setObjective(Grid.this.dragSetValue);
 					case START     -> this.setStart(Grid.this.dragSetValue);
@@ -163,7 +163,7 @@ public class Grid implements ILayout {
 			});
 
 			// Step 4 — Reset when released
-			rect.setOnMouseReleased(e -> {
+			rect.setOnMouseReleased(_ -> {
 				Grid.this.currentAction = Action.NONE;
 			});
 

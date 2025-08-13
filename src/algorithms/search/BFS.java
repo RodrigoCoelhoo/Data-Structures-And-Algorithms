@@ -62,7 +62,17 @@ public class BFS implements ISearchAlgorithm {
 
 	@Override
 	public String info() {
-		return "";
+		String result = 
+		"Breadth-First Search (BFS) is an uninformed search algorithm that explores the search space level by level. "
+				+ "It starts from the initial node and explores all neighbors before moving on to nodes at the next depth level.\n\n";
+
+		result += "BFS guarantees finding the shortest path (minimum number of edges) to the goal if the path cost between nodes is uniform. "
+				+ "It uses a queue to maintain the order of exploration and a set to keep track of visited nodes to avoid revisiting.\n\n";
+
+		result += "Note:\nBFS is complete and optimal for unweighted graphs, but it can consume significant memory in dense or large graphs, "
+				+ "since it stores all nodes at the current depth level before proceeding to the next.\n";
+
+		return result;
 	}
 	
 	private List<INode> getPath(INode node) {

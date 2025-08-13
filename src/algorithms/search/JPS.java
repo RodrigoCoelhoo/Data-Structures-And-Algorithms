@@ -340,8 +340,13 @@ public class JPS implements ISearchAlgorithm {
 
 	@Override
 	public String info() {
-		return "";
+		return "Jump Point Search (JPS) is an optimization of the A* algorithm for uniform-cost grids. " +
+			"It reduces the number of nodes explored by 'jumping' over nodes that do not affect the " +
+			"optimal path, only considering nodes where a decision (forced neighbor) is required. " +
+			"JPS works for both orthogonal and diagonal movement, maintaining the optimality of A* " +
+			"while significantly improving performance on large grids.";
 	}
+
 	
 	private List<INode> getPath(INode node) {
 		ArrayList<INode> result = new ArrayList<>();

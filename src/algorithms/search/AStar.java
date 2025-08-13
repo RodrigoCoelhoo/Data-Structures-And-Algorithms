@@ -82,7 +82,23 @@ public class AStar implements ISearchAlgorithm {
 
 	@Override
 	public String info() {
-		return "Teste";
+		String result = 
+			"A* (A-Star) is a best-first search algorithm that finds the shortest path from a start node to a goal node. "
+				+ "It uses a heuristic function 'h(n)' to estimate the cost from a node to the goal, "
+				+ "and a path cost function 'g(n)' to track the cost from the start node to the current node. "
+				+ "The sum f(n) = g(n) + h(n) determines the priority of nodes for exploration.\n\n";
+
+		result += "Nodes are expanded based on the lowest f(n) value, ensuring that the algorithm always considers the most promising paths first. "
+				+ "If a node is revisited with a lower g(n), its path and f(n) are updated to reflect the better path.\n\n";
+
+		result += "A* guarantees an optimal solution if the heuristic 'h(n)' is admissible, "
+				+ "meaning it never overestimates the actual cost to reach the goal.\n\n";
+
+		result += "Note:\nA* maintains both open and closed sets. "
+				+ "The open set stores nodes to be explored, ordered by f(n), while the closed set keeps track of already expanded nodes to avoid redundant work. "
+				+ "This ensures efficiency but requires memory proportional to the number of nodes.\n";
+
+		return result;
 	}
 
 	private List<INode> getPath(INode node) {

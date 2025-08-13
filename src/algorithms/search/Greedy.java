@@ -69,7 +69,19 @@ public class Greedy implements ISearchAlgorithm{
 
 	@Override
 	public String info() {
-		return "Teste";
+		String result = "Greedy Best-First Search is an informed search algorithm that uses a heuristic function 'h(n)' to guide the search. "
+				+ "At each step, it selects the node that appears to be closest to the goal according to the heuristic.\n\n";
+
+		result += "The algorithm uses a priority queue to always expand the node with the lowest heuristic value first. "
+				+ "It maintains an open set (nodes to be explored) and a closed set (nodes already explored) to avoid revisiting.\n\n";
+
+		result += "Unlike A*, Greedy Best-First Search does not consider the cost to reach a node (g(n)), only the estimated cost to the goal (h(n)). "
+				+ "This can make it faster, but it is not guaranteed to find the shortest path and may get stuck in loops if the heuristic is misleading.\n\n";
+
+		result += "Note:\n"
+				+ "Its memory consumption can be high because it stores all generated nodes in the open set.\n";
+
+		return result;
 	}
 
 	private List<INode> getPath(INode node) {

@@ -136,11 +136,6 @@ public class AlgorithmSearchController {
                 enableHeuristic(true);
                 refreshUI();
                 break;
-            case "IDA*":
-                this.algorithm = new AStar();
-                enableHeuristic(true);
-                refreshUI();
-                break;
             case "Dijkstra's":
                 //this.algorithm = new 
                 enableHeuristic(true);
@@ -540,7 +535,11 @@ public class AlgorithmSearchController {
         }
 
         algorithm.clearStates();
+
+        
+        System.out.println("Solving");
         List<INode> path = algorithm.solve(this.grid);
+        System.out.println("Found");
         
         getPathStates(path);
         this.currentState = 0;
