@@ -22,10 +22,9 @@ A JavaFX based application for visualizing classic sorting algorithms and data s
 
 ### 🔎 Search
 - A*
-- IDA*
-- Dijkstra's
-- Breadth-First Search (BFS) 
-- Depth-First Search (DFS)
+- Breadth-First Search (BFS)
+- Best-First Search (Greedy)
+- Jump Point Search
 
 ## 🧪 Running the Project
 To run this project, ensure you have JavaFX configured properly. Here's how:

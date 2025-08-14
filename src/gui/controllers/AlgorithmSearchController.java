@@ -72,8 +72,7 @@ public class AlgorithmSearchController {
 
     @FXML
     public void initialize() {
-        algorithmComboBox.getItems().addAll("A*", "IDA*", "Dijkstra's", "Breadth-First Search (BFS)", "Best First Search (Greedy)", 
-                                            "Jump Point Search", "Orthogonal Jump Point Search", "Trace");
+        algorithmComboBox.getItems().addAll("A*", "Breadth-First Search (BFS)", "Best First Search (Greedy)", "Jump Point Search");
         algorithmComboBox.setOnAction(this::updateAlgorithm);
 
         
@@ -104,7 +103,7 @@ public class AlgorithmSearchController {
         String helpText =
             "Defining Nodes: \n" +
             "\t- CTRL + LEFT CLICK -> Goal\n" +
-            "\t- CTRL + RIGHT CLICK -> Start\n" +
+            "\t- SHIFT + LEFT CLICK -> Start\n" +
             "\t- LEFT CLICK -> Wall\n\n" +
             "To edit the grid, it must be clear. To clear, use:\n" +
             "\t- Clear option (Eraser icon),\n" +
@@ -133,11 +132,6 @@ public class AlgorithmSearchController {
         switch (algorithmComboBox.getValue()) {
             case "A*":
                 this.algorithm = new AStar();
-                enableHeuristic(true);
-                refreshUI();
-                break;
-            case "Dijkstra's":
-                //this.algorithm = new 
                 enableHeuristic(true);
                 refreshUI();
                 break;
@@ -535,11 +529,7 @@ public class AlgorithmSearchController {
         }
 
         algorithm.clearStates();
-
-        
-        System.out.println("Solving");
         List<INode> path = algorithm.solve(this.grid);
-        System.out.println("Found");
         
         getPathStates(path);
         this.currentState = 0;

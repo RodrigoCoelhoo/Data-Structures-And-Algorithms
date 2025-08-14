@@ -1,8 +1,12 @@
 package gui.controllers;
 
+import java.net.URI;
+
 import gui.SceneManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.input.MouseEvent;
+import java.awt.Desktop;
 
 public class MainController {
 	
@@ -32,4 +36,13 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    public void openGitHub(MouseEvent event) {
+    try {
+        Desktop.getDesktop().browse(new URI("https://github.com/RodrigoCoelhoo/Data-Structures-And-Algorithms"));
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 }
