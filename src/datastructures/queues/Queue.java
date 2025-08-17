@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import datastructures.interfaces.IDataStructure;
 import datastructures.interfaces.INode;
+import javafx.scene.layout.Pane;
 
 public class Queue<T> implements IDataStructure<T>, Iterable<T> {
 
@@ -110,4 +111,10 @@ public class Queue<T> implements IDataStructure<T>, Iterable<T> {
 			this.next = next;
 		}
     }
+
+	@Override
+	public void draw(Pane pane) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'draw'");
+	}
 }

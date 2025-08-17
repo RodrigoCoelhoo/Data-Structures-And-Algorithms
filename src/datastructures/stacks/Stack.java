@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import datastructures.interfaces.IDataStructure;
 import datastructures.interfaces.INode;
+import javafx.scene.layout.Pane;
 
 public class Stack<T> implements IDataStructure<T>, Iterable<T> {
 
@@ -97,4 +98,10 @@ public class Stack<T> implements IDataStructure<T>, Iterable<T> {
             return this.prev;
         }
     }
+
+	@Override
+	public void draw(Pane pane) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'draw'");
+	}
 }

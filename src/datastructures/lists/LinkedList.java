@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import datastructures.interfaces.IDataStructure;
 import datastructures.interfaces.INode;
+import javafx.scene.layout.Pane;
 
 public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 	
@@ -241,5 +242,11 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
         public void setNext(Node next) {
             this.next = next;
         }
+    }
+
+    @Override
+    public void draw(Pane pane) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'draw'");
     }
 }

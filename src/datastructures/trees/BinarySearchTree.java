@@ -1,6 +1,7 @@
 package datastructures.trees;
 
 import datastructures.interfaces.INode;
+import javafx.scene.layout.Pane;
 import datastructures.interfaces.IDataStructure;
 
 public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure<T> {
@@ -187,5 +188,11 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 			this.value = value;
 		}
 
+	}
+
+	@Override
+	public void draw(Pane pane) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'draw'");
 	}
 }

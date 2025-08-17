@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import datastructures.interfaces.IDataStructure;
+import javafx.scene.layout.Pane;
 
 public class MaxHeap<T extends Comparable<T>> implements IDataStructure<T> {
 	List<T> heap = new ArrayList<>();
@@ -99,5 +100,11 @@ public class MaxHeap<T extends Comparable<T>> implements IDataStructure<T> {
 	@Override
 	public boolean isEmpty() {
 		return this.heap.size() == 0;
+	}
+
+	@Override
+	public void draw(Pane pane) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'draw'");
 	}
 }

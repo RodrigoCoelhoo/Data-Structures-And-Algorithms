@@ -12,7 +12,6 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
 <SplitPane fx:id="splitPane" dividerPositions="0.19962453066332916" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controllers.DataStructureController">
@@ -20,25 +19,31 @@
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="898.0" prefWidth="519.0">
          <children>
             <ComboBox fx:id="algorithmComboBox" layoutX="25.0" layoutY="98.0" prefHeight="25.0" prefWidth="266.0" promptText="Select the Sort Algorithm" />
-            <Button fx:id="generateButton" layoutX="129.0" layoutY="470.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="95.0" text="Generate Array" textAlignment="CENTER" wrapText="true">
+            <Button fx:id="insertButton" layoutX="225.0" layoutY="470.0" mnemonicParsing="false" onAction="#handleInsert" prefHeight="52.0" prefWidth="71.0" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font size="15.0" />
                </font>
                <tooltip>
-                  <Tooltip text="Generate a random array of the selected size with values from 1-100 " />
-               </tooltip></Button>
-            <TextField id="sizeField" fx:id="sizeField" alignment="CENTER" layoutX="22.0" layoutY="470.0" prefHeight="52.0" prefWidth="95.0" promptText="Size">
+                  <Tooltip text="Insert value in the datastructure." />
+               </tooltip>
+               <graphic>
+                  <ImageView fitHeight="21.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../images/insert.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <TextField id="sizeField" fx:id="insertValueField" alignment="CENTER" layoutX="22.0" layoutY="470.0" prefHeight="52.0" prefWidth="86.0" promptText="Value">
                <font>
                   <Font size="17.0" />
                </font></TextField>
-            <Label id="sizeFieldWarning" fx:id="arrayWarning" layoutX="25.0" layoutY="447.0" prefHeight="17.0" prefWidth="273.0" />
-            <TextArea fx:id="algorithmInfo" editable="false" layoutX="25.0" layoutY="142.0" prefHeight="227.0" prefWidth="266.0" style="-fx-background-color: e0e0e0;" wrapText="true">
+            <Label id="sizeFieldWarning" fx:id="operationsWarning" layoutX="25.0" layoutY="447.0" prefHeight="17.0" prefWidth="273.0" />
+            <TextArea fx:id="algorithmInfo" editable="false" layoutX="25.0" layoutY="142.0" prefHeight="246.0" prefWidth="266.0" style="-fx-background-color: e0e0e0;" wrapText="true">
                <font>
                   <Font size="13.0" />
                </font>
             </TextArea>
-            <Label fx:id="animationWarning" contentDisplay="CENTER" layoutX="22.0" layoutY="683.0" prefHeight="17.0" prefWidth="273.0" />
-            <Button fx:id="clearButton" contentDisplay="GRAPHIC_ONLY" layoutX="232.0" layoutY="470.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="63.0" text="Button">
+            <Button fx:id="clearButton" contentDisplay="GRAPHIC_ONLY" layoutX="22.0" layoutY="752.0" mnemonicParsing="false" onAction="#clear" prefHeight="52.0" prefWidth="273.0" text="Button">
                <graphic>
                   <ImageView fitHeight="40.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -50,38 +55,16 @@
                   <Tooltip text="Clear Array" />
                </tooltip>
             </Button>
-            <Button fx:id="uploadButton" layoutX="22.0" layoutY="538.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="273.0" text="Upload Array">
-               <font>
-                  <Font size="20.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../images/upload.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
             <Separator layoutX="22.0" layoutY="443.0" prefHeight="3.0" prefWidth="273.0" />
-            <Label layoutX="25.0" layoutY="403.0" prefHeight="39.0" prefWidth="266.0" text="Array">
+            <Label layoutX="25.0" layoutY="403.0" prefHeight="39.0" prefWidth="266.0" text="Operations">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="arrayStatus" layoutX="48.0" layoutY="590.0" prefHeight="25.0" prefWidth="266.0" text="Array Created" wrapText="true">
-               <font>
-                  <Font size="19.0" />
-               </font></Label>
             <Separator layoutX="22.0" layoutY="85.0" prefHeight="3.0" prefWidth="273.0" />
             <Label layoutX="25.0" layoutY="45.0" prefHeight="39.0" prefWidth="266.0" text="Data Structure">
                <font>
                   <Font size="24.0" />
-               </font>
-            </Label>
-            <Circle fx:id="arrayCircleStatus" fill="DODGERBLUE" layoutX="32.0" layoutY="605.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
-            <Label fx:id="arraySize" layoutX="48.0" layoutY="610.0" prefHeight="25.0" prefWidth="266.0" text="Array Size" wrapText="true">
-               <font>
-                  <Font size="14.0" />
                </font>
             </Label>
             <Button fx:id="home" contentDisplay="GRAPHIC_ONLY" layoutX="-3.0" layoutY="7.0" mnemonicParsing="false" onAction="#handleSwitchToHome" prefHeight="39.0" prefWidth="39.0" text="Button">
@@ -93,6 +76,86 @@
                   </ImageView>
                </graphic>
             </Button>
+            <TextField id="sizeField" fx:id="insertIndexField" alignment="CENTER" layoutX="121.0" layoutY="470.0" prefHeight="52.0" prefWidth="86.0" promptText="Index">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </TextField>
+            <Button fx:id="deleteButton" layoutX="225.0" layoutY="540.0" mnemonicParsing="false" onAction="#handleDelete" prefHeight="52.0" prefWidth="71.0" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <tooltip>
+                  <Tooltip text="Delete from datastructure." />
+               </tooltip>
+               <graphic>
+                  <ImageView fitHeight="21.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../images/delete.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <TextField id="sizeField" fx:id="deleteValueField" alignment="CENTER" layoutX="22.0" layoutY="540.0" prefHeight="52.0" prefWidth="86.0" promptText="Value">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </TextField>
+            <TextField id="sizeField" fx:id="deleteIndexField" alignment="CENTER" layoutX="121.0" layoutY="540.0" prefHeight="52.0" prefWidth="86.0" promptText="Index">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </TextField>
+            <Button fx:id="searchButton" layoutX="225.0" layoutY="610.0" mnemonicParsing="false" onAction="#handleSearch" prefHeight="52.0" prefWidth="71.0" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <tooltip>
+                  <Tooltip text="Search value in the datastructure." />
+               </tooltip>
+               <graphic>
+                  <ImageView fitHeight="21.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../images/get.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <TextField id="sizeField" fx:id="searchValueField" alignment="CENTER" layoutX="22.0" layoutY="610.0" prefHeight="52.0" prefWidth="86.0" promptText="Value">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </TextField>
+            <TextField id="sizeField" fx:id="searchIndexField" alignment="CENTER" layoutX="121.0" layoutY="610.0" prefHeight="52.0" prefWidth="86.0" promptText="Index">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </TextField>
+            <Button fx:id="updateButton" layoutX="225.0" layoutY="680.0" mnemonicParsing="false" onAction="#handleUpdate" prefHeight="52.0" prefWidth="71.0" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <tooltip>
+                  <Tooltip text="Update value in the datastructure." />
+               </tooltip>
+               <graphic>
+                  <ImageView fitHeight="21.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../images/update.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <TextField id="sizeField" fx:id="updateValueField" alignment="CENTER" layoutX="22.0" layoutY="680.0" prefHeight="52.0" prefWidth="86.0" promptText="Value">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </TextField>
+            <TextField id="sizeField" fx:id="updateIndexField" alignment="CENTER" layoutX="121.0" layoutY="680.0" prefHeight="52.0" prefWidth="86.0" promptText="Index">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </TextField>
          </children></AnchorPane>
     <AnchorPane fx:id="animationAnchor" minHeight="0.0" minWidth="0.0" prefHeight="898.0" prefWidth="1114.0" style="-fx-background-color: e2e2e2;">
          <children>
