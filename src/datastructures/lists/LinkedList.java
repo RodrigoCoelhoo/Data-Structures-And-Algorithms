@@ -29,7 +29,7 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 	}
 
 	@Override
-	public void add(T value, int index) {
+	public void add(int index, T value) {
 
         if(index < 0 || index > this.size) throw new IndexOutOfBoundsException();
         
@@ -248,5 +248,13 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
     public void draw(Pane pane) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'draw'");
+    }
+
+    @Override
+    public void print() {
+        for (T value : this) {  // 'this' works because LinkedList implements Iterable<T>
+            System.out.print(value + " ");
+        }
+        System.out.println(); // newline at the end
     }
 }

@@ -6,7 +6,7 @@ public interface IDataStructure<T> {
 
     // Add elements
     default void add(T value) {}
-    default void add(T value, int index) {}
+    default void add(int index, T value) {}
     default void insert(T value) {}
     default void push(T value) {}
     default void enqueue(T value) {}
@@ -31,5 +31,7 @@ public interface IDataStructure<T> {
     default boolean contains(T value) { return false; }
     default int size() { return 0; }
     default boolean isEmpty() { return true; }
+    default void print() {}
     public void draw(Pane pane);
+
 }
