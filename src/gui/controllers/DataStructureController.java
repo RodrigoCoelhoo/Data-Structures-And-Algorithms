@@ -140,6 +140,7 @@ public class DataStructureController {
         searchIndexField.setText("");
         updateIndexField.setText("");
         updateWarning("clear", null, null);
+        this.dataStructure.draw(visualContainer);
     }
 
     private void toggleInsert(boolean button, boolean index, boolean value) {
@@ -210,7 +211,7 @@ public class DataStructureController {
 
             insertValue(value, index);
 
-            this.dataStructure.print();
+            this.dataStructure.draw(visualContainer);
         } catch (NumberFormatException ex) {
             updateWarning("operationsWarning", "Please enter a valid number", warningColor);
             return;
@@ -271,7 +272,7 @@ public class DataStructureController {
             
             deleteValue(value, index);
 
-            this.dataStructure.print();
+            this.dataStructure.draw(visualContainer);
         } catch (NumberFormatException ex) {
             updateWarning("operationsWarning", "Please enter a valid number", warningColor);
             return;
@@ -332,7 +333,7 @@ public class DataStructureController {
             
             searchValue(value, index);
 
-            this.dataStructure.print();
+            this.dataStructure.draw(visualContainer);
         } catch (NumberFormatException ex) {
             updateWarning("operationsWarning", "Please enter a valid number", warningColor);
             return;
@@ -379,7 +380,7 @@ public class DataStructureController {
 
             updateValue(value, index);
 
-            this.dataStructure.print();
+            this.dataStructure.draw(visualContainer);
         } catch (NumberFormatException ex) {
             updateWarning("operationsWarning", "Please enter a valid number.", warningColor);
         }

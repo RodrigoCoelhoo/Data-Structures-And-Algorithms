@@ -6,6 +6,10 @@ import java.util.NoSuchElementException;
 import datastructures.interfaces.IDataStructure;
 import datastructures.interfaces.INode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 	
@@ -246,15 +250,125 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 
     @Override
     public void draw(Pane pane) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'draw'");
+        pane.getChildren().clear();
+
+        double paneWidth = pane.getWidth() > 0 ? pane.getWidth() : 800;
+        double paneHeight = pane.getHeight() > 0 ? pane.getHeight() : 600;
+
+        double nodeWidth = 60;
+        double nodeHeight = 30;
+        double spacingX = 40;
+        double spacingY = 70;
+
+        int totalNodes = this.size + 1; // +1 for NULL
+        if (totalNodes == 0) return;
+
+        int nodesInRow = Math.max(1, (int)((paneWidth - 100) / (nodeWidth + spacingX)));
+        int totalRows = (int) Math.ceil((double) totalNodes / nodesInRow);
+
+        double firstRowStartX = (paneWidth - Math.min(nodesInRow, totalNodes) * nodeWidth
+                - (Math.min(nodesInRow, totalNodes) - 1) * spacingX) / 2;
+
+        Node current = this.head;
+        for (int i = 0; i < totalNodes; i++) {
+            int row = i / nodesInRow;
+            int col = i % nodesInRow;
+            int nodesThisRow = Math.min(nodesInRow, totalNodes - row * nodesInRow);
+
+            double x = firstRowStartX + col * (nodeWidth + spacingX);
+
+            // Symmetric vertical centering
+            double offset = totalRows % 2 == 1 ? row - totalRows / 2 : row - totalRows / 2 + 0.5;
+            double y = paneHeight / 2 + offset * spacingY;
+
+            // Draw node
+            boolean isNullNode = (i == this.size);
+            if (isNullNode) {
+                drawNode(pane, "NULL", x, y, nodeWidth, nodeHeight, Color.LIGHTGRAY);
+            } else {
+                drawNode(pane, current.getValue(), x, y, nodeWidth, nodeHeight);
+                current = current.next();
+            }
+
+            // Draw arrows if not last
+            if (i < totalNodes - 1) {
+                boolean lastInRow = (col == nodesThisRow - 1);
+                if (!lastInRow) {
+                    drawHorizontalArrow(pane, x + nodeWidth, y + nodeHeight / 2, spacingX);
+                } else {
+                    int nextRow = row + 1;
+                    double nextRowOffset = totalRows % 2 == 1 ? nextRow - totalRows / 2 : nextRow - totalRows / 2 + 0.5;
+                    double nextRowY = paneHeight / 2 + nextRowOffset * spacingY + nodeHeight / 2;
+                    drawRowWrapArrow(pane, x + nodeWidth, y + nodeHeight / 2, firstRowStartX, nextRowY, spacingX);
+                }
+            }
+        }
     }
 
-    @Override
-    public void print() {
-        for (T value : this) {  // 'this' works because LinkedList implements Iterable<T>
-            System.out.print(value + " ");
+    // Draw a node
+    private void drawNode(Pane pane, Object value, double x, double y, double width, double height, Color fill) {
+        Rectangle rect = new Rectangle(x, y, width, height);
+        rect.setStroke(Color.BLACK);
+        rect.setFill(fill);
+
+        Text text = new Text(value.toString());
+        double textWidth = text.getBoundsInLocal().getWidth();
+        double textHeight = text.getBoundsInLocal().getHeight();
+
+        if ("NULL".equals(value.toString())) {
+            // Center NULL in full rectangle
+            text.setX(x + (width - textWidth) / 2);
+            text.setY(y + (height + textHeight) / 2 - 2);
+            pane.getChildren().addAll(rect, text);
+        } else {
+            // Vertical divider in the middle
+            double midX = x + width / 2;
+            Line divider = new Line(midX, y, midX, y + height);
+            divider.setStroke(Color.BLACK);
+
+            // Left text (node value)
+            text.setX(x + (width / 2 - textWidth) / 2);
+            text.setY(y + (height + textHeight) / 2 - 2);
+
+            // Right text ("Next")
+            Text nextText = new Text("Next");
+            double nextWidth = nextText.getBoundsInLocal().getWidth();
+            nextText.setX(midX + (width / 2 - nextWidth) / 2);
+            nextText.setY(y + (height + textHeight) / 2 - 2);
+
+            pane.getChildren().addAll(rect, divider, text, nextText);
         }
-        System.out.println(); // newline at the end
+    }
+
+    // Default light-blue node
+    private void drawNode(Pane pane, Object value, double x, double y, double width, double height) {
+        drawNode(pane, value, x, y, width, height, Color.LIGHTBLUE);
+    }
+
+    // Horizontal arrow between nodes
+    private void drawHorizontalArrow(Pane pane, double startX, double startY, double spacingX) {
+        double endX = startX + spacingX;
+        double endY = startY;
+
+        Line line = new Line(startX, startY, endX, endY);
+        Line arrow1 = new Line(endX, endY, endX - 10, endY - 5);
+        Line arrow2 = new Line(endX, endY, endX - 10, endY + 5);
+        pane.getChildren().addAll(line, arrow1, arrow2);
+    }
+
+    // Wrap arrow to next row, aligned to first node's center
+    private void drawRowWrapArrow(Pane pane, double startX, double startY, double nextRowStartX, double nextRowY, double spacingX) {
+        double midX = startX + spacingX / 2;
+        Line lineStub = new Line(startX, startY, midX, startY);
+        pane.getChildren().add(lineStub);
+
+        double reappearX = nextRowStartX - spacingX / 2;
+        double reappearY = nextRowY;
+
+        Line lineReappear = new Line(reappearX, reappearY, nextRowStartX, reappearY);
+        Line arrow1 = new Line(nextRowStartX, reappearY, nextRowStartX - 10, reappearY - 5);
+        Line arrow2 = new Line(nextRowStartX, reappearY, nextRowStartX - 10, reappearY + 5);
+
+        pane.getChildren().addAll(lineReappear, arrow1, arrow2);
     }
 }

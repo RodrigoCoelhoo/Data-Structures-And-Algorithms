@@ -6,6 +6,10 @@ import java.util.NoSuchElementException;
 import datastructures.interfaces.IDataStructure;
 import datastructures.interfaces.INode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
 	
@@ -253,15 +257,162 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
 
     @Override
     public void draw(Pane pane) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'draw'");
+        pane.getChildren().clear();
+
+        double paneWidth = pane.getWidth() > 0 ? pane.getWidth() : 800;
+        double paneHeight = pane.getHeight() > 0 ? pane.getHeight() : 600;
+
+        double nodeWidth = 90;
+        double nodeHeight = 30;
+        double spacingX = 40;
+        double spacingY = 70;
+
+        int totalNodes = this.size + 2; // +1 for NULL
+        if (totalNodes == 2) {
+            double x = (paneWidth - nodeWidth) / 2;
+            double y = (paneHeight - nodeHeight) / 2;
+            drawNode(pane, "NULL", x, y, nodeWidth, nodeHeight, Color.LIGHTGRAY);
+            return;
+        }
+
+        int nodesInRow = Math.max(1, (int)((paneWidth - 100) / (nodeWidth + spacingX)));
+        int totalRows = (int) Math.ceil((double) totalNodes / nodesInRow);
+        double firstRowStartX = (paneWidth - Math.min(nodesInRow, totalNodes) * nodeWidth
+                - (Math.min(nodesInRow, totalNodes) - 1) * spacingX) / 2;
+
+        Node current = this.head;
+
+        for (int i = 0; i < totalNodes; i++) {
+            boolean isStartNull = (i == 0);
+            boolean isEndNull = (i == totalNodes - 1);
+
+            int row = i / nodesInRow;
+            int col = i % nodesInRow;
+            int nodesThisRow = Math.min(nodesInRow, totalNodes - row * nodesInRow);
+
+            double x = firstRowStartX + col * (nodeWidth + spacingX);
+            double offset = totalRows % 2 == 1 ? row - totalRows / 2 : row - totalRows / 2 + 0.5;
+            double y = paneHeight / 2 + offset * spacingY;
+
+            if (isStartNull || isEndNull) {
+                drawNode(pane, "NULL", x, y, nodeWidth, nodeHeight, Color.LIGHTGRAY);
+            } else {
+                drawNode(pane, current.getValue(), x, y, nodeWidth, nodeHeight);
+                current = current.next();
+            }
+
+            if (i < totalNodes - 1) {
+                boolean lastInRow = (col == nodesThisRow - 1);
+                double centerY = y + nodeHeight / 2;
+                double arrowOffsetY = 8;
+
+                if (!lastInRow) {
+                    if(isStartNull) {
+                        drawArrow(pane, x + nodeWidth + spacingX, centerY, x + nodeWidth, centerY, false); 
+                    } else if(i == totalNodes - 2) {
+                        drawArrow(pane, x + nodeWidth, centerY, x + nodeWidth + spacingX, centerY, true);
+                    }
+                    else {
+                        drawArrow(pane, x + nodeWidth, centerY - arrowOffsetY, x + nodeWidth + spacingX, centerY - arrowOffsetY, true);
+                        drawArrow(pane, x + nodeWidth + spacingX, centerY + arrowOffsetY, x + nodeWidth, centerY + arrowOffsetY, false);
+                    }
+                } else {
+                    int nextRow = row + 1;
+                    double nextRowOffset = totalRows % 2 == 1 ? nextRow - totalRows / 2 : nextRow - totalRows / 2 + 0.5;
+                    double nextRowY = paneHeight / 2 + nextRowOffset * spacingY + nodeHeight / 2;
+
+                    double midX = x + nodeWidth + spacingX / 2;
+                    
+                    if(i == totalNodes - 2) {
+                        drawArrow(pane, x + nodeWidth, centerY, midX, centerY, true);
+                        drawArrow(pane, firstRowStartX - spacingX / 2, nextRowY, firstRowStartX, nextRowY, true);
+                    } else {
+                        drawArrow(pane, x + nodeWidth, centerY - arrowOffsetY, midX, centerY - arrowOffsetY, true);
+                        drawArrow(pane, firstRowStartX - spacingX / 2, nextRowY - arrowOffsetY, firstRowStartX, nextRowY - arrowOffsetY, true);
+    
+                        drawArrow(pane, firstRowStartX, nextRowY + arrowOffsetY, firstRowStartX - spacingX / 2, nextRowY + arrowOffsetY, false); 
+                        drawArrow(pane, midX, centerY + arrowOffsetY, x + nodeWidth, centerY + arrowOffsetY, false);
+                    }
+                }
+            }
+        }
     }
 
-    @Override
-    public void print() {
-        for (T value : this) {  // 'this' works because LinkedList implements Iterable<T>
-            System.out.print(value + " ");
+    private void drawArrow(Pane pane, double startX, double startY, double endX, double endY, boolean forward) {
+        Line line = new Line(startX, startY, endX, endY);
+        double arrowSize = 5;
+        double dx = endX - startX;
+        double dy = endY - startY;
+        double angle = Math.atan2(dy, dx);
+        double arrowAngle = Math.PI / 6;
+        double x1, y1, x2, y2;
+
+        if (forward) {
+            x1 = endX - arrowSize * Math.cos(angle - arrowAngle);
+            y1 = endY - arrowSize * Math.sin(angle - arrowAngle);
+            x2 = endX - arrowSize * Math.cos(angle + arrowAngle);
+            y2 = endY - arrowSize * Math.sin(angle + arrowAngle);
+        } else {
+            angle = Math.atan2(startY - endY, startX - endX);
+            x1 = endX + arrowSize * Math.cos(angle - arrowAngle);
+            y1 = endY + arrowSize * Math.sin(angle - arrowAngle);
+            x2 = endX + arrowSize * Math.cos(angle + arrowAngle);
+            y2 = endY + arrowSize * Math.sin(angle + arrowAngle);
         }
-        System.out.println(); // newline at the end
+
+        Line arrow1 = new Line(endX, endY, x1, y1);
+        Line arrow2 = new Line(endX, endY, x2, y2);
+        pane.getChildren().addAll(line, arrow1, arrow2);
+    }
+
+    private void drawNode(Pane pane, Object value, double x, double y, double width, double height, Color fill) {
+        Rectangle rect = new Rectangle(x, y, width, height);
+        rect.setStroke(Color.BLACK);
+        rect.setFill(fill);
+
+        Text text = new Text(value.toString());
+        double textWidth = text.getBoundsInLocal().getWidth();
+        double textHeight = text.getBoundsInLocal().getHeight();
+
+        if ("NULL".equals(value.toString())) {
+            // Center NULL in full rectangle
+            text.setX(x + (width - textWidth) / 2);
+            text.setY(y + (height + textHeight) / 2 - 2);
+            pane.getChildren().addAll(rect, text);
+        } else {
+            // Divider positions
+            double third = width / 3;
+            double div1X = x + third;
+            double div2X = x + 2 * third;
+
+            Line divider1 = new Line(div1X, y, div1X, y + height);
+            Line divider2 = new Line(div2X, y, div2X, y + height);
+            divider1.setStroke(Color.BLACK);
+            divider2.setStroke(Color.BLACK);
+
+            // Left text ("Prev")
+            Text prevText = new Text("Prev");
+            double prevWidth = prevText.getBoundsInLocal().getWidth();
+            prevText.setX(x + (third - prevWidth) / 2);
+            prevText.setY(y + (height + textHeight) / 2 - 2);
+
+            // Middle text (node value)
+            double valueWidth = text.getBoundsInLocal().getWidth();
+            text.setX(div1X + (third - valueWidth) / 2);
+            text.setY(y + (height + textHeight) / 2 - 2);
+
+            // Right text ("Next")
+            Text nextText = new Text("Next");
+            double nextWidth = nextText.getBoundsInLocal().getWidth();
+            nextText.setX(div2X + (third - nextWidth) / 2);
+            nextText.setY(y + (height + textHeight) / 2 - 2);
+
+            pane.getChildren().addAll(rect, divider1, divider2, prevText, text, nextText);
+        }
+    }
+
+
+    private void drawNode(Pane pane, Object value, double x, double y, double width, double height) {
+        drawNode(pane, value, x, y, width, height, Color.LIGHTBLUE);
     }
 }
