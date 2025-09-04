@@ -66,6 +66,17 @@ public class Queue<T> implements IDataStructure<T>, Iterable<T> {
         return new StackIterator();
     }
 
+	@Override
+    public Queue<T> clone() {
+        Queue<T> result = new Queue<>();
+        
+        for(T data : this) {
+            result.enqueue(data);
+        }
+        
+        return result;
+    }
+
     private class StackIterator implements Iterator<T> {
         private Node current = head;
 

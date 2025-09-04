@@ -57,6 +57,22 @@ public class Stack<T> implements IDataStructure<T>, Iterable<T> {
         return new StackIterator();
     }
 
+	@Override
+	public Stack<T> clone() {
+		Stack<T> result = new Stack<>();
+		Stack<T> temp = new Stack<>();
+
+		for(T value : this) {
+			temp.push(value);
+		}
+
+		for(T value : temp) {
+			result.push(value);
+		}
+
+		return result;
+	}
+
     private class StackIterator implements Iterator<T> {
         private Node current = top;
 

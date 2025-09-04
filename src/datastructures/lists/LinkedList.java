@@ -1,5 +1,6 @@
 package datastructures.lists;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -10,8 +11,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import utils.DataStructureState;
 
 public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
+
+    ArrayList<DataStructureState<T>> states = new ArrayList<>();
 	
 	private Node head = null;
     private Node tail = null;
@@ -249,6 +253,17 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
     }
 
     @Override
+    public LinkedList<T> clone() {
+        LinkedList<T> result = new LinkedList<>();
+        
+        for(T data : this) {
+            result.add(data);
+        }
+        
+        return result;
+    }
+
+    @Override
     public void draw(Pane pane) {
         pane.getChildren().clear();
 
@@ -316,21 +331,17 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
         double textHeight = text.getBoundsInLocal().getHeight();
 
         if ("NULL".equals(value.toString())) {
-            // Center NULL in full rectangle
             text.setX(x + (width - textWidth) / 2);
             text.setY(y + (height + textHeight) / 2 - 2);
             pane.getChildren().addAll(rect, text);
         } else {
-            // Vertical divider in the middle
             double midX = x + width / 2;
             Line divider = new Line(midX, y, midX, y + height);
             divider.setStroke(Color.BLACK);
 
-            // Left text (node value)
             text.setX(x + (width / 2 - textWidth) / 2);
             text.setY(y + (height + textHeight) / 2 - 2);
 
-            // Right text ("Next")
             Text nextText = new Text("Next");
             double nextWidth = nextText.getBoundsInLocal().getWidth();
             nextText.setX(midX + (width / 2 - nextWidth) / 2);
@@ -340,7 +351,6 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
         }
     }
 
-    // Default light-blue node
     private void drawNode(Pane pane, Object value, double x, double y, double width, double height) {
         drawNode(pane, value, x, y, width, height, Color.LIGHTBLUE);
     }
@@ -356,7 +366,7 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
         pane.getChildren().addAll(line, arrow1, arrow2);
     }
 
-    // Wrap arrow to next row, aligned to first node's center
+    // Wrap arrow to next row
     private void drawRowWrapArrow(Pane pane, double startX, double startY, double nextRowStartX, double nextRowY, double spacingX) {
         double midX = startX + spacingX / 2;
         Line lineStub = new Line(startX, startY, midX, startY);
@@ -370,5 +380,17 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
         Line arrow2 = new Line(nextRowStartX, reappearY, nextRowStartX - 10, reappearY + 5);
 
         pane.getChildren().addAll(lineReappear, arrow1, arrow2);
+    }
+
+    public ArrayList<DataStructureState<T>> getStates() { 
+        return this.states; 
+    }
+
+    public void clearStates() { 
+        this.states = new ArrayList<>(); 
+    }
+
+    public void saveState(IDataStructure<T> ds, int index, String path) {
+        this.states.add(new DataStructureState<>(ds, index, path));
     }
 }

@@ -171,6 +171,17 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
         return new DoublyLinkedListIterator();
     }
 
+    @Override
+    public DoublyLinkedList<T> clone() {
+        DoublyLinkedList<T> result = new DoublyLinkedList<>();
+
+        for(T data : this) {
+            result.add(data);
+        }
+
+        return result;
+    }
+
     private class DoublyLinkedListIterator implements Iterator<T> {
         private Node current = head;
 
@@ -267,7 +278,7 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
         double spacingX = 40;
         double spacingY = 70;
 
-        int totalNodes = this.size + 2; // +1 for NULL
+        int totalNodes = this.size + 2; // +2 for NULLs
         if (totalNodes == 2) {
             double x = (paneWidth - nodeWidth) / 2;
             double y = (paneHeight - nodeHeight) / 2;

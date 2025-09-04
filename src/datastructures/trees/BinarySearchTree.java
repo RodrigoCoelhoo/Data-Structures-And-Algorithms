@@ -5,7 +5,7 @@ import javafx.scene.layout.Pane;
 import datastructures.interfaces.IDataStructure;
 
 public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure<T> {
-	Node root = null;
+	private Node root = null;
 	
 	@Override
 	public void insert(T value) {
@@ -151,6 +151,20 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 		if(node.getRight() != null) count++;
 
 		return count;
+	}
+
+	@Override
+	public BinarySearchTree<T> clone() {
+		BinarySearchTree<T> copy = new BinarySearchTree<>();
+		copy.root = cloneNode(this.root);
+		return copy;
+	}
+
+	private Node cloneNode(Node original) {
+		if (original == null) return null;
+		Node leftCopy = cloneNode(original.getLeft());
+		Node rightCopy = cloneNode(original.getRight());
+		return new Node(original.getValue(), leftCopy, rightCopy);
 	}
 
 	private class Node implements INode<T> {

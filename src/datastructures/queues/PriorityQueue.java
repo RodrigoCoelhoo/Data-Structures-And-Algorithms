@@ -29,4 +29,15 @@ public class PriorityQueue<T> extends Queue<T> {
 
         size++;
     }
+
+    @Override
+    public PriorityQueue<T> clone() {
+        PriorityQueue<T> result = new PriorityQueue<>(comparator);
+        
+        for(T data : this) {
+            result.enqueue(data);
+        }
+        
+        return result;
+    }
 }

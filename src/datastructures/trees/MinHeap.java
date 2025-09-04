@@ -8,7 +8,7 @@ import datastructures.interfaces.IDataStructure;
 import javafx.scene.layout.Pane;
 
 public class MinHeap<T extends Comparable<T>> implements IDataStructure<T> {
-	List<T> heap = new ArrayList<>();
+	private List<T> heap = new ArrayList<>();
 
 	@Override
 	public void push(T value) {
@@ -106,6 +106,14 @@ public class MinHeap<T extends Comparable<T>> implements IDataStructure<T> {
 	public boolean isEmpty() {
 		return this.heap.size() == 0;
 	}
+
+	@Override
+	public MinHeap<T> clone() {
+		MinHeap<T> copy = new MinHeap<>();
+		copy.heap = new ArrayList<>(this.heap);
+		return copy;
+	}
+
 
 	@Override
 	public void draw(Pane pane) {

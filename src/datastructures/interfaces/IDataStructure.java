@@ -1,6 +1,9 @@
 package datastructures.interfaces;
 
+import java.util.ArrayList;
+
 import javafx.scene.layout.Pane;
+import utils.DataStructureState;
 
 public interface IDataStructure<T> {
 
@@ -32,6 +35,11 @@ public interface IDataStructure<T> {
     default int size() { return 0; }
     default boolean isEmpty() { return true; }
     default void print() {}
+    IDataStructure<T> clone();
     public void draw(Pane pane);
 
+    /** Optional: Usefull for algorithm visualizer */
+	default ArrayList<DataStructureState<T>> getStates() { return new ArrayList<>(); }
+	default void clearStates() { }
+	default void saveState(IDataStructure<T> ds, int index, String path) {}
 }
