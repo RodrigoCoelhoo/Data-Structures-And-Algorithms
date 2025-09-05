@@ -12,6 +12,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import utils.DataStructureState;
+import utils.DataStructureState.Parameters;
 
 public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 
@@ -264,7 +265,7 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
     }
 
     @Override
-    public void draw(Pane pane) {
+    public void draw(Pane pane, Parameters param) {
         pane.getChildren().clear();
 
         double paneWidth = pane.getWidth() > 0 ? pane.getWidth() : 800;
@@ -286,6 +287,20 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 
         Node current = this.head;
         for (int i = 0; i < totalNodes; i++) {
+
+            Color nodeColor = null;
+            if(param.getInvsible().contains(i)) {
+                nodeColor = Color.TRANSPARENT;
+            } 
+            else if(param.getObjective()) {
+                nodeColor = Color.LIGHTGREEN;
+            } 
+            else if(param.getIndexs().contains(i)) {
+                nodeColor = Color.YELLOW;
+            } else {
+                nodeColor = Color.LIGHTBLUE;
+            }
+
             int row = i / nodesInRow;
             int col = i % nodesInRow;
             int nodesThisRow = Math.min(nodesInRow, totalNodes - row * nodesInRow);
@@ -301,11 +316,11 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
             if (isNullNode) {
                 drawNode(pane, "NULL", x, y, nodeWidth, nodeHeight, Color.LIGHTGRAY);
             } else {
-                drawNode(pane, current.getValue(), x, y, nodeWidth, nodeHeight);
+                drawNode(pane, current.getValue(), x, y, nodeWidth, nodeHeight, nodeColor);
                 current = current.next();
             }
 
-            // Draw arrows if not last
+            // Draw arrows
             if (i < totalNodes - 1) {
                 boolean lastInRow = (col == nodesThisRow - 1);
                 if (!lastInRow) {
@@ -323,8 +338,16 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
     // Draw a node
     private void drawNode(Pane pane, Object value, double x, double y, double width, double height, Color fill) {
         Rectangle rect = new Rectangle(x, y, width, height);
-        rect.setStroke(Color.BLACK);
-        rect.setFill(fill);
+        
+        if (fill.equals(Color.TRANSPARENT)) {
+            rect.setStroke(Color.GRAY);
+            rect.setFill(Color.TRANSPARENT);
+            pane.getChildren().add(rect);
+            return;
+        } else {
+            rect.setStroke(Color.BLACK);
+            rect.setFill(fill);
+        }
 
         Text text = new Text(value.toString());
         double textWidth = text.getBoundsInLocal().getWidth();
@@ -349,10 +372,6 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 
             pane.getChildren().addAll(rect, divider, text, nextText);
         }
-    }
-
-    private void drawNode(Pane pane, Object value, double x, double y, double width, double height) {
-        drawNode(pane, value, x, y, width, height, Color.LIGHTBLUE);
     }
 
     // Horizontal arrow between nodes
@@ -388,9 +407,5 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 
     public void clearStates() { 
         this.states = new ArrayList<>(); 
-    }
-
-    public void saveState(IDataStructure<T> ds, int index, String path) {
-        this.states.add(new DataStructureState<>(ds, index, path));
     }
 }

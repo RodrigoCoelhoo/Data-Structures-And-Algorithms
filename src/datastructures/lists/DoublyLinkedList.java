@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import utils.DataStructureState.Parameters;
 
 public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
 	
@@ -267,7 +268,7 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
     }
 
     @Override
-    public void draw(Pane pane) {
+    public void draw(Pane pane, Parameters param) {
         pane.getChildren().clear();
 
         double paneWidth = pane.getWidth() > 0 ? pane.getWidth() : 800;

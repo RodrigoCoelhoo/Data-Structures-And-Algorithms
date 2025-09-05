@@ -1,6 +1,7 @@
 package gui.controllers;
 
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 import datastructures.interfaces.IDataStructure;
@@ -13,6 +14,8 @@ import datastructures.trees.BinarySearchTree;
 import datastructures.trees.MaxHeap;
 import datastructures.trees.MinHeap;
 import gui.SceneManager;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -22,6 +25,9 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
+import utils.DataStructureState;
+import utils.State;
 
 public class DataStructureController {
 
@@ -35,6 +41,9 @@ public class DataStructureController {
     @FXML private Button insertButton, deleteButton, searchButton, updateButton;
 
     private final Color warningColor = Color.RED;
+
+    private double animationDuration = 5.0;
+    private Timeline timeline;
 
 	@FXML
     private void handleSwitchToHome(ActionEvent event) {
@@ -211,7 +220,8 @@ public class DataStructureController {
 
             insertValue(value, index);
 
-            this.dataStructure.draw(visualContainer);
+            animate(visualContainer);
+            
         } catch (NumberFormatException ex) {
             updateWarning("operationsWarning", "Please enter a valid number", warningColor);
             return;
@@ -402,5 +412,34 @@ public class DataStructureController {
     public void clear(ActionEvent event) {
         this.dataStructure.clear();
         this.dataStructure.draw(visualContainer);
+    }
+
+    private void animate(Pane visualContainer) {
+        if(this.dataStructure == null) return;
+
+        ArrayList<DataStructureState<Integer>> states = this.dataStructure.getStates();
+
+        int size = states.size();
+
+        double timePerState = (double) animationDuration / size;
+
+        // Timeline for animation
+        this.timeline = new Timeline();
+
+        for (int i = 0; i < size; i++) {
+            DataStructureState<?> state = states.get(i);
+
+            KeyFrame keyFrame = new KeyFrame(Duration.seconds(i * timePerState), _ -> {
+                state.draw(visualContainer);
+            });
+            
+            timeline.getKeyFrames().add(keyFrame);
+        }
+
+        timeline.setOnFinished(_ -> {
+            this.dataStructure.draw(visualContainer);
+        });
+
+        timeline.play();
     }
 }

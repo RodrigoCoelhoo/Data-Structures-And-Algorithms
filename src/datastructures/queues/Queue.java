@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import datastructures.interfaces.IDataStructure;
 import datastructures.interfaces.INode;
 import javafx.scene.layout.Pane;
+import utils.DataStructureState.Parameters;
 
 public class Queue<T> implements IDataStructure<T>, Iterable<T> {
 
@@ -124,7 +125,7 @@ public class Queue<T> implements IDataStructure<T>, Iterable<T> {
     }
 
 	@Override
-	public void draw(Pane pane) {
+	public void draw(Pane pane, Parameters param) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'draw'");
 	}

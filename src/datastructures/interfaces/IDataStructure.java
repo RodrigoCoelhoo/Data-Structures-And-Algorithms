@@ -1,9 +1,12 @@
 package datastructures.interfaces;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import javafx.scene.layout.Pane;
 import utils.DataStructureState;
+import utils.DataStructureState.Parameters;
 
 public interface IDataStructure<T> {
 
@@ -36,10 +39,11 @@ public interface IDataStructure<T> {
     default boolean isEmpty() { return true; }
     default void print() {}
     IDataStructure<T> clone();
-    public void draw(Pane pane);
+    public void draw(Pane pane, Parameters param);
+    default void draw(Pane pane) { draw(pane, null); }
 
     /** Optional: Usefull for algorithm visualizer */
 	default ArrayList<DataStructureState<T>> getStates() { return new ArrayList<>(); }
 	default void clearStates() { }
-	default void saveState(IDataStructure<T> ds, int index, String path) {}
+	default void saveState(IDataStructure<T> ds, String path, Set<Integer> indexs) {}
 }

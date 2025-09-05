@@ -1,27 +1,63 @@
 package utils;
 
+import java.util.Set;
+
 import datastructures.interfaces.IDataStructure;
+import javafx.scene.layout.Pane;
 
 public class DataStructureState<T> {
-	private IDataStructure<T> dataStructure;
-	private int highlightIndex;
-	private String highlightPath;
+	private final IDataStructure<T> dataStructure;
+	private final Parameters param;
 
-	public DataStructureState(IDataStructure<T> dataStructure, int highlightIndex, String highlightPath) {
+	public DataStructureState(IDataStructure<T> dataStructure, Parameters param) {
 		this.dataStructure = dataStructure.clone();
-		this.highlightIndex = highlightIndex;
-		this.highlightPath = highlightPath;
+		this.param = param;
 	}
 
 	public IDataStructure<T> getDataStructure() {
 		return dataStructure;
 	}
-	
-	public int getHighlightIndex() {
-		return highlightIndex;
+
+	public void draw(Pane visualContainer) {
+		dataStructure.draw(visualContainer, this.param);
 	}
 
-	public String getHighlightPath() {
-		return highlightPath;
+	public static class Parameters {
+		private String path;			// For trees "LLRLRLR"
+		private Set<Integer> indexs; 	// For list
+		private boolean objective; 		// If true last element of indexs or path are the objective
+		private Set<Integer> invsible; 	// Indexs of the hidden nodes (For insert, remove animations) 
+
+		public String getPath() {
+			return path;
+		}
+
+		public void setPath(String path) {
+			this.path = path;
+		}
+
+		public Set<Integer> getIndexs() {
+			return indexs;
+		}
+
+		public void setIndexs(Set<Integer> indexs) {
+			this.indexs = indexs;
+		}
+
+		public boolean getObjective() {
+			return this.objective;
+		}
+
+		public void setObjective(boolean objective) {
+			this.objective = objective;
+		}
+
+		public Set<Integer> getInvsible() {
+			return invsible;
+		}
+
+		public void setInvsible(Set<Integer> invsible) {
+			this.invsible = invsible;
+		}
 	}
 }
