@@ -1,5 +1,6 @@
 package utils;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import datastructures.interfaces.IDataStructure;
@@ -23,10 +24,10 @@ public class DataStructureState<T> {
 	}
 
 	public static class Parameters {
-		private String path;			// For trees "LLRLRLR"
-		private Set<Integer> indexs; 	// For list
-		private boolean objective; 		// If true last element of indexs or path are the objective
-		private Set<Integer> invsible; 	// Indexs of the hidden nodes (For insert, remove animations) 
+		private String path = "";							// For trees "LLRLRLR"
+		private Set<Integer> indexs = new HashSet<>(); 		// For list
+		private int objective = -1; 					// If true last element of indexs or path are the objective
+		private Set<Integer> invsible = new HashSet<>(); 	// Indexs of the hidden nodes (For insert, remove animations) 
 
 		public String getPath() {
 			return path;
@@ -37,23 +38,23 @@ public class DataStructureState<T> {
 		}
 
 		public Set<Integer> getIndexs() {
-			return indexs;
+			return this.indexs;
 		}
 
 		public void setIndexs(Set<Integer> indexs) {
 			this.indexs = indexs;
 		}
 
-		public boolean getObjective() {
+		public int getObjective() {
 			return this.objective;
 		}
 
-		public void setObjective(boolean objective) {
+		public void setObjective(int objective) {
 			this.objective = objective;
 		}
 
 		public Set<Integer> getInvsible() {
-			return invsible;
+			return this.invsible;
 		}
 
 		public void setInvsible(Set<Integer> invsible) {

@@ -27,7 +27,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import utils.DataStructureState;
-import utils.State;
+import utils.DataStructureState.Parameters;
 
 public class DataStructureController {
 
@@ -42,7 +42,6 @@ public class DataStructureController {
 
     private final Color warningColor = Color.RED;
 
-    private double animationDuration = 5.0;
     private Timeline timeline;
 
 	@FXML
@@ -149,7 +148,7 @@ public class DataStructureController {
         searchIndexField.setText("");
         updateIndexField.setText("");
         updateWarning("clear", null, null);
-        this.dataStructure.draw(visualContainer);
+        this.dataStructure.draw(visualContainer, new Parameters());
     }
 
     private void toggleInsert(boolean button, boolean index, boolean value) {
@@ -190,6 +189,26 @@ public class DataStructureController {
         }
     }
 
+    public void disableButtons(boolean disable) {
+        insertButton.setDisable(disable);
+        insertIndexField.setDisable(disable);
+        insertValueField.setDisable(disable);
+
+        deleteButton.setDisable(disable);
+        deleteIndexField.setDisable(disable);
+        deleteValueField.setDisable(disable);
+
+        searchButton.setDisable(disable);
+        searchIndexField.setDisable(disable);
+        searchValueField.setDisable(disable);
+
+        updateButton.setDisable(disable);
+        updateIndexField.setDisable(disable);
+        updateValueField.setDisable(disable);
+
+        datastructureComboBox.setDisable(disable);
+    }
+
     @FXML
     private void handleInsert(ActionEvent event) {
         try {
@@ -218,10 +237,18 @@ public class DataStructureController {
                 }
             }
 
+            dataStructure.clearStates();
+
+            System.out.println("States count: " + dataStructure.getStates().size());
+
             insertValue(value, index);
 
+            System.out.println("States count: " + dataStructure.getStates().size());
+
+            //dataStructure.draw(visualContainer, new Parameters());
+
             animate(visualContainer);
-            
+
         } catch (NumberFormatException ex) {
             updateWarning("operationsWarning", "Please enter a valid number", warningColor);
             return;
@@ -279,10 +306,12 @@ public class DataStructureController {
                 updateWarning("operationsWarning", "Please enter a value.", warningColor);
                 return;
             }
+
+            dataStructure.clearStates();
             
             deleteValue(value, index);
 
-            this.dataStructure.draw(visualContainer);
+            animate(visualContainer);
         } catch (NumberFormatException ex) {
             updateWarning("operationsWarning", "Please enter a valid number", warningColor);
             return;
@@ -340,10 +369,12 @@ public class DataStructureController {
                 updateWarning("operationsWarning", "Please enter a value.", warningColor);
                 return;
             }
+
+            dataStructure.clearStates();
             
             searchValue(value, index);
 
-            this.dataStructure.draw(visualContainer);
+            animate(visualContainer);
         } catch (NumberFormatException ex) {
             updateWarning("operationsWarning", "Please enter a valid number", warningColor);
             return;
@@ -387,10 +418,12 @@ public class DataStructureController {
                 updateWarning("operationsWarning", "Please enter a valid index.", warningColor);
                 return;
             }
+            
+            dataStructure.clearStates();
 
             updateValue(value, index);
 
-            this.dataStructure.draw(visualContainer);
+            animate(visualContainer);
         } catch (NumberFormatException ex) {
             updateWarning("operationsWarning", "Please enter a valid number.", warningColor);
         }
@@ -417,28 +450,34 @@ public class DataStructureController {
     private void animate(Pane visualContainer) {
         if(this.dataStructure == null) return;
 
+        disableButtons(true);
+
         ArrayList<DataStructureState<Integer>> states = this.dataStructure.getStates();
 
         int size = states.size();
 
-        double timePerState = (double) animationDuration / size;
+        double timePerState = 1.0;
 
         // Timeline for animation
         this.timeline = new Timeline();
 
         for (int i = 0; i < size; i++) {
-            DataStructureState<?> state = states.get(i);
+            final DataStructureState<?> snapshot = states.get(i);
 
             KeyFrame keyFrame = new KeyFrame(Duration.seconds(i * timePerState), _ -> {
-                state.draw(visualContainer);
+                snapshot.draw(visualContainer);
             });
             
             timeline.getKeyFrames().add(keyFrame);
         }
 
         timeline.setOnFinished(_ -> {
-            this.dataStructure.draw(visualContainer);
+            disableButtons(false);
         });
+
+        if (!states.isEmpty()) {
+            states.get(0).draw(visualContainer);  // force draw first state
+        }
 
         timeline.play();
     }

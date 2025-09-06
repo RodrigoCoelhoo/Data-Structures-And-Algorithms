@@ -1,8 +1,6 @@
 package datastructures.interfaces;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import javafx.scene.layout.Pane;
 import utils.DataStructureState;
@@ -45,5 +43,5 @@ public interface IDataStructure<T> {
     /** Optional: Usefull for algorithm visualizer */
 	default ArrayList<DataStructureState<T>> getStates() { return new ArrayList<>(); }
 	default void clearStates() { }
-	default void saveState(IDataStructure<T> ds, String path, Set<Integer> indexs) {}
+	default void saveState(IDataStructure<T> ds, Parameters param) {}
 }

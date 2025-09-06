@@ -1,5 +1,6 @@
 package datastructures.lists;
 
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -19,7 +20,6 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
     ArrayList<DataStructureState<T>> states = new ArrayList<>();
 	
 	private Node head = null;
-    private Node tail = null;
 	private int size = 0;
 	
 	@Override
@@ -28,10 +28,25 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 
         if(this.head == null) {
             this.head = newNode;
-            this.tail = newNode;
+
+            Parameters param = new Parameters();
+            param.getInvsible().add(0);
+            saveState(this, param);
+
+            param = new Parameters();
+            param.setObjective(0);
+            saveState(this, param);
         } else {
-            this.tail.setNext(newNode);
-            this.tail = newNode;
+            Node last = getNodeAt(size - 1);  // traverse to last node
+            last.setNext(newNode);
+            
+            Parameters param = new Parameters();
+            param.getInvsible().add(this.size);
+            saveState(this, param);
+
+            param = new Parameters();
+            param.setObjective(this.size);
+            saveState(this, param);
         }
         
         this.size++;
@@ -51,6 +66,14 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
             Node newHead = new Node(value, this.head);
             this.head = newHead;
             this.size++;
+            
+            Parameters param = new Parameters();
+            param.getInvsible().add(index);
+            saveState(this, param);
+
+            param = new Parameters();
+            param.setObjective(index);
+            saveState(this, param);
             return;
         }
 
@@ -63,22 +86,22 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
         Node newNode = new Node(value, currentNode.next());
         currentNode.setNext(newNode);
         this.size++;
+        Parameters param = new Parameters();
+        param.getInvsible().add(index);
+        saveState(this, param);
+
+        param = new Parameters();
+        param.setObjective(index);
+        saveState(this, param);
+
+        saveState(this, new Parameters());
 	}
 
     @Override
     public T get(int index) {
         if(index < 0 || index >= this.size) throw new IndexOutOfBoundsException();
 
-        if(index == 0) {
-            return this.head.getValue();
-        }
-
-        if(index == this.size - 1) {
-            return this.tail.getValue();
-        }
-
-        Node result = getNodeAt(index);
-        return result.getValue();
+        return getNodeAt(index).getValue();
     }
 
     @Override
@@ -91,53 +114,36 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 
     @Override
     public void remove(int index) {
-        if(index < 0 || index >= this.size) throw new IndexOutOfBoundsException();
+        if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
 
-        if(index == 0) {
-            this.head = this.head.next();
-            if (this.size == 1) {
-                this.tail = null;
-            }
-
-            this.size--;
-            return;
-        }
-        
-        Node prev = getNodeAt(index - 1);
-
-        if(index == this.size - 1) {
-            this.tail = prev;
+        if (index == 0) {
+            head = head.next();
+        } else {
+            Node prev = getNodeAt(index - 1);
+            prev.setNext(prev.next().next());
         }
 
-        prev.setNext(prev.next().next());
-        this.size--;
+        size--;
     }
+
 
     @Override
     public void remove(T value) {
-        if(this.size == 0) throw new IndexOutOfBoundsException();
+        if (this.size == 0) return; 
 
         Node prev = null;
         Node current = this.head;
-        for(int i = 0; i < this.size; i++) {
-            T currentValue = current.getValue(); 
-            if(currentValue.equals(value)) {
-                if(i == 0) {
-                    this.head = this.head.next();
-                    if (this.size == 1) {
-                        this.tail = null;
-                    }
-                    this.size--;
-                    return;
+
+        while (current != null) {
+            if (current.getValue().equals(value)) {
+                if (prev == null) {
+                    this.head = current.next();
+                } else {
+                    prev.setNext(current.next());
                 }
 
-                if(i == this.size -1) {
-                    this.tail = prev;
-                }
-
-                prev.setNext(current.next());
                 this.size--;
-                return;
+                return; 
             }
 
             prev = current;
@@ -153,7 +159,6 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
     @Override
     public void clear() {
         this.head = null;
-        this.tail = null;
         this.size = 0;
     }
 
@@ -216,14 +221,18 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
             return this.head;
         }
 
-        if(index == this.size - 1) {
-            return this.tail;
-        }
-
         Node current = this.head;
         for(int i = 0; i < index; i++) {
             current = current.next();
+
+            Parameters param = new Parameters();
+            param.getIndexs().add(i);
+            saveState(this, param);
         }
+
+        Parameters param = new Parameters();
+        param.getIndexs().add(index);
+        saveState(this, param);
         return current;
     }
 
@@ -258,10 +267,21 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
         LinkedList<T> result = new LinkedList<>();
         
         for(T data : this) {
-            result.add(data);
+            result.addRaw(data);
         }
         
         return result;
+    }
+
+    private void addRaw(T value) {
+        Node newNode = new Node(value, null);
+        if (this.head == null) {
+            this.head = newNode;
+        } else {
+            Node last = getNodeAt(size - 1);
+            last.setNext(newNode);
+        }
+        this.size++;
     }
 
     @Override
@@ -292,7 +312,7 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
             if(param.getInvsible().contains(i)) {
                 nodeColor = Color.TRANSPARENT;
             } 
-            else if(param.getObjective()) {
+            else if(param.getObjective() == i) {
                 nodeColor = Color.LIGHTGREEN;
             } 
             else if(param.getIndexs().contains(i)) {
@@ -407,5 +427,9 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 
     public void clearStates() { 
         this.states = new ArrayList<>(); 
+    }
+
+	public void saveState(IDataStructure<T> ds, Parameters param) {
+        this.states.add(new DataStructureState<>(ds, param));
     }
 }
