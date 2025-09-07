@@ -191,20 +191,9 @@ public class DataStructureController {
 
     public void disableButtons(boolean disable) {
         insertButton.setDisable(disable);
-        insertIndexField.setDisable(disable);
-        insertValueField.setDisable(disable);
-
         deleteButton.setDisable(disable);
-        deleteIndexField.setDisable(disable);
-        deleteValueField.setDisable(disable);
-
         searchButton.setDisable(disable);
-        searchIndexField.setDisable(disable);
-        searchValueField.setDisable(disable);
-
         updateButton.setDisable(disable);
-        updateIndexField.setDisable(disable);
-        updateValueField.setDisable(disable);
 
         datastructureComboBox.setDisable(disable);
     }
@@ -410,8 +399,8 @@ public class DataStructureController {
                 return;
             }
 
-            int value = Integer.valueOf(updateValueField.getText());
             int index = Integer.valueOf(updateIndexField.getText());
+            int value = Integer.valueOf(updateValueField.getText());
 
             int dsSize = this.dataStructure.size();
             if (index < 0 || index >= dsSize) {
@@ -421,7 +410,7 @@ public class DataStructureController {
             
             dataStructure.clearStates();
 
-            updateValue(value, index);
+            updateValue(index, value);
 
             animate(visualContainer);
         } catch (NumberFormatException ex) {
@@ -430,10 +419,10 @@ public class DataStructureController {
     }
 
 
-    private void updateValue(Integer value, int index) {
+    private void updateValue(Integer index, int value) {
         switch (dataStructure) {
-            case LinkedList<Integer> list -> list.set(value, index);
-            case DoublyLinkedList<Integer> dlist -> dlist.set(value, index);
+            case LinkedList<Integer> list -> list.set(index, value);
+            case DoublyLinkedList<Integer> dlist -> dlist.set(index, value);
             
             default -> throw new UnsupportedOperationException(
                 "Update not supported for " + dataStructure.getClass().getSimpleName()
@@ -456,7 +445,7 @@ public class DataStructureController {
 
         int size = states.size();
 
-        double timePerState = 1.0;
+        double timePerState = 0.8;
 
         // Timeline for animation
         this.timeline = new Timeline();

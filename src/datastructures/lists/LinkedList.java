@@ -1,6 +1,5 @@
 package datastructures.lists;
 
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -36,6 +35,8 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
             param = new Parameters();
             param.setObjective(0);
             saveState(this, param);
+
+            saveState(this, new Parameters());
         } else {
             Node last = getNodeAt(size - 1);  // traverse to last node
             last.setNext(newNode);
@@ -47,6 +48,8 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
             param = new Parameters();
             param.setObjective(this.size);
             saveState(this, param);
+
+            saveState(this, new Parameters());
         }
         
         this.size++;
@@ -74,6 +77,8 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
             param = new Parameters();
             param.setObjective(index);
             saveState(this, param);
+
+            saveState(this, new Parameters());
             return;
         }
 
@@ -81,6 +86,8 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 			add(value);
 			return;
 		}
+
+        
 
         Node currentNode = getNodeAt(index - 1);
         Node newNode = new Node(value, currentNode.next());
@@ -101,15 +108,37 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
     public T get(int index) {
         if(index < 0 || index >= this.size) throw new IndexOutOfBoundsException();
 
-        return getNodeAt(index).getValue();
+        Node node = getNodeAt(index);
+
+        Parameters param = new Parameters();
+        param.setObjective(index);
+        saveState(this, param);
+        saveState(this, param);
+
+        saveState(this, new Parameters());
+
+        return node.getValue();
     }
 
     @Override
     public void set(int index, T value) {
         if(index < 0 || index >= this.size) throw new IndexOutOfBoundsException();
 
+        
         Node node = getNodeAt(index);
+        
+        Parameters param = new Parameters();
+        param.setObjective(index);
+        saveState(this.clone(), param);
+
+        // For animation
+        node.setValue(null);
+        saveState(this.clone(), param);
+
         node.setValue(value);
+        saveState(this.clone(), param);
+
+        saveState(this, new Parameters());
     }
 
     @Override
@@ -117,15 +146,47 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
         if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
 
         if (index == 0) {
+            LinkedList<T> temp = this.clone();
+
+            Parameters param = new Parameters();
+            param.getIndexs().add(index);
+            saveState(temp, param);
+            
+            param = new Parameters();
+            param.getFailure().add(index);
+            saveState(temp, param);
+            
+            param = new Parameters();
+            param.getInvsible().add(index);
+            saveState(temp, param);
+
             head = head.next();
+            
+            saveState(this, new Parameters());
         } else {
             Node prev = getNodeAt(index - 1);
+
+            LinkedList<T> temp = this.clone();
+
+            Parameters param = new Parameters();
+            param.getIndexs().add(index);
+            saveState(temp, param);
+            
+            param = new Parameters();
+            param.getFailure().add(index);
+            saveState(temp, param);
+            
+            param = new Parameters();
+            param.getInvsible().add(index);
+            saveState(temp, param);
+
             prev.setNext(prev.next().next());
+            
+            saveState(this, new Parameters());
         }
 
         size--;
     }
-
 
     @Override
     public void remove(T value) {
@@ -134,12 +195,40 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
         Node prev = null;
         Node current = this.head;
 
+        int index = 0;
+        LinkedList<T> temp = this.clone();
+        Parameters failureParameters = new Parameters();
         while (current != null) {
+            Parameters param = new Parameters();
+            param.getIndexs().add(index);
+            saveState(temp, param);
+
             if (current.getValue().equals(value)) {
                 if (prev == null) {
+
+                    param = new Parameters();
+                    param.getFailure().add(index);
+                    saveState(temp, param);
+                    
+                    param = new Parameters();
+                    param.getInvsible().add(index);
+                    saveState(temp, param);
+
                     this.head = current.next();
+            
+                    saveState(this, new Parameters());
                 } else {
+                    param = new Parameters();
+                    param.getFailure().add(index);
+                    saveState(temp, param);
+                    
+                    param = new Parameters();
+                    param.getInvsible().add(index);
+                    saveState(temp, param);
+
                     prev.setNext(current.next());
+            
+                    saveState(this, new Parameters());
                 }
 
                 this.size--;
@@ -148,7 +237,13 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 
             prev = current;
             current = current.next();
+            failureParameters.getFailure().add(index);
+            index++;
         }
+        saveState(this, failureParameters);
+        saveState(this, failureParameters);
+
+        saveState(this, new Parameters());
     }
 
     @Override
@@ -217,7 +312,13 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
      * @return Node in the given index
      */
     private Node getNodeAt(int index) {
+        LinkedList<T> temp = this.clone();
+
         if(index == 0) {
+            Parameters param = new Parameters();
+            param.getIndexs().add(0);
+            saveState(temp, param);
+
             return this.head;
         }
 
@@ -227,12 +328,12 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 
             Parameters param = new Parameters();
             param.getIndexs().add(i);
-            saveState(this, param);
+            saveState(temp, param);
         }
 
         Parameters param = new Parameters();
         param.getIndexs().add(index);
-        saveState(this, param);
+        saveState(temp, param);
         return current;
     }
 
@@ -308,18 +409,7 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
         Node current = this.head;
         for (int i = 0; i < totalNodes; i++) {
 
-            Color nodeColor = null;
-            if(param.getInvsible().contains(i)) {
-                nodeColor = Color.TRANSPARENT;
-            } 
-            else if(param.getObjective() == i) {
-                nodeColor = Color.LIGHTGREEN;
-            } 
-            else if(param.getIndexs().contains(i)) {
-                nodeColor = Color.YELLOW;
-            } else {
-                nodeColor = Color.LIGHTBLUE;
-            }
+            Color nodeColor = param.getColor(i);
 
             int row = i / nodesInRow;
             int col = i % nodesInRow;
@@ -369,11 +459,12 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
             rect.setFill(fill);
         }
 
-        Text text = new Text(value.toString());
+        String textValue = value == null ? "" : value.toString();
+        Text text = new Text(textValue);
         double textWidth = text.getBoundsInLocal().getWidth();
         double textHeight = text.getBoundsInLocal().getHeight();
 
-        if ("NULL".equals(value.toString())) {
+        if (value != null && "NULL".equals(value.toString())) {
             text.setX(x + (width - textWidth) / 2);
             text.setY(y + (height + textHeight) / 2 - 2);
             pane.getChildren().addAll(rect, text);
