@@ -1,5 +1,6 @@
 package datastructures.lists;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -10,9 +11,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import utils.DataStructureState;
 import utils.DataStructureState.Parameters;
 
 public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
+
+    ArrayList<DataStructureState<T>> states = new ArrayList<>();
 	
 	private Node head = null;
     private Node tail = null;
@@ -20,7 +24,6 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
 	
 	@Override
 	public void add(T value) {
-		
 		if(this.head == null) {
 			Node newNode = new Node(value, null, null);
             this.head = newNode;
@@ -30,8 +33,19 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
             this.tail.setNext(newNode);
             this.tail = newNode;
         }
-        
+
         this.size++;
+
+        Parameters param = new Parameters();
+        param.getInvsible().add(this.size);
+        saveState(this, param);
+
+        param = new Parameters();
+        param.setObjective(this.size);
+        saveState(this, param);
+
+        saveState(this, new Parameters());
+        
 	}
 
 	@Override
@@ -49,6 +63,16 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
 			this.head.setPrev(newHead);
             this.head = newHead;
             this.size++;
+
+            Parameters param = new Parameters();
+            param.getInvsible().add(1);
+            saveState(this, param);
+
+            param = new Parameters();
+            param.setObjective(1);
+            saveState(this, param);
+
+            saveState(this, new Parameters());
             return;
         }
 
@@ -62,6 +86,16 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
 		currentNode.next().setPrev(newNode);
         currentNode.setNext(newNode);
         this.size++;
+
+        Parameters param = new Parameters();
+        param.getInvsible().add(index + 1);
+        saveState(this, param);
+
+        param = new Parameters();
+        param.setObjective(index + 1);
+        saveState(this, param);
+
+        saveState(this, new Parameters());
 	}
 
 	@Override
@@ -69,6 +103,20 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
         if(index < 0 || index >= this.size) throw new IndexOutOfBoundsException();
 
         Node result = getNodeAt(index);
+
+        Parameters param = new Parameters();
+        if(index >= this.size/2) {
+            param.getIndexs().add(index+1);
+            saveState(this, param);
+        }
+
+        param = new Parameters();
+        param.setObjective(index+1);
+        saveState(this, param);
+        saveState(this, param);
+
+        saveState(this, new Parameters());
+
         return result.getValue();
     }
 
@@ -77,7 +125,26 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
         if(index < 0 || index >= this.size) throw new IndexOutOfBoundsException();
 
         Node node = getNodeAt(index);
+        Parameters param = new Parameters();
+
+        DoublyLinkedList<T> temp = this.clone();
+        if(index >= this.size/2) {
+            param.getIndexs().add(index+1);
+            saveState(temp, param);
+        }
+        
+        param = new Parameters();
+        param.setObjective(index+1);
+        saveState(temp.clone(), param);
+
+        // For animation
+        node.setValue(null);
+        saveState(this.clone(), param);
+
         node.setValue(value);
+        saveState(this.clone(), param);
+
+        saveState(this, new Parameters());
     }
 
     @Override
@@ -86,6 +153,21 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
 
 		Node nodeToRemove = getNodeAt(index);
 
+        DoublyLinkedList<T> temp = this.clone();
+
+        Parameters param = new Parameters();
+        if(index >= this.size/2) {
+            param.getIndexs().add(index+1);
+            saveState(temp, param);
+        }
+        
+        param = new Parameters();
+        param.getFailure().add(index+1);
+        saveState(temp, param);
+        
+        param = new Parameters();
+        param.getInvsible().add(index+1);
+        saveState(temp, param);
 
         if(nodeToRemove.prev() != null) {
 			nodeToRemove.prev().setNext(nodeToRemove.next());
@@ -103,6 +185,8 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
 		nodeToRemove.setPrev(null);
 
         this.size--;
+
+        saveState(this, new Parameters());
     }
 
     @Override
@@ -110,8 +194,14 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
         if(this.size == 0) throw new IndexOutOfBoundsException();
 
         Node current = this.head;
+        DoublyLinkedList<T> temp = this.clone();
+        Parameters failureParameters = new Parameters();
         for(int i = 0; i < this.size; i++) 
 		{
+            Parameters param = new Parameters();
+            param.getIndexs().add(i+1);
+            saveState(temp, param);
+
             T currentValue = current.getValue(); 
 
             if(currentValue.equals(value)) {
@@ -130,11 +220,25 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
 				current.setNext(null);
 				current.setPrev(null);
 				this.size--;
+
+                param = new Parameters();
+                param.getFailure().add(i+1);
+                saveState(temp, param);
+                
+                param = new Parameters();
+                param.getInvsible().add(i+1);
+                saveState(temp, param);
+
+                saveState(this, new Parameters());
 				return;
             }
 
             current = current.next();
+            failureParameters.getFailure().add(i+1);
         }
+        
+        saveState(this, failureParameters);
+        saveState(this, new Parameters());
     }
 
     @Override
@@ -216,17 +320,33 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
     private Node getNodeAt(int index) {
         int mid = this.size/2;
 
+        DoublyLinkedList<T> temp = this.clone();
+
 		if(index < mid) { // From head
 			Node current = this.head;
 			for(int i = 0; i < index; i++) {
+                Parameters param = new Parameters();
+                param.getIndexs().add(i+1);
+                saveState(temp, param);
+
 				current = current.next();
 			}
+            
+            Parameters param = new Parameters();
+            param.getIndexs().add(index+1);
+            saveState(temp, param);
+
         	return current;
 		} else { // From tail
 			Node current = this.tail;
-			for(int i = 0; i < this.size - 1 - index; i++) {
+			for (int i = this.size - 1; i > index; i--) {
+                Parameters param = new Parameters();
+                param.getIndexs().add(i + 1);
+                saveState(temp, param);
+
 				current = current.prev();
 			}
+
         	return current;
 		}
     }
@@ -309,7 +429,7 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
             if (isStartNull || isEndNull) {
                 drawNode(pane, "NULL", x, y, nodeWidth, nodeHeight, Color.LIGHTGRAY);
             } else {
-                drawNode(pane, current.getValue(), x, y, nodeWidth, nodeHeight);
+                drawNode(pane, current.getValue(), x, y, nodeWidth, nodeHeight, param.getColor(i));
                 current = current.next();
             }
 
@@ -379,14 +499,22 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
 
     private void drawNode(Pane pane, Object value, double x, double y, double width, double height, Color fill) {
         Rectangle rect = new Rectangle(x, y, width, height);
-        rect.setStroke(Color.BLACK);
-        rect.setFill(fill);
+        if (fill.equals(Color.TRANSPARENT)) {
+            rect.setStroke(Color.GRAY);
+            rect.setFill(Color.TRANSPARENT);
+            pane.getChildren().add(rect);
+            return;
+        } else {
+            rect.setStroke(Color.BLACK);
+            rect.setFill(fill);
+        }
 
-        Text text = new Text(value.toString());
+        String textValue = value == null ? "" : value.toString();
+        Text text = new Text(textValue);
         double textWidth = text.getBoundsInLocal().getWidth();
         double textHeight = text.getBoundsInLocal().getHeight();
 
-        if ("NULL".equals(value.toString())) {
+        if (value != null && "NULL".equals(value.toString())) {
             // Center NULL in full rectangle
             text.setX(x + (width - textWidth) / 2);
             text.setY(y + (height + textHeight) / 2 - 2);
@@ -423,8 +551,15 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
         }
     }
 
+    public ArrayList<DataStructureState<T>> getStates() { 
+        return this.states; 
+    }
 
-    private void drawNode(Pane pane, Object value, double x, double y, double width, double height) {
-        drawNode(pane, value, x, y, width, height, Color.LIGHTBLUE);
+    public void clearStates() { 
+        this.states = new ArrayList<>(); 
+    }
+
+	public void saveState(IDataStructure<T> ds, Parameters param) {
+        this.states.add(new DataStructureState<>(ds, param));
     }
 }

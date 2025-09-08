@@ -38,7 +38,7 @@ public interface IDataStructure<T> {
     default void print() {}
     IDataStructure<T> clone();
     public void draw(Pane pane, Parameters param);
-    default void draw(Pane pane) { draw(pane, null); }
+    default void draw(Pane pane) { draw(pane, new Parameters()); }
 
     /** Optional: Usefull for algorithm visualizer */
 	default ArrayList<DataStructureState<T>> getStates() { return new ArrayList<>(); }

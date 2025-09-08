@@ -228,13 +228,11 @@ public class DataStructureController {
 
             dataStructure.clearStates();
 
-            System.out.println("States count: " + dataStructure.getStates().size());
+            System.out.println("State count: " + dataStructure.getStates().size());
 
             insertValue(value, index);
 
-            System.out.println("States count: " + dataStructure.getStates().size());
-
-            //dataStructure.draw(visualContainer, new Parameters());
+            System.out.println("State count: " + dataStructure.getStates().size());
 
             animate(visualContainer);
 
