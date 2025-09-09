@@ -4,6 +4,7 @@ package gui.controllers;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+import datastructures.arrays.Array;
 import datastructures.interfaces.IDataStructure;
 import datastructures.lists.DoublyLinkedList;
 import datastructures.lists.LinkedList;
@@ -56,8 +57,8 @@ public class DataStructureController {
 
     @FXML
     public void initialize() {
-        datastructureComboBox.getItems().addAll("Linked List", "Doubly Linked List", "Queue", "Priority Queue", "Stack", "Binary Search Tree", "Max Heap", "Min Heap");
-        datastructureComboBox.setOnAction(this::updateAlgorithm);
+        datastructureComboBox.getItems().addAll("Array","Linked List", "Doubly Linked List", "Queue", "Priority Queue", "Stack", "Binary Search Tree", "Max Heap", "Min Heap");
+        datastructureComboBox.setOnAction(this::updateDataStructure);
         
         // reset slider if user tries to drag it
         splitPane.setDividerPositions(0.2);
@@ -66,9 +67,17 @@ public class DataStructureController {
         });
     }
 
-    private void updateAlgorithm(ActionEvent e)
+    private void updateDataStructure(ActionEvent e)
     {
         switch (datastructureComboBox.getValue()) {
+            case "Array":
+                this.dataStructure = new Array<>(20);
+                toggleInsert(false, false, false);
+                toggleDelete(false, false, false);
+                toggleSearch(true, true, false);
+                toggleUpdate(true, true, true);
+                refreshUI();
+                break;
             case "Linked List":
                 this.dataStructure = new LinkedList<>();
                 toggleInsert(true, true, true);
@@ -206,8 +215,9 @@ public class DataStructureController {
                 return;
             }
 
-            if(insertValueField.getText().isEmpty()) {
-                updateWarning("operationsWarning", "Please enter a value.", warningColor);
+            String insertValue = insertValueField.getText();
+            if(insertValue.isEmpty() || Integer.valueOf(insertValue) < 0 || Integer.valueOf(insertValue) >= 1000) {
+                updateWarning("operationsWarning", "Please enter a value between (0-999).", warningColor);
                 return;
             }
             int value = Integer.valueOf(insertValueField.getText());
@@ -377,6 +387,7 @@ public class DataStructureController {
             case MinHeap<Integer> heap -> heap.peek();
             case LinkedList<Integer> list -> list.get(index);
             case DoublyLinkedList<Integer> dlist -> dlist.get(index);
+            case Array<Integer> array -> array.get(index);
             
             default -> throw new UnsupportedOperationException(
                 "Get not supported for " + dataStructure.getClass().getSimpleName()
@@ -391,9 +402,15 @@ public class DataStructureController {
                 updateWarning("operationsWarning", "Please select a data structure.", warningColor);
                 return;
             }
-
+            
             if (updateValueField.getText().isEmpty() || updateIndexField.getText().isEmpty()) {
                 updateWarning("operationsWarning", "Please enter both value and index.", warningColor);
+                return;
+            }
+            
+            String updateValue = updateValueField.getText();
+            if(Integer.valueOf(updateValue) < 0 || Integer.valueOf(updateValue) >= 1000) {
+                updateWarning("operationsWarning", "Please enter a value between (0-999).", warningColor);
                 return;
             }
 
@@ -421,6 +438,7 @@ public class DataStructureController {
         switch (dataStructure) {
             case LinkedList<Integer> list -> list.set(index, value);
             case DoublyLinkedList<Integer> dlist -> dlist.set(index, value);
+            case Array<Integer> array -> array.set(index, value);
             
             default -> throw new UnsupportedOperationException(
                 "Update not supported for " + dataStructure.getClass().getSimpleName()
