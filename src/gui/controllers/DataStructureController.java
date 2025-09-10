@@ -2,7 +2,10 @@ package gui.controllers;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 import datastructures.arrays.Array;
 import datastructures.interfaces.IDataStructure;
@@ -39,11 +42,13 @@ public class DataStructureController {
     @FXML private Pane visualContainer;
     @FXML private TextField insertValueField, deleteValueField, searchValueField, updateValueField, insertIndexField, deleteIndexField, searchIndexField, updateIndexField;
     @FXML private Label operationsWarning;
-    @FXML private Button insertButton, deleteButton, searchButton, updateButton;
+    @FXML private Button insertButton, deleteButton, searchButton, updateButton, clearButton;
 
     private final Color warningColor = Color.RED;
 
     private Timeline timeline;
+
+    private Set<String> activeOperations = new HashSet<>();
 
 	@FXML
     private void handleSwitchToHome(ActionEvent event) {
@@ -72,74 +77,92 @@ public class DataStructureController {
         switch (datastructureComboBox.getValue()) {
             case "Array":
                 this.dataStructure = new Array<>(20);
-                toggleInsert(false, false, false);
-                toggleDelete(false, false, false);
-                toggleSearch(true, true, false);
-                toggleUpdate(true, true, true);
+                toggleInsert(false, false);
+                toggleDelete(false, false);
+                toggleSearch(true, false);
+                toggleUpdate(true, true);
+                activeOperations.clear();
+                activeOperations.addAll(Arrays.asList("Search", "Update"));
                 refreshUI();
                 break;
             case "Linked List":
                 this.dataStructure = new LinkedList<>();
-                toggleInsert(true, true, true);
-                toggleDelete(true, true, true);
-                toggleSearch(true, true, false);
-                toggleUpdate(true, true, true);
+                toggleInsert(true, true);
+                toggleDelete(true, true);
+                toggleSearch(true, false);
+                toggleUpdate(true, true);
+                activeOperations.clear();
+                activeOperations.addAll(Arrays.asList("Insert", "Delete", "Search", "Update"));
                 refreshUI();
                 break;
             case "Doubly Linked List":
                 this.dataStructure = new DoublyLinkedList<>();
-                toggleInsert(true, true, true);
-                toggleDelete(true, true, true);
-                toggleSearch(true, true, false);
-                toggleUpdate(true, true, true);
+                toggleInsert(true, true);
+                toggleDelete(true, true);
+                toggleSearch(true, false);
+                toggleUpdate(true, true);
+                activeOperations.clear();
+                activeOperations.addAll(Arrays.asList("Insert", "Delete", "Search", "Update"));
                 refreshUI();
                 break;
             case "Queue":
                 this.dataStructure = new Queue<>();
-                toggleInsert(true, false, true);
-                toggleDelete(true, false, false);
-                toggleSearch(true, false, false);
-                toggleUpdate(false, false, false);
+                toggleInsert(false, true);
+                toggleDelete(false, false);
+                toggleSearch(false, false);
+                toggleUpdate(false, false);
+                activeOperations.clear();
+                activeOperations.addAll(Arrays.asList("Insert", "Delete", "Search"));
                 refreshUI();
                 break;
             case "Priority Queue":
                 this.dataStructure = new PriorityQueue<Integer>(Comparator.comparingInt(x -> x));
-                toggleInsert(true, false, true);
-                toggleDelete(true, false, false);
-                toggleSearch(true, false, false);
-                toggleUpdate(false, false, false);
+                toggleInsert(false, true);
+                toggleDelete(false, false);
+                toggleSearch(false, false);
+                toggleUpdate(false, false);
+                activeOperations.clear();
+                activeOperations.addAll(Arrays.asList("Insert", "Delete", "Search"));
                 refreshUI();
                 break;
             case "Stack":
                 this.dataStructure = new Stack<>();
-                toggleInsert(true, false, true);
-                toggleDelete(true, false, false);
-                toggleSearch(true, false, false);
-                toggleUpdate(false, false, false);
+                toggleInsert(false, true);
+                toggleDelete(false, false);
+                toggleSearch(false, false);
+                toggleUpdate(false, false);
+                activeOperations.clear();
+                activeOperations.addAll(Arrays.asList("Insert", "Delete", "Search"));
                 refreshUI();
                 break;
             case "Binary Search Tree":
                 this.dataStructure = new BinarySearchTree<>();
-                toggleInsert(true, false, true);
-                toggleDelete(true, false, true);
-                toggleSearch(true, false, true);
-                toggleUpdate(false, false, false);
+                toggleInsert(false, true);
+                toggleDelete(false, true);
+                toggleSearch(false, true);
+                toggleUpdate(false, false);
+                activeOperations.clear();
+                activeOperations.addAll(Arrays.asList("Insert", "Delete", "Search"));
                 refreshUI();
                 break;
             case "Max Heap":
                 this.dataStructure = new MaxHeap<>();
-                toggleInsert(true, false, true);
-                toggleDelete(true, false, true);
-                toggleSearch(true, false, true);
-                toggleUpdate(false, false, false);
+                toggleInsert(false, true);
+                toggleDelete(false, true);
+                toggleSearch(false, true);
+                toggleUpdate(false, false);
+                activeOperations.clear();
+                activeOperations.addAll(Arrays.asList("Insert", "Delete", "Search"));
                 refreshUI();
                 break;
             case "Min Heap":
                 this.dataStructure = new MinHeap<>();
-                toggleInsert(true, false, true);
-                toggleDelete(true, false, true);
-                toggleSearch(true, false, true);
-                toggleUpdate(false, false, false);
+                toggleInsert(false, true);
+                toggleDelete(false, true);
+                toggleSearch(false, true);
+                toggleUpdate(false, false);
+                activeOperations.clear();
+                activeOperations.addAll(Arrays.asList("Insert", "Delete", "Search"));
                 refreshUI();
                 break;
             default:
@@ -157,31 +180,54 @@ public class DataStructureController {
         searchIndexField.setText("");
         updateIndexField.setText("");
         updateWarning("clear", null, null);
+        toggleButtons();
         this.dataStructure.draw(visualContainer, new Parameters());
     }
 
-    private void toggleInsert(boolean button, boolean index, boolean value) {
-        insertButton.setDisable(!button);
+    private void toggleInsert(boolean index, boolean value) {
         insertIndexField.setDisable(!index);
         insertValueField.setDisable(!value);
     }
 
-    private void toggleDelete(boolean button, boolean index, boolean value) {
-        deleteButton.setDisable(!button);
+    private void toggleDelete(boolean index, boolean value) {
         deleteIndexField.setDisable(!index);
         deleteValueField.setDisable(!value);
     }
 
-    private void toggleSearch(boolean button, boolean index, boolean value) {
-        searchButton.setDisable(!button);
+    private void toggleSearch(boolean index, boolean value) {
         searchIndexField.setDisable(!index);
         searchValueField.setDisable(!value);
     }
 
-    private void toggleUpdate(boolean button, boolean index, boolean value) {
-        updateButton.setDisable(!button);
+    private void toggleUpdate(boolean index, boolean value) {
         updateIndexField.setDisable(!index);
         updateValueField.setDisable(!value);
+    }
+
+    private void toggleButtons() {
+        if(activeOperations.contains("Insert")) {
+            insertButton.setDisable(false);
+        } else {
+            insertButton.setDisable(true);
+        }
+
+        if(activeOperations.contains("Delete")) {
+            deleteButton.setDisable(false);
+        } else {
+            deleteButton.setDisable(true);
+        }
+
+        if(activeOperations.contains("Search")) {
+            searchButton.setDisable(false);
+        } else {
+            searchButton.setDisable(true);
+        }
+
+        if(activeOperations.contains("Update")) {
+            updateButton.setDisable(false);
+        } else {
+            updateButton.setDisable(true);
+        }
     }
 
     public void updateWarning(String warning, String text, Color warningColor) {
@@ -300,8 +346,10 @@ public class DataStructureController {
                     return;
                 }
             } else {
-                updateWarning("operationsWarning", "Please enter a value.", warningColor);
-                return;
+                if(deleteButton.isDisabled() == true) {
+                    updateWarning("operationsWarning", "Please enter a value.", warningColor);
+                    return;
+                }
             }
 
             dataStructure.clearStates();
@@ -363,8 +411,10 @@ public class DataStructureController {
                     return;
                 }
             } else {
-                updateWarning("operationsWarning", "Please enter a value.", warningColor);
-                return;
+                if(searchButton.isDisabled() == true) {
+                    updateWarning("operationsWarning", "Please enter a value.", warningColor);
+                    return;
+                }
             }
 
             dataStructure.clearStates();
@@ -456,6 +506,7 @@ public class DataStructureController {
         if(this.dataStructure == null) return;
 
         disableButtons(true);
+        clearButton.setDisable(true);
 
         ArrayList<DataStructureState<Integer>> states = this.dataStructure.getStates();
 
@@ -477,7 +528,8 @@ public class DataStructureController {
         }
 
         timeline.setOnFinished(_ -> {
-            disableButtons(false);
+            toggleButtons();
+            clearButton.setDisable(false);
         });
 
         if (!states.isEmpty()) {
