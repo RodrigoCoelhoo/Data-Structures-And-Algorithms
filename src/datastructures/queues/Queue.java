@@ -1,14 +1,24 @@
 package datastructures.queues;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import datastructures.interfaces.IDataStructure;
 import datastructures.interfaces.INode;
+import javafx.geometry.Bounds;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import utils.DataStructureState;
 import utils.DataStructureState.Parameters;
 
 public class Queue<T> implements IDataStructure<T>, Iterable<T> {
+
+    ArrayList<DataStructureState<T>> states = new ArrayList<>();
 
 	Node head = null;
 	Node tail = null;
@@ -25,6 +35,15 @@ public class Queue<T> implements IDataStructure<T>, Iterable<T> {
 			this.tail.setNext(newhead);
 			this.tail = newhead;
 		}
+
+		Parameters param = new Parameters();
+		param.getInvsible().add(this.size);
+		saveState(this, param);
+		param = new Parameters();
+		param.setObjective(this.size);
+		saveState(this, param);
+		saveState(this, param);
+		saveState(this, new Parameters());
 		
 		this.size++;
 	}
@@ -32,17 +51,34 @@ public class Queue<T> implements IDataStructure<T>, Iterable<T> {
 	@Override
 	public T dequeue() {
 		if(this.size == 0) throw new NoSuchElementException("Queue is empty");
+		Queue<T> temp = this.clone();
 
 		Node nextNode = this.head.next();
 		T result = this.head.getValue();
 		this.head = nextNode;
 		this.size--;
+
+		Parameters param = new Parameters();
+		param.getFailure().add(0);
+		saveState(temp, param);
+		param = new Parameters();
+		param.getInvsible().add(0);
+		saveState(temp, param);
+		saveState(this, new Parameters());
+		
 		return result;
 	}
 
 	@Override
 	public T peek() {
 		if(this.size == 0) throw new NoSuchElementException("Queue is empty");
+
+		Parameters param = new Parameters();
+		param.setObjective(0);
+		saveState(this, param);
+		saveState(this, param);
+		saveState(this, new Parameters());
+
 		return this.head.getValue();
 	}
 
@@ -126,7 +162,82 @@ public class Queue<T> implements IDataStructure<T>, Iterable<T> {
 
 	@Override
 	public void draw(Pane pane, Parameters param) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'draw'");
+		pane.getChildren().clear();
+
+        double paneWidth = pane.getWidth() > 0 ? pane.getWidth() : 800;
+        double paneHeight = pane.getHeight() > 0 ? pane.getHeight() : 600;
+		
+		double box = 50;
+		
+		int slots = this.size == 0 ? 1 : this.size;
+		double totalWidth = box * slots + box/2;
+		double startX = paneWidth/2 - totalWidth/2;
+		double y = paneHeight/2 - box/2;
+
+		// Head = null
+		if(this.size == 0) {
+			Rectangle rect = new Rectangle(startX, y, box, box);
+			rect.setFill(param.getColor(0));
+			rect.setStroke(Color.BLACK);
+
+			Text value = new Text("NULL");
+			value.setFont(Font.font("Arial", 16));
+			value.setX(startX + box / 2);
+			value.setY(y + box / 2);
+			Bounds bounds = value.getBoundsInLocal();
+			value.setX(startX + (box - bounds.getWidth()) / 2);
+			value.setY(y + (box + bounds.getHeight()) / 2);
+
+			Line upLine = new Line(startX + box, y, startX + box + box/2, y);
+			upLine.setStroke(Color.BLACK);
+
+			Line downLine = new Line(startX + box, y + box, startX + box + box/2, y + box);
+			downLine.setStroke(Color.BLACK);
+
+			pane.getChildren().addAll(rect, value, upLine, downLine);
+			return;
+		}
+
+		int count = 0;
+		for(T v : this) {
+			Rectangle rect = new Rectangle(startX, y, box, box);
+			Color color = param.getColor(count++);
+
+			String text = color == Color.TRANSPARENT ? "" : v.toString();
+			Text value = new Text(text);
+			value.setFont(Font.font("Arial", 16));
+			value.setX(startX + box / 2);
+			value.setY(y + box / 2);
+			Bounds bounds = value.getBoundsInLocal();
+			value.setX(startX + (box - bounds.getWidth()) / 2);
+			value.setY(y + (box + bounds.getHeight()) / 2);
+
+			startX += box;
+
+			rect.setFill(color);
+			rect.setStroke(Color.BLACK);
+
+			pane.getChildren().addAll(rect, value);
+		}
+
+		Line upLine = new Line(startX, y, startX + box/2, y);
+		upLine.setStroke(Color.BLACK);
+
+		Line downLine = new Line(startX, y + box, startX + box/2, y + box);
+		downLine.setStroke(Color.BLACK);
+
+		pane.getChildren().addAll(upLine, downLine);
 	}
+
+	public ArrayList<DataStructureState<T>> getStates() { 
+        return this.states; 
+    }
+
+    public void clearStates() { 
+        this.states = new ArrayList<>(); 
+    }
+
+	public void saveState(IDataStructure<T> ds, Parameters param) {
+        this.states.add(new DataStructureState<>(ds, param));
+    }
 }

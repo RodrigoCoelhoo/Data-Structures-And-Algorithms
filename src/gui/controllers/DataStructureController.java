@@ -251,6 +251,7 @@ public class DataStructureController {
         updateButton.setDisable(disable);
 
         datastructureComboBox.setDisable(disable);
+        clearButton.setDisable(disable);
     }
 
     @FXML
@@ -506,7 +507,6 @@ public class DataStructureController {
         if(this.dataStructure == null) return;
 
         disableButtons(true);
-        clearButton.setDisable(true);
 
         ArrayList<DataStructureState<Integer>> states = this.dataStructure.getStates();
 
@@ -528,8 +528,8 @@ public class DataStructureController {
         }
 
         timeline.setOnFinished(_ -> {
+            disableButtons(false);
             toggleButtons();
-            clearButton.setDisable(false);
         });
 
         if (!states.isEmpty()) {
