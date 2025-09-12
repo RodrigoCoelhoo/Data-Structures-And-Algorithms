@@ -2,18 +2,32 @@ package datastructures.trees;
 
 import datastructures.interfaces.INode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
+import utils.DataStructureState;
 import utils.DataStructureState.Parameters;
+
+import java.util.ArrayList;
+
 import datastructures.interfaces.IDataStructure;
 
 public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure<T> {
+
+    ArrayList<DataStructureState<T>> states = new ArrayList<>();
+
 	private Node root = null;
 	
 	@Override
 	public void insert(T value) {
 		if(this.root == null) {
 			this.root = new Node(value, null, null);
+			saveState(this, new Parameters());
 			return;
 		}
+
+		saveState(this, new Parameters());
 
 		Node current = this.root;
 		while(current != null) {
@@ -207,7 +221,91 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 
 	@Override
 	public void draw(Pane pane, Parameters param) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'draw'");
+		pane.getChildren().clear();
+
+		double paneWidth = pane.getWidth() > 0 ? pane.getWidth() : 1600;
+
+		double startY = 50;      // top margin, change to dynamic vertical center?
+		double minSpacing = 50;  // minimum horizontal spacing between nodes
+
+		if (root != null) {
+			// Calculate total width of the tree
+			double treeWidth = calculateTreeWidth(root, minSpacing);
+
+			// Start X to center the tree
+			double startX = (paneWidth - treeWidth) / 2;
+
+			// Draw tree recursively
+			drawNodeCentered(pane, param, root, startX, startY, minSpacing);
+		}
 	}
+
+	/**
+	 * Draw a node and its subtree, return the width of the subtree.
+	 */
+	private double drawNodeCentered(Pane pane, Parameters param, Node node, double x, double y, double minSpacing) {
+		if (node == null) return 0;
+
+		double nodeRadius = 20;
+		double verticalSpacing = 80;
+
+		// Calculate widths of left and right subtrees
+		double leftWidth = calculateTreeWidth(node.getLeft(), minSpacing);
+		double rightWidth = calculateTreeWidth(node.getRight(), minSpacing);
+
+		// Current node's X position
+		double nodeX = x + leftWidth + (rightWidth > 0 ? 0 : minSpacing / 2);
+
+		if (node.getLeft() != null) {
+			double childX = x;
+			double childY = y + verticalSpacing;
+			double leftChildCenterX = drawNodeCentered(pane, param, node.getLeft(), childX, childY, minSpacing);
+			Line line = new Line(nodeX, y, leftChildCenterX, childY);
+			pane.getChildren().add(0, line); 
+		}
+
+		if (node.getRight() != null) {
+			double childX = x + leftWidth + minSpacing;
+			double childY = y + verticalSpacing;
+			double rightChildCenterX = drawNodeCentered(pane, param, node.getRight(), childX, childY, minSpacing);
+			Line line = new Line(nodeX, y, rightChildCenterX, childY);
+			pane.getChildren().add(0, line); 
+		}
+
+		// Draw the current node
+		Circle circle = new Circle(nodeX, y, nodeRadius);
+		circle.setFill(Color.LIGHTBLUE);
+		circle.setStroke(Color.BLACK);
+		Text text = new Text(nodeX - 6, y + 4, node.getValue().toString());
+		pane.getChildren().addAll(circle, text);
+
+		return nodeX;
+	}
+
+	/**
+	 * Recursively calculate the width of the subtree for centering.
+	 */
+	private double calculateTreeWidth(Node node, double minSpacing) {
+		if (node == null) return 0;
+
+		double leftWidth = calculateTreeWidth(node.getLeft(), minSpacing);
+		double rightWidth = calculateTreeWidth(node.getRight(), minSpacing);
+
+		if (leftWidth == 0 && rightWidth == 0) return minSpacing;
+
+		return leftWidth + rightWidth + minSpacing;
+	}
+
+
+	public ArrayList<DataStructureState<T>> getStates() { 
+        return this.states; 
+    }
+
+    public void clearStates() { 
+        this.states = new ArrayList<>(); 
+    }
+
+	public void saveState(IDataStructure<T> ds, Parameters param) {
+        this.states.add(new DataStructureState<>(ds, param));
+    }
 }
