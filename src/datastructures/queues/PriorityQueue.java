@@ -43,7 +43,7 @@ public class PriorityQueue<T> extends Queue<T> {
             if (newNode.next() == null) tail = newNode;
         }
 
-        int index = count == -1 ? 0 : count + 2;
+        int index = count == -1 ? this.head == newNode ? 0 : 1 : count + 2;
         
         param = new Parameters();
         param.getInvsible().add(index);
