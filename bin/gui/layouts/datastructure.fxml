@@ -18,7 +18,7 @@
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="898.0" prefWidth="519.0">
          <children>
-            <ComboBox fx:id="datastructureComboBox" layoutX="25.0" layoutY="98.0" prefHeight="25.0" prefWidth="266.0" promptText="Select the Sort Algorithm" />
+            <ComboBox fx:id="datastructureComboBox" layoutX="25.0" layoutY="98.0" prefHeight="25.0" prefWidth="266.0" promptText="Select the Data Structure"/>
             <Button fx:id="insertButton" layoutX="225.0" layoutY="470.0" mnemonicParsing="false" onAction="#handleInsert" prefHeight="52.0" prefWidth="71.0" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font size="15.0" />
@@ -38,7 +38,7 @@
                   <Font size="17.0" />
                </font></TextField>
             <Label id="operationsWarning" fx:id="operationsWarning" layoutX="25.0" layoutY="447.0" prefHeight="17.0" prefWidth="273.0" />
-            <TextArea fx:id="algorithmInfo" editable="false" layoutX="25.0" layoutY="142.0" prefHeight="246.0" prefWidth="266.0" style="-fx-background-color: e0e0e0;" wrapText="true">
+            <TextArea fx:id="datastructureInfo" editable="false" layoutX="25.0" layoutY="142.0" prefHeight="246.0" prefWidth="266.0" style="-fx-background-color: e0e0e0;" wrapText="true">
                <font>
                   <Font size="13.0" />
                </font>

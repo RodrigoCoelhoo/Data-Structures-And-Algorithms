@@ -78,6 +78,31 @@ public class Array<T> implements IDataStructure<T> {
 	}
 
 	@Override
+	public String info() {
+		String 
+		result = "An array is a fixed-size data structure that stores elements "
+				+ "of the same type in contiguous memory locations. "
+				+ "Each element can be accessed directly using its index, "
+				+ "making access and update operations very efficient (constant time).\n\n";
+		
+		result += "However, operations that require shifting elements, such as "
+				+ "insertion or deletion at arbitrary positions, are costly "
+				+ "because they may involve moving many elements (linear time).\n\n";
+
+		result += "'n' is the number of elements in the array.\n\n";
+		
+		result += "Access Time Complexity: O(1)\n";
+        result += "Search Time Complexity: O(n)\n";
+        result += "Insert Time Complexity: O(n)\n";
+        result += "Delete Time Complexity: O(n)\n";
+		result += "Space Complexity: O(n)\n\n";
+		
+		
+		return result;
+	}
+
+
+	@Override
 	public void draw(Pane pane, Parameters param) {
 		pane.getChildren().clear();
 

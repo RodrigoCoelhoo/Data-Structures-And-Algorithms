@@ -104,6 +104,31 @@ public class Queue<T> implements IDataStructure<T>, Iterable<T> {
     }
 
 	@Override
+	public String info() {
+		String result = "A queue is a linear data structure that follows the First-In-First-Out (FIFO) principle. "
+				+ "This means that the first element added to the queue will be the first one to be removed. "
+				+ "Elements are inserted at the rear (enqueue) and removed from the front (dequeue).\n\n";
+
+		result += "Queues can be implemented using arrays or linked lists. "
+				+ "An array-based implementation requires managing indices and may waste space if not circular, "
+				+ "while a linked-list-based implementation grows dynamically but requires extra memory for pointers.\n\n";
+
+		result += "Queues are commonly used in scheduling, buffering, breadth-first search, "
+				+ "and any scenario where elements must be processed in order of arrival.\n\n";
+
+		result += "'n' is the number of elements in the queue.\n\n";
+
+		result += "Access Time Complexity: O(n)\n";
+		result += "Search Time Complexity: O(n)\n";
+		result += "Insert (Enqueue) Time Complexity: O(1)\n";
+		result += "Delete (Dequeue) Time Complexity: O(1)\n";
+		result += "Space Complexity: O(n)\n\n";
+
+		return result;
+	}
+
+
+	@Override
     public Queue<T> clone() {
         Queue<T> result = new Queue<>();
         

@@ -115,6 +115,11 @@ public class MinHeap<T extends Comparable<T>> implements IDataStructure<T> {
 		return copy;
 	}
 
+	@Override
+	public String info() {
+		String str = "";
+		return str;
+	}
 
 	@Override
 	public void draw(Pane pane, Parameters param) {

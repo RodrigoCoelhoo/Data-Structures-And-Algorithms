@@ -277,6 +277,36 @@ public class LinkedList<T> implements IDataStructure<T>, Iterable<T> {
 	}
 
     @Override
+    public String info() {
+        String 
+        result = "A linked list is a linear data structure where each element (node) "
+               + "contains a value and a reference (or pointer) to the next node in the sequence. "
+               + "Unlike arrays, linked lists do not require contiguous memory locations, "
+               + "making insertions and deletions efficient at the beginning or when a node reference is known.\n\n";
+
+        result += "However, linked lists have slower access times compared to arrays, "
+               + "since accessing an element requires traversal from the head node.\n\n";
+        
+        result += "Linked lists are commonly used in scenarios where dynamic resizing is needed "
+               + "and frequent insertions/deletions occur, such as in queues, stacks.";
+        
+        result += "'n' is the number of elements in the linked list.\n\n";
+        
+        result += "Note: If a tail pointer is maintained, insertions at the end of the list "
+                + "can be performed in constant time O(1). Without it, appending requires "
+                + "traversing the entire list, which takes O(n).\n\n";
+
+        result += "Access Time Complexity: O(n)\n";
+        result += "Search Time Complexity: O(n)\n";
+        result += "Insert Time Complexity: O(1) (at head or with tail pointer), O(n) (at arbitrary position without reference)\n";
+        result += "Delete Time Complexity: O(1) (at head), O(n) (at arbitrary position without reference)\n";
+        result += "Space Complexity: O(n) (plus optional O(1) extra if storing a tail reference)\n\n";
+        
+        return result;
+    }
+
+
+    @Override
     public Iterator<T> iterator() {
         return new LinkedListIterator();
     }

@@ -111,6 +111,28 @@ public class Stack<T> implements IDataStructure<T>, Iterable<T> {
 		return result;
 	}
 
+	@Override
+	public String info() {
+		String result = "A stack is a linear data structure that follows the Last-In-First-Out (LIFO) principle. "
+				+ "This means that the last element pushed onto the stack is the first one to be popped out. "
+				+ "Elements are inserted and removed only from the top of the stack.\n\n";
+
+		result += "Stacks can be implemented using arrays or linked lists. "
+				+ "An array-based implementation has a fixed size (unless dynamically resized), "
+				+ "while a linked-list-based implementation can grow dynamically but requires extra memory for pointers.\n\n";
+
+		result += "'n' is the number of elements in the stack.\n\n";
+
+		result += "Access Time Complexity: O(n)\n";
+		result += "Search Time Complexity: O(n)\n";
+		result += "Insert (Push) Time Complexity: O(1)\n";
+		result += "Delete (Pop) Time Complexity: O(1)\n";
+		result += "Space Complexity: O(n)\n\n";
+
+		return result;
+	}
+
+
     private class StackIterator implements Iterator<T> {
         private Node current = top;
 

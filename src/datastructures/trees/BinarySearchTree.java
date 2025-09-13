@@ -182,10 +182,18 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 		return new Node(original.getValue(), leftCopy, rightCopy);
 	}
 
+	@Override
+	public String info() {
+		String str = "";
+		return str;
+	}
+
 	private class Node implements INode<T> {
-		T value;
-		Node leftChild;
-		Node rightChild;
+		private T value;
+		private Node leftChild;
+		private Node rightChild;
+
+		private String position; // For animation
 
 		public Node(T value, Node leftChild, Node rightChild) {
 			this.value = value;

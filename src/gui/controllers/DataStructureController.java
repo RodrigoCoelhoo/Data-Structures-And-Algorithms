@@ -26,6 +26,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -41,6 +42,7 @@ public class DataStructureController {
     @FXML private ComboBox<String> datastructureComboBox;
     @FXML private Pane visualContainer;
     @FXML private TextField insertValueField, deleteValueField, searchValueField, updateValueField, insertIndexField, deleteIndexField, searchIndexField, updateIndexField;
+    @FXML private TextArea datastructureInfo;
     @FXML private Label operationsWarning;
     @FXML private Button insertButton, deleteButton, searchButton, updateButton, clearButton;
 
@@ -181,6 +183,8 @@ public class DataStructureController {
         updateIndexField.setText("");
         updateWarning("clear", null, null);
         toggleButtons();
+
+        datastructureInfo.setText(dataStructure.info());
         this.dataStructure.draw(visualContainer, new Parameters());
     }
 

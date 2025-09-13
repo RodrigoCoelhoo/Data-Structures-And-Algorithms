@@ -68,4 +68,24 @@ public class PriorityQueue<T> extends Queue<T> {
         
         return result;
     }
+
+    @Override
+    public String info() {
+        String result = "A priority queue is an abstract data structure where each element is associated with a priority, "
+                + "and elements are served based on their priority rather than their order of insertion. "
+                + "By default, higher-priority elements are dequeued before lower-priority ones. "
+                + "If two elements have the same priority, the order of arrival may determine which is served first.\n\n";
+
+        result += "In this example the lower values have a bigger priority.";
+
+        result += "'n' is the number of elements in the priority queue.\n\n";
+
+        result += "Access Time Complexity: O(n)\n";
+        result += "Search Time Complexity: O(n)\n";
+        result += "Insert (Enqueue) Time Complexity: O(log n)\n";
+        result += "Delete (Dequeue highest priority) Time Complexity: O(log n)\n";
+        result += "Space Complexity: O(n)\n\n";
+
+        return result;
+    }
 }

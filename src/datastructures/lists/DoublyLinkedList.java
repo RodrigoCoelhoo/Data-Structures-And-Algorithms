@@ -287,6 +287,35 @@ public class DoublyLinkedList<T> implements IDataStructure<T>, Iterable<T> {
         return result;
     }
 
+    @Override
+    public String info() {
+        String result = "A doubly linked list is a linear data structure where each element (node) "
+                + "contains a value, a reference (or pointer) to the next node, "
+                + "and a reference to the previous node in the sequence. "
+                + "Unlike arrays, doubly linked lists do not require contiguous memory locations, "
+                + "and allow efficient insertions and deletions at both the beginning and the end, "
+                + "as well as before or after a known node.\n\n";
+
+        result += "Differently from singly linked lists, doubly linked lists have the ability to traverse backwards and "
+                + "access the previous node makes certain operations more efficient, "
+                + "particularly deletions, since a node can be removed directly if a reference to it is available.\n\n";
+
+        result += "However, doubly linked lists use more memory than singly linked lists "
+                + "because each node requires an extra pointer to the previous node.\n\n";
+                
+
+        result += "'n' is the number of elements in the doubly linked list.\n\n";
+
+        result += "Access Time Complexity: O(n)\n";
+        result += "Search Time Complexity: O(n)\n";
+        result += "Insert Time Complexity: O(1) (at head, tail, or before/after a known node)\n";
+        result += "Delete Time Complexity: O(1) (at head, tail, or with direct node reference)\n";
+        result += "Space Complexity: O(n) (each node stores two references)\n\n";
+
+        return result;
+    }
+
+
     private class DoublyLinkedListIterator implements Iterator<T> {
         private Node current = head;
 
