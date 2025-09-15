@@ -25,19 +25,17 @@ public class DataStructureState<T> {
 	}
 
 	public static class Parameters {
-		private String path = "";							// For trees "LLRLRLR"
 		private Set<Integer> indexs = new HashSet<>(); 		// For list
 		private int objective = -1; 						// If true last element of indexs or path are the objective
 		private Set<Integer> invsible = new HashSet<>(); 	// Indexs of the hidden nodes (For insert, remove animations)
 		private Set<Integer> failure = new HashSet<>(); 	// Indexs of the failure nodes (Failed search, ...) 
 
-		public String getPath() {
-			return path;
-		}
+		// For Tree
+		private String index = "NULL";
+		private String obj 	 = "NULL";
+		private String inv   = "NULL";
+		private String fail  = "NULL";
 
-		public void setPath(String path) {
-			this.path = path;
-		}
 
 		public Set<Integer> getIndexs() {
 			return this.indexs;
@@ -71,6 +69,31 @@ public class DataStructureState<T> {
 			this.failure = failure;
 		}
 
+		public String getIndex() {
+			return index;
+		}
+		public String getFail() {
+			return fail;
+		}
+		public String getInv() {
+			return inv;
+		}
+		public String getObj() {
+			return obj;
+		}
+		public void setObj(String obj) {
+			this.obj = obj;
+		}
+		public void setFail(String fail) {
+			this.fail = fail;
+		}
+		public void setIndex(String index) {
+			this.index = index;
+		}
+		public void setInv(String inv) {
+			this.inv = inv;
+		}
+
 		public Color getColor(int index) {
 			if(this.invsible.contains(index)) {
                 return Color.TRANSPARENT;
@@ -82,6 +105,23 @@ public class DataStructureState<T> {
 				return Color.TOMATO;
 			}
             else if(this.getIndexs().contains(index)) {
+                return Color.YELLOW;
+            } else {
+                return Color.LIGHTBLUE;
+            }
+		}
+
+		public Color getColor(String str) {
+			if(this.inv.equals(str) || this.inv.equals("*")) {
+                return Color.TRANSPARENT;
+            } 
+            else if(this.obj.equals(str) || this.obj.equals("*")) {
+                return  Color.LIGHTGREEN;
+            }
+			else if(this.fail.equals(str) || this.fail.equals("*")) {
+				return Color.TOMATO;
+			}
+            else if(this.index.equals(str)) {
                 return Color.YELLOW;
             } else {
                 return Color.LIGHTBLUE;

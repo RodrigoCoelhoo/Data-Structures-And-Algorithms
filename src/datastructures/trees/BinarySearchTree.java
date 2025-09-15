@@ -21,37 +21,85 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 	
 	@Override
 	public void insert(T value) {
+
+		
 		if(this.root == null) {
 			this.root = new Node(value, null, null);
+			this.root.setPosition("");
+			
+			Parameters param = new Parameters();
+			param.setInv("");
+			saveState(this, param);
+
+			param = new Parameters();
+			param.setObj("");
+			saveState(this, param);
+			saveState(this, param);
 			saveState(this, new Parameters());
+			
 			return;
 		}
-
-		saveState(this, new Parameters());
-
+		
+		BinarySearchTree<T> clone = this.clone();
+		
 		Node current = this.root;
+		Parameters param = new Parameters();
+		String str = "";
+		param.setIndex(str);
+		saveState(clone, param);
+		
 		while(current != null) {
+			param = new Parameters();
 			if(current.getValue().compareTo(value) > 0) {
+				str += "L";
 				Node next = current.getLeft();
-
+				
 				if(next == null) {
-					Node newNode = new Node(value, null, null);
+					param = new Parameters();
 
+					Node newNode = new Node(value, null, null);
+					newNode.setPosition(str);
 					current.setLeft(newNode);
+					
+					param.setInv(str);
+					saveState(this, param);
+
+					param = new Parameters();
+					param.setObj(str);
+					saveState(this, param);
+					saveState(this, param);
+					saveState(this, new Parameters());
+
 					return;
 				}
 				current = next;
 			} else {
+				str += "R";
 				Node next = current.getRight();
 
 				if(next == null) {
-					Node newNode = new Node(value, null, null);
+					param = new Parameters();
 
+					Node newNode = new Node(value, null, null);
+					newNode.setPosition(str);
 					current.setRight(newNode);
+					
+					param.setInv(str);
+					saveState(this, param);
+
+					param = new Parameters();
+					param.setObj(str);
+					saveState(this, param);
+					saveState(this, param);
+					saveState(this, new Parameters());
+
 					return;
 				}
 				current = next;
 			}
+
+			param.setIndex(str);
+			saveState(clone, param);
 		}
 	}
 
@@ -59,19 +107,44 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 	public Node search(T value) {
 		Node current = this.root;
 
+		Parameters param = new Parameters();
+		String str = "";
+		param.setIndex(str);
+		saveState(this, param);
+
 		while(current != null) {
+			param = new Parameters();
 
 			int compareToValue = current.getValue().compareTo(value);
 
 			if(compareToValue > 0) {
+				str += "L";
 				current = current.getLeft();
 			} 
 			else if (compareToValue < 0) {
+				str += "R";
 				current = current.getRight();
 			} 
 			else {
+				param.setObj(str);
+				saveState(this, param);
+				saveState(this, param);
+				saveState(this, new Parameters());
 				return current;
 			}
+
+			if(current != null) {
+				param.setIndex(str);
+				saveState(this, param);
+			}
+		}
+
+		if(current == null) {
+			param = new Parameters();
+			param.setFail("*");
+			saveState(this, param);
+			saveState(this, param);
+			saveState(this, new Parameters());
 		}
 
 		return null;
@@ -81,16 +154,26 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 	public void delete(T value) {
 		Node prev = null;
 		Node current = this.root;
+		
+		BinarySearchTree<T> clone = this.clone();
+
+		Parameters param = new Parameters();
+		String str = "";
+		param.setIndex(str);
+		saveState(clone, param);
 
 		while(current != null) {
+			param = new Parameters();
 
 			int compareToValue = current.getValue().compareTo(value);
 
 			if(compareToValue > 0) {
+				str += "L";
 				prev = current;
 				current = current.getLeft();
 			} 
 			else if (compareToValue < 0) {
+				str += "R";
 				prev = current;
 				current = current.getRight();
 			} 
@@ -98,6 +181,19 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 				handleDelete(prev, current);
     			break;
 			}
+
+			if(current != null) {
+				param.setIndex(str);
+				saveState(clone, param);
+			}
+		}
+
+		if(current == null) {
+			param = new Parameters();
+			param.setFail("*");
+			saveState(this, param);
+			saveState(this, param);
+			saveState(this, new Parameters());
 		}
 	}
 
@@ -108,6 +204,8 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 	 */
 	private void handleDelete(Node prev, Node current) {
 		int childCount = countChild(current);
+
+		BinarySearchTree<T> clone = this.clone();
 
 		if(childCount == 0) {
 			if(current == this.root) {
@@ -120,10 +218,32 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 				prev.setRight(null);
 			}
 
+			Parameters param = new Parameters();
+			String str = current.getPosition();
+			param.setFail(str);
+			saveState(clone, param);
+			param = new Parameters();
+			param.setInv(str);
+			saveState(clone, param);
+			saveState(this, new Parameters());
+
 			return;
 		} 
 		else if(childCount == 1) {
 			Node child = (current.getLeft() != null) ? current.getLeft() : current.getRight();
+
+			Parameters param = new Parameters();
+			String str = current.getPosition();
+			param.setFail(str);
+			saveState(clone, param);
+			param = new Parameters();
+			param.setInv(str);
+			saveState(clone, param);
+			
+			child.setPosition(current.getPosition());
+			saveState(this, new Parameters());
+
+			
 			if(prev == null) {
 				root = child;
 			} else if(prev.getLeft() == current) {
@@ -134,27 +254,76 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 
 			return;
 		}
-		else if(childCount == 2) {
-			// Find leftmost node of right subtree
+		else if (childCount == 2) {
+			// Find leftmost node of right subtree (successor)
 			Node parentOfSuccessor = current;
-			Node successor = current.getRight();
 
-			while(successor.getLeft() != null) {
+			Parameters param = new Parameters();
+			String str = current.getPosition();
+			param.setFail(str);
+			saveState(clone, param);
+
+			Node successor = current.getRight();
+			param = new Parameters();
+			param.setFail(str);
+			param.setIndex(successor.getPosition());
+			saveState(clone, param);
+
+			while (successor.getLeft() != null) {
 				parentOfSuccessor = successor;
 				successor = successor.getLeft();
+				
+				param = new Parameters();
+				param.setFail(str);
+				param.setIndex(successor.getPosition());
+				saveState(clone, param);
 			}
 
-    		current.setValue(successor.getValue());
+			param = new Parameters();
+			param.setFail(str);
+			param.setObj(successor.getPosition());
+			saveState(clone, param);
 
-			// Handle deleted node child
-			Node child = successor.getRight(); // may be null
-			if(parentOfSuccessor.getLeft() == successor) {
+			// Replace current node's value with successor's
+			current.setValue(successor.getValue());
+
+			clone = this.clone();
+			param = new Parameters();
+			param.setObj(str);
+			param.setInv(successor.getPosition());
+			saveState(clone, param);
+
+			saveState(this, new Parameters());
+
+			// If successor had a right child, reattach it
+			Node child = successor.getRight();
+			if (parentOfSuccessor.getLeft() == successor) {
 				parentOfSuccessor.setLeft(child);
 			} else {
 				parentOfSuccessor.setRight(child);
 			}
+			
+			if (child != null) {
+				child.setPosition(successor.getPosition());
+				reassignPositions(child);
+			}
 		}
 	}
+
+	private void reassignPositions(Node node) {
+		if (node == null) return;
+
+		if (node.getLeft() != null) {
+			node.getLeft().setPosition(node.getPosition() + "L");
+			reassignPositions(node.getLeft());
+		}
+
+		if (node.getRight() != null) {
+			node.getRight().setPosition(node.getPosition() + "R");
+			reassignPositions(node.getRight());
+		}
+	}
+
 
 	/**
 	 * @param node
@@ -177,10 +346,16 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 
 	private Node cloneNode(Node original) {
 		if (original == null) return null;
+
 		Node leftCopy = cloneNode(original.getLeft());
 		Node rightCopy = cloneNode(original.getRight());
-		return new Node(original.getValue(), leftCopy, rightCopy);
+
+		Node clone = new Node(original.getValue(), leftCopy, rightCopy);
+		clone.setPosition(original.getPosition());
+
+		return clone;
 	}
+
 
 	@Override
 	public String info() {
@@ -225,6 +400,13 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 			this.value = value;
 		}
 
+		public String getPosition() {
+			return position;
+		}
+
+		public void setPosition(String position) {
+			this.position = position;
+		}
 	}
 
 	@Override
@@ -245,6 +427,26 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 
 			// Draw tree recursively
 			drawNodeCentered(pane, param, root, startX, startY, minSpacing);
+		} else {
+			double nodeX = paneWidth / 2;
+			double nodeY = 50;
+			double nodeRadius = 20;
+
+			Circle circle = new Circle(nodeX, nodeY, nodeRadius);
+			circle.setFill(Color.LIGHTGRAY);
+			circle.setStroke(Color.BLACK);
+
+			Text text = new Text("NULL");
+			text.setFill(Color.BLACK);
+			text.setFont(javafx.scene.text.Font.font(14));
+
+			// Center the text
+			double textWidth = text.getBoundsInLocal().getWidth();
+			double textHeight = text.getBoundsInLocal().getHeight();
+			text.setX(nodeX - textWidth / 2);
+			text.setY(nodeY + textHeight / 4); // adjust vertically
+
+			pane.getChildren().addAll(circle, text);
 		}
 	}
 
@@ -282,9 +484,19 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 
 		// Draw the current node
 		Circle circle = new Circle(nodeX, y, nodeRadius);
-		circle.setFill(Color.LIGHTBLUE);
+		Color color = param.getColor(node.getPosition());
+		circle.setFill(color);
 		circle.setStroke(Color.BLACK);
-		Text text = new Text(nodeX - 6, y + 4, node.getValue().toString());
+
+		Text text = new Text(color == Color.TRANSPARENT ? "" : node.getValue().toString());
+		text.setFont(javafx.scene.text.Font.font(14));
+
+		// Center the text inside the circle
+		double textWidth = text.getBoundsInLocal().getWidth();
+		double textHeight = text.getBoundsInLocal().getHeight();
+		text.setX(nodeX - textWidth / 2);
+		text.setY(y + textHeight / 4); 
+
 		pane.getChildren().addAll(circle, text);
 
 		return nodeX;
