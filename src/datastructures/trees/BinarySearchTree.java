@@ -359,8 +359,39 @@ public class BinarySearchTree<T extends Comparable<T>> implements IDataStructure
 
 	@Override
 	public String info() {
-		String str = "";
-		return str;
+		String result = "A Binary Search Tree (BST) is a binary tree data structure in which each node "
+				+ "has at most two children, referred to as the left child and the right child. "
+				+ "The key property of a BST is that for any given node:\n"
+				+ "- All values in the left subtree are less than the node's value.\n"
+				+ "- All values in the right subtree are greater than the node's value.\n\n";
+
+		result += "This property makes BSTs efficient for search, insertion, and deletion operations. "
+				+ "However, if the tree becomes unbalanced (e.g., resembling a linked list), "
+				+ "performance can degrade.\n\n";
+
+		result += "Operations in a Binary Search Tree:\n"
+				+ "- Insert: Adds a value while maintaining the BST property.\n"
+				+ "- Search: Finds a value by traversing left or right depending on comparisons.\n"
+				+ "- Delete: Removes a node. Three cases exist:\n"
+				+ "   1. Node with no children (leaf): simply remove it.\n"
+				+ "   2. Node with one child: replace the node with its child.\n"
+				+ "   3. Node with two children: replace with the in-order successor (smallest in right subtree).\n\n";
+
+		result += "'n' is the number of nodes in the tree.\n\n";
+
+		result += "Access Time Complexity: O(log n)\n";
+		result += "Search Time Complexity: O(log n)\n";
+		result += "Insert Time Complexity: O(log n)\n";
+		result += "Delete Time Complexity: O(log n)\n";
+		result += "Space Complexity: O(n)\n\n";
+
+		return result;
+	}
+
+
+	@Override
+	public void clear() {
+		this.root = null;
 	}
 
 	private class Node implements INode<T> {

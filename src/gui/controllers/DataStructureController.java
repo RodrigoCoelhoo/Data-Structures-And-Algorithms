@@ -150,8 +150,8 @@ public class DataStructureController {
             case "Max Heap":
                 this.dataStructure = new MaxHeap<>();
                 toggleInsert(false, true);
-                toggleDelete(false, true);
-                toggleSearch(false, true);
+                toggleDelete(false, false);
+                toggleSearch(false, false);
                 toggleUpdate(false, false);
                 activeOperations.clear();
                 activeOperations.addAll(Arrays.asList("Insert", "Delete", "Search"));
@@ -160,8 +160,8 @@ public class DataStructureController {
             case "Min Heap":
                 this.dataStructure = new MinHeap<>();
                 toggleInsert(false, true);
-                toggleDelete(false, true);
-                toggleSearch(false, true);
+                toggleDelete(false, false);
+                toggleSearch(false, false);
                 toggleUpdate(false, false);
                 activeOperations.clear();
                 activeOperations.addAll(Arrays.asList("Insert", "Delete", "Search"));
