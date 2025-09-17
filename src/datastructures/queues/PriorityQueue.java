@@ -4,7 +4,7 @@ import java.util.Comparator;
 import utils.DataStructureState.Parameters;
 
 public class PriorityQueue<T> extends Queue<T> {
-	private Comparator<T> comparator;
+	private final Comparator<T> comparator;
 
     public PriorityQueue(Comparator<T> comparator) {
         this.comparator = comparator;

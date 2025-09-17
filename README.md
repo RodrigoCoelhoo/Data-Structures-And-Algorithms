@@ -1,18 +1,30 @@
 # 📊 Data Structures and Algorithms Visualizer
 
-A JavaFX based application for visualizing classic sorting algorithms and data structures.
+A JavaFX-based application for visualizing classic **sorting algorithms**, **search algorithms**, and **data structures**.
+
+## 🚀 Features
+- Step-by-step visualization of sorting and searching algorithms.
+- Interactive animations for common data structures.
+- Clean, intuitive JavaFX interface for learning and teaching.
 
 ## 🛠️ Technologies Used
-- JavaFX 24.0.1
+- [JavaFX 24.0.1](https://openjfx.io/)
 - JDK 24.0.2
 
-## ✅ Features
-- Step-by-step animation of sorting algorithms with visualization of key operations (comparisons, swaps, pivots, etc.)
-- ...
+## 📑 Implemented Data Structures & Algorithms 
 
-## Algortihms
+### 🗂️ Data Structures
+- Array
+- Linked List
+- Doubly Linked List
+- Queue
+- Priority Queue
+- Stack
+- Binary Search Tree
+- Min Heap
+- Max Heap
 
-### 🔄 Sort
+### 🔄 Sorting
 - Bubble Sort
 - Bucket Sort
 - Insertion Sort
@@ -20,31 +32,58 @@ A JavaFX based application for visualizing classic sorting algorithms and data s
 - Quick Sort
 - Selection Sort
 
-### 🔎 Search
+### 🔎 Searching
 - A*
 - Breadth-First Search (BFS)
 - Best-First Search (Greedy)
 - Jump Point Search
 
-## 🧪 Running the Project
-To run this project, ensure you have JavaFX configured properly. Here's how:
-
+## 🧪 How to Run
 1. Clone the repository:
 ```bash
 https://github.com/RodrigoCoelhoo/Data-Structures-And-Algorithms.git
 ```
+2. Open the project in your preferred IDE (VSCode, IntelliJ IDEA, Eclipse ...)
+3. Ensure the main class is set to [src/gui/Main.java](src/gui/Main.java)
+4. **Configure JavaFX**  
+You have two options depending on whether you want to use a **system-installed JavaFX** or the **JavaFX libraries included in the project** (E.g: [launch.json](.vscode/launch.json)):  
 
-2. Open the project in your preferred IDE (like IntelliJ IDEA or Eclipse)
-3. Ensure JavaFX libraries are linked to the project (launch.json)
-4. Run Main.java
+**Option A: JavaFX installed outside the project**  
+```bash
+"vmArgs": "--module-path \"C:\\Program Files\\Java\\javafx\\lib\" --add-modules javafx.controls,javafx.fxml"
+```
 
-## Sources
+**Option B: JavaFX included in the project (lib/ and lib/native/)**
+```bash
+"vmArgs": "--module-path ${workspaceFolder}/lib --add-modules javafx.controls,javafx.fxml --enable-native-access=javafx.graphics -Djava.library.path=${workspaceFolder}/lib/native"
+```
+
+5. Run Main.java
+
+## 🖼️ Screenshots
+
+### 🏠 Main Menu
+![Main Menu](docs/menu.png)
+
+### 🗂️ Data Structures
+![Data Structures](docs/ds.png)
+
+### 🔄 Sorting Algorithms
+![Sorting Animation](docs/sort.png)
+
+### 🔎 Search Algorithms
+![Search Animation](docs/search.png)
+
+
+## 📝 Notes
+- **Performance:** The animations are not fully optimized, especially for sorting algorithms. Larger settings (e.g., longer arrays or faster animations) may consume significant system resources. Be sure to balance settings like **animation duration** and **array size** to avoid excessive memory usage, since every state of the algorithm is stored for visualization.
+
+- **Data Structures:** After a large number of insertions, animations for some data structures may extend beyond the visible screen area.
+
+- **Generics:** All sorting, searching, and data structure implementations were designed using **generics** and can be reused with minor modifications (by removing lines related to "Save state").
+
+- **Code Quality:** The objective was to keep the code as clean and readable as possible. However, some parts may contain "spaghetti code" due to changes made during mid-project development.
+
+
+## 📚 Sources
 - https://www.flaticon.com/
-
-
-## Temp
-DS?
-Select DS
-- Option to add nodes for example
-- Draw types? List, tree, ...
-- Search
